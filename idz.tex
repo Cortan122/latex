@@ -1,0 +1,351 @@
+\documentclass{article}
+
+\usepackage{cmap} % поиск в pdf
+\usepackage{mathtext} % русские буквы в формулах
+\usepackage[english,russian]{babel} % локализация и переносы
+\usepackage[T2A]{fontenc} % кодировка в pdf (магия)
+\usepackage[utf8]{inputenc} % кодировка исходного текста
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+
+\usepackage{polynom} % схема горнера
+\usepackage{tikz} % рисунки
+\usepackage{wrapfig} % плавание текста вокруг рисунков
+\usepackage{systeme} % французская библиатека для красивых систем уравнений
+
+\usepackage[pscoord]{eso-pic} % The zero point of the coordinate systemis the lower left corner of the page (the default).
+\newcommand{\placetextbox}[3]{ % \placetextbox{<horizontal pos>}{<vertical pos>}{<stuff>}
+  \setbox0=\vbox{#3} % Put <stuff> in a box
+  \AddToShipoutPictureFG*{ % Add <stuff> to current page foreground
+    \put(\LenToUnit{#1\paperwidth},\LenToUnit{#2\paperheight}){\vtop{{\null}\makebox[0pt][c]{#3}}}%
+  }
+}
+
+\usepackage{lipsum} % lorem ipsum
+
+\usepackage[margin=0.5in]{geometry}
+
+\usetikzlibrary{patterns}
+
+\renewcommand{\vec}{\overrightarrow}
+\newcommand{\ds}{\displaystyle}
+\newcommand{\abs}[1]{\left|#1\right|}
+\newcommand{\Arg}[1]{\arg\left(#1\right)}
+\newcommand{\TrigFrom}[1]{
+  \left(\cos\left({#1}\right)+i\sin\left({#1}\right)\right)
+}
+\newcommand{\DS}{\phantom{$0.5$}}
+
+\title{Алгебра. Домашнее задание 2.}
+\author{AAAAA AAAAAAA \\ AAAAAA \\ Вариант 3}
+
+\begin{document}
+  \maketitle
+
+  \placetextbox{0.5}{1}{
+    \parbox[c]{\linewidth}{
+      \vspace{1cm}
+      \centering
+      \begin{tabular}{|c|c|c|c|c|c|c|c|c|c|c|}
+        \hline
+        1 & 2 & 3 & 4 & 5 & 6 & 7 & 8 & 9 & 10 & $\Sigma$ \\ \hline
+        \DS & \DS & \DS & \DS & \DS & \DS & \DS & \DS & \DS & \DS & \phantom{$10.0$} \\
+        \hline
+      \end{tabular}
+    }
+  }
+
+  \section{Решить систему уравнений}
+  \[
+    \left\{
+      \arraycolsep=1.4pt
+      \begin{array}{rrrrrrr}
+        (4+7i)x &+& (3-i)y &=& 2&+&5i \\
+        -4x &+& (-5-i)y &=& -5&+&5i
+      \end{array}
+    \right.
+  \]
+  $\ds \Delta_0 = \det\begin{pmatrix}
+    4+7i & 3-i \\
+    -4 & -5-i
+  \end{pmatrix} = (4+7i)(-5-i)-(3-i)(-4) = -1-43i$
+  \\
+  $\ds \Delta_1 = \det\begin{pmatrix}
+    2+5i & 3-i \\
+    -5+5i & -5-i
+  \end{pmatrix} = (2+5i)(-5-i)-(3-i)(-5+5i) = 5-47i$
+  \\
+  $\ds \Delta_2 = \det\begin{pmatrix}
+    4+7i & 2+5i \\
+    -4 & -5+5i
+  \end{pmatrix} = (4+7i)(-5+5i)-(2+5i)(-4) = -47+5i$
+  \\
+  $\ds x = \frac{\Delta_1}{\Delta_0} = \frac{5-47i}{-1-43i} = \frac{1008 + 131i}{925}$ \quad
+  $\ds y = \frac{\Delta_2}{\Delta_0} = \frac{-47+5i}{-1-43i} = \frac{-84 - 1013i}{925}$
+
+  \section{Вычислить значение $\sqrt[7]{z^4}$}
+  $$ z = 2 - 2\sqrt{3}i $$
+  $$ \Arg{ \frac{\sqrt[7]{z^4}}{2\sqrt{3} - 2i} } = -\frac{13\pi}{42} $$
+  \begin{tabular}{ll}
+    $\ds \abs{z} = 4$ & $\ds \Arg z = -\frac{\pi}{3}$ \\
+    $\ds \abs{z^4} = 4^4$ & $\ds \Arg{z^4} = -\frac{4\pi}{3}$ \\
+    $\ds \abs{\sqrt[7]{z^4}} = \sqrt[7]{4^4}$ & $\ds \Arg{\sqrt[7]{z^4}} = -\frac{4\pi}{21} + n\frac{2\pi}{7},\quad n\in\mathbb{Z}$ \\
+    $\ds \abs{2\sqrt{3} - 2i} = 4$ & $\ds \Arg{2\sqrt{3} - 2i} = -\frac{\pi}{6}$
+  \end{tabular} \\
+  $\ds \Arg{ \frac{\sqrt[7]{z^4}}{2\sqrt{3} - 2i} }
+    = \Arg{\sqrt[7]{z^4}} - \Arg{2\sqrt{3} - 2i}
+    = -\frac{4\pi}{21} + n\frac{2\pi}{7} + \frac{\pi}{6}
+    = n\frac{12\pi}{42} - \frac{\pi}{42}
+    = -\frac{13\pi}{42}
+  $ \\
+  $\ds n\frac{12\pi}{42} = -\frac{12\pi}{42}$ \quad $n = -1$ \quad
+  $\ds \Arg{\sqrt[7]{z^4}} = -\frac{4\pi}{21} - \frac{6\pi}{21} = -\frac{10\pi}{21}$ \\ \\
+  $\ds \sqrt[7]{z^4} = 2\sqrt[7]{2} \TrigFrom{-\frac{10\pi}{21}}$
+
+  \section{Найти корни многочлена и разложить его на множители над $\mathbb{R}$ и $\mathbb{C}$}
+  \[
+    P = 3x^4 + 6x^3 - 3x^2 + 18x
+  \] \\
+  $\ds P = 3x(x^3 + 2x^2 - x + 6)$ \\
+  если подставить $-3$ в $x^3 + 2x^2 - x + 6$ то будет $-27 + 18 + 3 + 6 = 0$ \\
+  поделим $x^3 + 2x^2 - x + 6$ на $x+3$ (получилось $x^2-x+2$) \\
+  \polyhornerscheme[x=-3]{x^3 + 2x^2 - x + 6} \qquad $\leftarrow$ это схема горнера\\
+  $\ds P = 3x(x+3)(x^2-x+2)$ дальше мы не можем ничего разложить на $\mathbb{R}$, надо переходить на $\mathbb{C}$ \\
+  найдем дискриминант для $x^2-x+2$: \quad $\ds D = 1-4 \cdot 2 = -7$ \quad $\sqrt{D} = i\sqrt{7}$ \\
+  $\ds x_1,x_2 = \frac{1\pm\sqrt{D}}{2} = \frac{1\pm i\sqrt{7}}{2} = \frac{1}{2}\pm i\frac{\sqrt{7}}{2}$ \\
+  $\ds P = 3x(x+3)
+    \left(x-\frac{1}{2}-i\frac{\sqrt{7}}{2}\right)
+    \left(x-\frac{1}{2}+i\frac{\sqrt{7}}{2}\right)
+  $
+
+  \section{Найти число $z$, образующее параллелограмм с данными тремя на комплексной плоскости}
+  $$ a = 11-5i $$
+  $$ b = 13-16i $$
+  $$ c = 8+5i $$
+  \begin{wrapfigure}{l}{6cm}
+    \vspace{-2.5cm}
+    \centering
+    \begin{tikzpicture}[x=.2cm,y=.2cm]
+      \draw[step=1, gray, very thin] (-1,-17) grid (15,6);
+      \draw[-stealth] (-1,0)--(15,0) node[right]{Re}; % x axis
+      \draw[-stealth] (0,-17)--(0,6) node[above]{Im}; % y axis
+
+      \node (a) at (11,-5) {$\hspace{.5cm}a$};
+      \node (b) at (13,-16) {$\hspace{.5cm}b$};
+      \node (c) at (8,5) {$\hspace{.5cm}c$};
+      \node (z) at (10,-6) {$\hspace{-.5cm}z$};
+
+      \fill (a) circle[radius=2pt];
+      \fill (b) circle[radius=2pt];
+      \fill (c) circle[radius=2pt];
+      \fill (z) circle[radius=2pt];
+
+      \draw (a.center)--(b.center);
+      \draw (c.center)--(b.center);
+      \draw (a.center)--(c.center);
+      \draw[dashed] (z.center)--(b.center);
+      \draw[dashed] (z.center)--(c.center);
+    \end{tikzpicture}
+    \vspace{-.5cm}
+  \end{wrapfigure}
+
+  \noindent здесь насамом деле можно найти три точки, но я просто возьму одну (ту котороя напротив $a$) \\
+  чтобы нам получить точку $z$ нам надо паралельным переносом перенести вектор $\vec{ab}$ из точки $a$ в точку $c$ \\
+  получается $\vec{ab} = b - a$, а $z = c + \vec{ab} = c+b-a = 8+5i + 13-16i - (11-5i) = 10-6i$ \\
+
+  \section{Даны числа соседние комплексные корни степени $n$ числа $z$. Найти $n$ и $z$}
+  $$ z_1 = \frac{3}{2} + i\frac{3\sqrt{3}}{2} $$
+  $$ z_2 = -3 $$
+  $$ z_1,z_2 \in \sqrt[n]{z} $$
+  $$ \Arg{\sqrt[n]{z}} = \frac{\Arg{z}}{n} + k\frac{2\pi}{n},\quad k\in\mathbb{Z} $$
+  $\ds \abs{z_1} = 3$ \quad $\ds \Arg{z_1} = \frac{\pi}{3}$ \quad $\ds \Arg{z_2} = \frac{\pi}{2}$ \\
+  $\ds \abs{\Arg{z_1} - \Arg{z_2}} = \frac{2\pi}{n}$ \quad $\ds \frac{\pi}{6} = \frac{2\pi}{n}$ \quad $\ds n = 12$ \\
+  $\ds z = z_2^{12} = (-3)^{12} = 3^{12} = 531441$
+
+  \section{На комплексной плоскости нарисуйте область, заданную системой}
+  $$ p_1 = -7+3i $$
+  $$ p_2 = 6+4i $$
+  \[
+    \systeme{
+      \abs{z-p_1} < 3,
+      \abs{\Arg{z-p_2}} < \dfrac{\pi}{7}
+    }
+  \]
+  \begin{wrapfigure}{r}{5cm}
+    \vspace{-3.25cm}
+    \centering
+    \begin{tikzpicture}[x=.2cm,y=.2cm]
+      \draw[step=1, gray, very thin] (-11,-2) grid (10,7);
+      \draw[-stealth] (-11,0)--(10,0) node[right]{Re}; % x axis
+      \draw[-stealth] (0,-2)--(0,7) node[above]{Im}; % y axis
+
+      \draw[pattern=north east lines, pattern color=teal] (-7,3) circle[radius=3];
+
+      \fill[pattern=north east lines, pattern color=teal]
+        (10,4+1.9262984752301144)--(6,4)--(10,4-1.9262984752301144)--cycle;
+      \draw (10,4+1.9262984752301144)--(6,4)--(10,4-1.9262984752301144);
+
+      \node (a) at (-7,3) {$\hspace{.5cm}p_1$};
+      \node (b) at (6,4) {$\hspace{-.5cm}p_2$};
+
+      \fill (a) circle[radius=2pt];
+      \fill (b) circle[radius=2pt];
+    \end{tikzpicture}
+    \vspace{-.5cm}
+  \end{wrapfigure}
+  $\abs{z-p_1} < 3$ это окружность радиуса $3$ с центром в $p_1$,
+  потомучто мы какбы переносим $\abs{z} < 3$ (окружность радиуса $3$ с центром в $0$) в $p_1$;
+  для второго уравнения мы можем сделать также: сначало понять что такое $\ds \abs{\Arg{z}} < \frac{\pi}{7}$,
+  а потом перенести это в $p_2$;
+  потомучто в условие написано что $\Arg{z} \in (-\pi;\pi]$
+  (это важно, потомучто еслибы было $\Arg{z} \in [0;2\pi)$, то $\abs{\Arg{z}}$ былобы равно $\Arg{z}$),
+  мы можем сказать, что $\ds \abs{\Arg{z}} < \frac{\pi}{7}$ это симметричный от оси $x$ "уголок"\ с внутренем углом $\dfrac{2\pi}{7}$;
+  как можно увидеть на рисунке, они не пересекаются, и ответ будет $\varnothing$
+
+  \section{Найдите вектор $x$, удовлетворяющий системе уравнений}
+  \begin{equation*}
+    \begin{aligned}[c]
+      x &= (x_1, x_2, x_3)\\
+      a &= (-1, -4, 3)\\
+      b &= (1, -7, 9)\\
+      c &= (6, 2, 2)
+    \end{aligned}
+    \hspace{3cm}
+    \begin{aligned}[c]
+      \begin{cases}
+        a \cdot x = \alpha \\
+        b \cdot x = \beta \\
+        c \cdot x = \gamma
+      \end{cases} \\
+      \alpha,\beta,\gamma \in \mathbb{R}
+    \end{aligned}
+  \end{equation*}
+  \(
+    \ds
+    \systeme{
+       -x_1 - 4x_2 + 3x_3 = \alpha,
+        x_1 - 7x_2 + 9x_3 = \beta,
+       6x_1 + 2x_2 + 2x_3 = \gamma
+    }
+    \xrightarrow{\hspace{1cm}}
+    \begin{pmatrix}
+      -1 & -4 & 3 & \alpha\\
+      1 & -7 & 9 & \beta\\
+      6 & 2 & 2 & \gamma
+    \end{pmatrix}
+    \ds
+    \xrightarrow[\begin{matrix}  \\  \end{matrix}]{\begin{matrix} \textbf{I} \mathrel{/}= -1 \end{matrix}}
+    \begin{pmatrix}1 & 4 & -3 & - \alpha\\1 & -7 & 9 & \beta\\6 & 2 & 2 & \gamma\end{pmatrix}
+    \xrightarrow[\begin{matrix} \textbf{II} \mathrel{-}= \textbf{I} \\ \textbf{III} \mathrel{-}= 6 \textbf{I} \end{matrix}]{\begin{matrix}  \end{matrix}} \) \\ \(\ds
+    \begin{pmatrix}1 & 4 & -3 & - \alpha\\0 & -11 & 12 & \alpha + \beta\\0 & -22 & 20 & 6 \alpha + \gamma\end{pmatrix}
+    \xrightarrow[\begin{matrix} \textbf{II} \mathrel{/}= -11 \\  \end{matrix}]{\begin{matrix}  \end{matrix}}
+    \begin{pmatrix}1 & 4 & -3 & - \alpha\\0 & 1 & - \frac{12}{11} & - \frac{\alpha}{11} - \frac{\beta}{11}\\0 & -22 & 20 & 6 \alpha + \gamma\end{pmatrix}
+    \xrightarrow[\begin{matrix}  \\ \textbf{III} \mathrel{+}= 22 \textbf{II} \end{matrix}]{\begin{matrix} \textbf{I} \mathrel{-}= 4 \textbf{II} \end{matrix}}
+    \begin{pmatrix}1 & 0 & \frac{15}{11} & - \frac{7 \alpha}{11} + \frac{4 \beta}{11}\\0 & 1 & - \frac{12}{11} & - \frac{\alpha}{11} - \frac{\beta}{11}\\0 & 0 & -4 & 4 \alpha - 2 \beta + \gamma\end{pmatrix}
+    \xrightarrow[\begin{matrix}  \\ \textbf{III} \mathrel{/}= -4 \end{matrix}]{\begin{matrix}  \end{matrix}} \) \\ \(\ds
+    \begin{pmatrix}1 & 0 & \frac{15}{11} & - \frac{7 \alpha}{11} + \frac{4 \beta}{11}\\0 & 1 & - \frac{12}{11} & - \frac{\alpha}{11} - \frac{\beta}{11}\\0 & 0 & 1 & - \alpha + \frac{\beta}{2} - \frac{\gamma}{4}\end{pmatrix}
+    \xrightarrow[\begin{matrix} \textbf{II} \mathrel{+}= \frac{12}{11} \textbf{III} \\  \end{matrix}]{\begin{matrix} \textbf{I} \mathrel{-}= \frac{15}{11} \textbf{III} \end{matrix}}
+    \begin{pmatrix}1 & 0 & 0 & \frac{8 \alpha}{11} - \frac{7 \beta}{22} + \frac{15 \gamma}{44}\\0 & 1 & 0 & - \frac{13 \alpha}{11} + \frac{5 \beta}{11} - \frac{3 \gamma}{11}\\0 & 0 & 1 & - \alpha + \frac{\beta}{2} - \frac{\gamma}{4}\end{pmatrix}
+    \xrightarrow{\hspace{1cm}}
+    x = \begin{bmatrix}
+      \frac{8 \alpha}{11} - \frac{7 \beta}{22} + \frac{15 \gamma}{44}\\
+      - \frac{13 \alpha}{11} + \frac{5 \beta}{11} - \frac{3 \gamma}{11}\\
+      - \alpha + \frac{\beta}{2} - \frac{\gamma}{4}
+    \end{bmatrix}
+  \)
+
+  \section{Найти расстояние между плоскостью и точкой. Найти координаты точки $A'$, расположенной симметрично точки $A$ относительно плоскости $P$}
+  $$ \text{плоскость } P: 5x + y - 2z + 9 = 0 $$
+  $$ A = (-9, -3, -7) $$
+  $N = (5, 1, -2)$ это нормаль к плоскости $P$ \\
+  $\ds \rho = \frac{\abs{A \cdot N + 9}}{\abs{N}}$ это формула расстояния от точки до плоскости \\
+  $\ds \rho = \frac{\abs{-5\cdot 9 -3 +2\cdot 7 + 9}}{\sqrt{5^2+1+2^2}} = \frac{\abs{-25}}{\sqrt{30}} = 5\sqrt{5 \over 6}$ \\
+  $A'$ мы можем получить вычев из $A$ нормализованный нормальный вектор домножанный на $2\rho$, и мы убераем модуль в расстоянии,
+  чтобы наш вектор всегда показыал на точку, а не от неё \\
+  $\ds A' = A - 2\frac{A \cdot N + 9}{\abs{N}^2} \cdot N = A + \frac{5}{3} N = \left(-\frac{2}{3}, -\frac{4}{3}, -\frac{31}{3}\right)$
+
+  \section{Написать каноническое уравнение прямой $L$, проходящей через точки $M_1$ и $M_2$. Найти расстояние между точкой $A$ и прямой $L$. Найти координаты точки $A'$, расположенной симметрично точки $A$ относительно прямой $L$}
+  $$ A = (4, 3, 8) $$
+  $$ M_1 = (2, -4, -8) $$
+  $$ M_2 = (8, -2, -6) $$
+  $\ds \frac{x-U_x}{V_x-U_x} = \frac{y-U_y}{V_y-U_y} = \frac{z-U_z}{V_z-U_z}$ это каноническое уравнение прямой проходящей через точки $U$ и $V$ \\
+  $\ds \frac{x-2}{8-2} = \frac{y+4}{-2+4} = \frac{z+8}{-6+8}$ \\
+  $\ds \frac{x-2}{3} = y+4 = z+8$ это каноническое уравнение прямой $L$ \\
+  эго ещё можно записать в векторной форме $\ds \vec{r} = tN + M_1$ где $N = M_1-M_2$ это направляющий вектор, \\
+  (еще лучше упростить $N$, тогда он будет равен $N = (-6, -2, -2) = (3, 1, 1)$ и его длинна будет $\sqrt{11}$) \\
+  тогда уравнение плоскости перпендикулярной прямой $L$ это $\ds \vec{r} \cdot N + d = 0$ \\
+  если мы сюда подставим $A$, то найдем $d$: будет $d = -(4 \cdot 3 + 3 + 8) = -23$ \\
+  чтобы найти точку пересечения прямой и плоскости, можно просто подставить $\vec{r}$ из первого уравнения во второе \\
+  $\ds -d = (tN + M_1) \cdot N = t(N \cdot N) + M_1 \cdot N = t\abs{N}^2 + 2 \cdot 3 - 4 - 8 = 11t-6 \implies t = \frac{29}{11}$ \\
+  $\ds \vec{r} = \frac{29}{11}N + M_1 = \left(\frac{109}{11}, -\frac{15}{11}, -\frac{59}{11}\right)$
+  это у нас получилась проэкция $A$ на $L$ (назавём её $A_0$) \\
+  теперь $\ds \rho(L,A) = \abs{A_0 - A} = \frac{\sqrt{65^2 + (-48)^2 + (-147)^2}}{11} = \frac{\sqrt{28138}}{11}$, \\
+  а $\ds A' = A + 2(A_0 - A) = \left(\frac{196}{11}, \frac{14}{11}, - \frac{30}{11}\right)$
+
+  \section{Найти расстояние между $L_1$ и $L_2$. Написать каноническое уравнение прямой, являющейся общим перпендикуляром к $L_1$ и $L_2$}
+  \[
+    L_1: \systeme{
+      -4x-3y-2z-1 = 0,
+      -5x+9y-5z-1 = 0
+    } \qquad
+    L_2: \systeme{
+      6x+2y+5z-5 = 0,
+      -9x-5z-4 = 0
+    }
+  \]
+  сначало переведем все эти прямые в параметрическую форму \\
+  \( \ds
+    L_1: \systeme{
+      t_1 = x,
+      -\frac{10}{33}t_1 - \frac{1}{11} = y,
+      -\frac{17}{11}t_1 - \frac{4}{11} = z
+    } \qquad
+    L_2: \systeme{
+      t_2 = x,
+      \frac{3}{2}t_2 + \frac{9}{2} = y,
+      -\frac{9}{5}t_2 - \frac{4}{5} = z
+    }
+  \) \\
+  напровляющие векторы $N_1$ и $N_2$ будут равны
+  $\ds N_1 = \left(1, -\frac{10}{33}, -\frac{17}{11}\right) \qquad N_2 = \left(1, \frac{3}{2}, -\frac{9}{5}\right)$ \\
+  мы можем построить вектор $\Delta$ (зависящий от параметров $t_1$ и $t_2$) из точки $H_1 \in L_1$ в точку $H_2 \in L_2$ \\
+  \(\ds
+    \Delta = (\Delta_x, \Delta_y, \Delta_y) \qquad
+    \systeme{
+      t_2 - t_1 = \Delta_x,
+      \frac{3}{2}t_2 + \frac{9}{2} + \frac{10}{33}t_1 + \frac{1}{11} = \Delta_y,
+      -\frac{9}{5}t_2 - \frac{4}{5} + \frac{17}{11}t_1 + \frac{4}{11} = \Delta_z
+    } \qquad \systeme{
+      t_2 - t_1 = \Delta_x,
+      \frac{3}{2}t_2 + \frac{10}{33}t_1 + \frac{101}{22} = \Delta_y,
+      -\frac{9}{5}t_2 + \frac{17}{11}t_1 - \frac{24}{55} = \Delta_z
+    }
+  \) \\
+  если $\systeme{\Delta \cdot N_1 = 0, \Delta \cdot N_2 = 0}$, то вектор $\Delta$ перпердикулярен обоим прямым,
+  и его длинна будет равна расстоянию между ними \\
+  \(
+    \systeme{
+      -\frac{3790}{1089}t_1 + \frac{183}{55}t_2 - \frac{1301}{1815} = 0,
+      -\frac{183}{55}t_1 + \frac{649}{100}t_2 + \frac{8439}{1100} = 0
+    }
+  \) \qquad
+  эту систему решаем методом крамера и получаем
+  $\systeme*{t_1=-\frac{234744}{89579}, t_2=-\frac{226239}{89579}}$ \\
+  это подставляем в уравнения прямых и получаем точки $H_1$ и $H_2$ \\
+  $\ds H_1 = \left(-\frac{234744}{89579}, \frac{62991}{89579}, \frac{330212}{89579} \right)$ \qquad
+  $\ds H_2 = \left(-\frac{226239}{89579}, \frac{63747}{89579}, \frac{335567}{89579} \right)$ \\
+  расстояние между $L_1$ и $L_2$ будет равно
+  $\ds \abs{H_1 - H_2} = \frac{\sqrt{1215^2 + 108^2 + 765^2}}{12797} = \frac{9\sqrt{25594}}{12797}$ \\
+  потом по формуле, котороя было в №9, можно составить конаническое уравнение прямой $\overline{H_1H_2}$ \\ \\
+  \(\ds
+    \frac{89579 x + 226239}{8505} =
+    \frac{89579 y - 63747}{756} =
+    \frac{89579 z - 335567}{5355}
+  \) это несчитаестся как каноническое, но оно красивее \\ \\
+  \(\ds
+    \frac{x + \frac{234744}{89579}}{\frac{1215}{12797}} =
+    \frac{y - \frac{62991}{89579}}{\frac{108}{12797}} =
+    \frac{z - \frac{330212}{89579}}{\frac{765}{12797}}
+  \) это каноническое уравнение
+\end{document}

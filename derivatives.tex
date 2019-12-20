@@ -1,0 +1,101 @@
+\documentclass[a4paper,12pt]{article}
+
+\usepackage{cmap} % поиск в PDF
+\usepackage{mathtext} % русские буквы в формулах
+\usepackage[english,russian]{babel} % локализация и переносы
+\usepackage[T2A]{fontenc} % кодировка
+\usepackage[utf8]{inputenc} % кодировка исходного текста
+\usepackage{amsmath}
+\usepackage{amsfonts}
+
+\usepackage{multicol}
+\usepackage[thinc]{esdiff}
+\usepackage{relsize}
+\usepackage{graphicx}
+
+\usepackage[margin=0.5in]{geometry}
+
+\pagenumbering{gobble}
+
+\newcommand{\VCenter}[2]{
+  \vcenter{\hbox{\scalebox{#1}{$#2$}}}
+}
+
+\newcommand{\sep}{\end{multicols}\begin{multicols}}
+\newcommand{\Cstart}{\begin{enumerate}\begin{multicols}{2}}
+\newcommand{\Csep}{\sep{2}}
+\newcommand{\Cend}{\end{multicols}\end{enumerate}}
+\newcommand{\Cnk}[2]{\VCenter{1.5}{C_{#1}^{#2}}}
+\newcommand{\ds}{\displaystyle}
+\newcommand{\Ds}{\ds \vphantom{\sum_n^k}}
+\newcommand{\Dfs}{\ds \vphantom{1\over2}}
+
+% \newcommand{\Tk}{n} \newcommand{\Tnotk}{k}
+\newcommand{\Tk}{k} \newcommand{\Tnotk}{n}
+
+% \newcommand{\T}{\underset{f(a)}{\operatorname{T}_\Tnotk(x)}}
+\newcommand{\T}{\operatorname{T}_\Tnotk(x)}
+
+\newcommand{\Cbin}[2]{\Cnk{#1}{#2}}
+% \newcommand{\Cbin}[2]{\binom{#1}{#2}}
+
+% \newcommand{\al}{a}
+\newcommand{\al}{\alpha}
+
+\newcommand{\Tn}{\Tnotk} \newcommand{\To}{+\operatorname{o}(x^\Tnotk)}
+% \newcommand{\Tn}{\infty} \newcommand{\To}{}
+
+\begin{document}
+  \Cstart
+    \item $\ds \sin\left(\alpha \pm \beta\right) = \sin\alpha \cos\beta \pm \cos\alpha \sin\beta$
+    \item $\ds \cos\left(\alpha \pm \beta\right) = \cos\alpha \cos\beta \mp \sin\alpha \sin\beta$
+  \Csep
+    \item $\ds \sin2\alpha = 2\sin\alpha \cos\alpha$
+    \item $\ds \cos2\alpha = \cos^2\alpha - \sin^2\alpha$
+  \sep{4}
+    \item $\ds y'_x = \frac{y'_t}{x'_t}$
+    \item $\ds y'_x = \diff{y}{x}$
+    \item $\ds y''_{xx} = \diff[2]{y}{x}$
+    \item $\ds \left(\frac{u}{v}\right)' = \frac{u'v - uv'}{v^2}$
+  \sep{4}
+    \item $\Dfs \log_ba = \frac{\ln a}{\ln b}$
+    \item $\Dfs (\log_bx)' = \frac{1}{x \ln b}$
+    \item $\Dfs (x^\al)' = \al \cdot x^{\al-1}$
+    \item $\Dfs (\al^x)' = \al^x \ln \al$
+  \Csep
+    \item $\ds \arcsin'(x) = \frac{1}{\sqrt{1-x^2}}$
+    \item $\ds \arccos'(x) = -\frac{1}{\sqrt{1-x^2}}$
+  \Csep
+    \item $\ds \arctan'(x) = \frac{1}{x^2+1}$
+    \item $\ds \tan'(x) = \frac{1}{\cos^2(x)}$
+  \Csep
+    \item $\ds \sin^{(n)}(x) = \sin\left(x + \frac{n\pi}{2}\right) \hspace{0.5cm}
+      \VCenter{0.5}{\begin{pmatrix} \text{для} \cos \\ \text{также} \end{pmatrix}}$
+    \item $\ds (x^\al)^{(n)} = x^{\al-n} \prod_{k=0}^{n-1} \al-k$
+    \item $\ds (\ln x)^{(n)} = \frac{ (-1)^{n-1}\cdot(n-1)! }{x^n}$
+    \item $\Ds (\al^x)^{(n)} = \al^x \cdot (\ln \al)^n$
+  \Csep
+    \item $\ds \Cnk{n}{k} = \binom{n}{k} = \frac{n!}{k!\,(n-k)!}$ или $0$
+    \item $\ds (a+b)^n = \sum_{k=0}^n \Cbin{n}{k} a^{n-k}\,b^k$
+    \item $\ds (uv)^{(n)} = \sum_{k=0}^n \Cbin{n}{k} u^{(n-k)}\,v^{(k)}$
+    \item $\Ds a^3 \pm b^3 = (a \pm b)(a^2 \mp ab + b^2)$
+  \Csep
+    \item $\ds \sum_{k=1}^{n} a_1+(k-1)d = a_1 + \frac{d(n-1)}{2}$
+    \item $\ds \sum_{k=1}^{n} b_1\cdot q^{k-1} = b_1\frac{q^n-1}{q-1}$
+  \Csep
+    \item $\T$ это многочлен Тейлора \\ для функции $f$ в точке $a$
+    \item $\ds \T = \sum_{\Tk=0}^\Tnotk \frac{f^{(\Tk)}(a)}{\Tk!}(x-a)^\Tk$
+  \Csep
+    \item $\ds f(x) = \T + \operatorname{o}((x-a)^\Tnotk)$
+    \item $\ds f(x) = \lim_{\Tnotk \to \infty} \T$ если $\lim$ есть
+  \Csep
+    \item $\ds (1+x)^\al = \sum_{\Tk=0}^{\Tn} \Cbin{\al}{\Tk} x^\Tk \To$
+    \item $\ds \ln(1+x) = \sum_{\Tk=1}^{\Tn} \frac{(-1)^{\Tk-1}x^\Tk}{\Tk} \To$
+  \Csep
+    \item $\Ds \Cbin{\al}{\Tnotk} = \prod_{\Tk=1}^\Tnotk \frac{\al-\Tk+1}{\Tk}$ для $\al \not\in \mathbb{N}$
+    \item $\ds e^x = \sum_{\Tk=0}^{\Tn} \frac{x^\Tk}{\Tk!} \To$
+  \Csep
+    \item $\ds \sin x = \sum_{\Tk=0}^{\Tn} (-1)^\Tk \frac{x^{2\Tk+1}}{(2\Tk+1)!} \To$
+    \item $\ds \cos x = \sum_{\Tk=0}^{\Tn} (-1)^\Tk \frac{x^{2\Tk}}{2\Tk!} \To$
+  \Cend
+\end{document}
