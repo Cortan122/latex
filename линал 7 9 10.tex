@@ -1,0 +1,94 @@
+\documentclass{article}
+
+\usepackage{cmap} % поиск в pdf
+\usepackage{mathtext} % русские буквы в формулах
+\usepackage[english,russian]{babel} % локализация и переносы
+\usepackage[T2A]{fontenc} % кодировка в pdf (магия)
+\usepackage[utf8]{inputenc} % кодировка исходного текста
+\usepackage{amsthm} % теоремы
+\usepackage{mathtools}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+
+\usepackage[margin=0.5in]{geometry}
+
+\usepackage{xcolor}
+
+\newtheoremstyle{stylename}% name of the style to be used
+  {\topsep}      % ABOVESPACE
+  {\topsep}      % BELOWSPACE
+  {\normalfont}  % BODYFONT % \itshape
+  {0pt}          % INDENT (empty value is the same as 0pt)
+  {\bfseries}    % HEADFONT
+  {}             % HEADPUNCT
+  {0pt}          % HEADSPACE. `plain` default: {5pt plus 1pt minus 1pt}
+  {\thmname{#1} \thmnumber{#2}}             % CUSTOM-HEAD-SPEC
+
+\theoremstyle{stylename}
+\newtheorem*{theorem}{\fbox{Утверждение:}}
+\renewcommand{\qedsymbol}{$\blacksquare$}
+\renewcommand{\implies}{\Rightarrow}
+\newcommand{\cg}[1]{\left<#1\right>}
+\newcommand{\CG}[1]{\left|\cg{#1}\right|}
+\newcommand{\ord}{\operatorname{ord}}
+\newcommand{\Ker}{\operatorname{Ker}}
+\newcommand{\ds}{\displaystyle}
+
+\newcommand{\red}[1]{{\color{red}{#1}}}
+
+\begin{document}
+  \begin{theorem}
+    Пусть $g \in G$. $G$ -- группа.
+    Тогда $\ord(g)=\CG{g}$
+  \end{theorem}
+  \begin{proof}[$\square$\nopunct]
+    Если $g$ имеет бесконечный порядок, то все элементы $g^n$, $n \in \mathbb{Z}$ различны $\implies$ \\
+    (Если $g^k=g^s \text{ и } k>s \implies g^{k-s}=e$ и $\implies$ порядок конечен) $\implies$
+    имеется безконечное количество степеней и $\ord(g)=\CG{g}$. \\
+    Если $\ord(g)=m < \infty$, то из минимальности $m \implies e=g^0, g=g^1,\dots,g^{m=1}$ попарно различны. \\
+    $\forall n \in \mathbb{Z}$ \qquad
+    $n = m \cdot q + r$ (раздеим $n$ на $m$ с остатком) \\
+    $0 \le r < m$ \\
+    $g^n = g^{m \cdot g + r} = \left(g^m\right)^g \cdot g^r = e^q \cdot g^r = g^r$, \\
+    то есть $\cg{g} = \left\{ e,g,g^2,\dots,g^{m-1} \right\}$,
+    а $\CG{g} = m \implies \ord(g)=\CG{g}$
+  \end{proof}
+
+  \begin{theorem}
+    Все цикические группы одтнакого порядка изоморфны.
+  \end{theorem}
+  \begin{proof}[$\square$\nopunct]
+    Если группа безконечна, то изоморфизм: \\
+    $f: \cg{g} \rightarrow\left(\mathbb{Z},+\right)$ \\
+    $g^n \in \cg{g} \mapsto n \in \mathbb{Z}$ \\
+    Это биекция и гомоморфизм, тк \\
+    $f\left(g^m \cdot g^n\right) = f\left(g^n\right)+f\left(g^m\right)$; \qquad $f\left(g^{n+m}\right) = n+m$ \\
+    Если $G = \left\{ e,g,\dots,g^{m-1} \right\}$ и $G' = \left\{ e',g',\dots,(g')^{m-1} \right\}$, \\
+    то $g^k \xmapsto{f} (g')^k$ \qquad $k \in [0;m-1]$
+  \end{proof}
+  \begin{theorem}
+    $\Ker f$, где $f$ -- гомоморфизм из группы $G_1$ (с операцией $\cdot$) в группу $G_2$ (с операцией $\circ$) всегда является подгруппой в $G_1$
+  \end{theorem}
+  \begin{proof}[$\square$\nopunct]
+    \begin{tabular}[t]{ll}
+      1. & $e_1 \in \Ker f$ по первому свойству гомоморфизма $f(e_1)=e_2$ \\ [1em]
+      2. & $\forall g_1, g_2 \in \Ker f:$ \\
+         & $\ds \begin{cases}
+             f(g_1 \cdot g_2) = f(g_1) \circ f(g_2) & \text{потомучто $f$ это гомоморфизм} \\
+             f(g_1) = f(g_2) = e_2 & \text{по определению $\Ker f$} \\
+           \end{cases}$ \\
+         & \quad $\implies f(g_1 \cdot g_2) = f(g_1) \circ f(g_2) = e_2 \circ e_2 = e_2$ \\
+         & \quad $\implies g_1 \cdot g_2 \in \Ker f $ потомучто $f(g_1 \cdot g_2) = e_2$ \\
+         & поэтому у нас операция <<$\cdot$>> будет замкнуа на множестве $\Ker f$ \\ [1em]
+      3. & $\forall g \in \Ker f:$ \\
+         & \quad $f(g^{-1})=(f(g))^{-1}$ по 2му свойству гомоморфизма \\
+         & \quad $\implies f(g^{-1})=(f(g))^{-1}=e_2^{-1}=e_2$ \\
+         & \quad $\implies g^{-1} \in \Ker f$ потомучто $f(g^{-1}) = e_2$ \\
+         & поэтому у нас есть все обратные элементы
+    \end{tabular} \\
+    $\implies \left(\Ker f,\cdot\right)$ -- это группа, а $\Ker f \subseteq G_1$ по определению
+    $\implies \Ker f$ -- подгруппа $G_1$
+  \end{proof}
+
+\end{document}

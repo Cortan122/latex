@@ -1,0 +1,84 @@
+\documentclass[a4paper,12pt]{article}
+
+\usepackage{cmap} % поиск в PDF
+\usepackage{mathtext} % русские буквы в формулах
+\usepackage[english,russian]{babel} % локализация и переносы
+\usepackage[T2A]{fontenc} % кодировка
+\usepackage[utf8]{inputenc} % кодировка исходного текста
+\usepackage{amsmath}
+\usepackage{amsfonts}
+
+\usepackage{multicol}
+\usepackage[thinc]{esdiff}
+\usepackage{relsize}
+\usepackage{graphicx}
+
+\usepackage[margin=0.5in]{geometry}
+
+\pagenumbering{gobble}
+
+\newcommand{\VCenter}[2]{
+  \vcenter{\hbox{\scalebox{#1}{$#2$}}}
+}
+
+\newcommand{\sep}{\end{multicols}\begin{multicols}}
+\newcommand{\Cstart}{\begin{enumerate}\begin{multicols}{2}}
+\newcommand{\Csep}{\sep{2}}
+\newcommand{\Cend}{\end{multicols}\end{enumerate}}
+\newcommand{\Cnk}[2]{\VCenter{1.5}{C_{#1}^{#2}}}
+\newcommand{\ds}{\displaystyle}
+\newcommand{\Ds}{\ds \vphantom{\sum_n^k}}
+\newcommand{\Dfs}{\ds \vphantom{1\over2}}
+
+\newcommand{\Tk}{n} \newcommand{\Tnotk}{k}
+% \newcommand{\Tk}{k} \newcommand{\Tnotk}{n}
+
+% \newcommand{\T}{\underset{f(a)}{\operatorname{T}_\Tnotk(x)}}
+\newcommand{\T}{\operatorname{T}_\Tnotk(x)}
+
+\newcommand{\Cbin}[2]{\Cnk{#1}{#2}}
+% \newcommand{\Cbin}[2]{\binom{#1}{#2}}
+
+% \newcommand{\al}{a}
+\newcommand{\al}{\alpha}
+
+\newcommand{\Tn}{\Tnotk} \newcommand{\To}{+\operatorname{o}(x^\Tnotk)}
+% \newcommand{\Tn}{\infty} \newcommand{\To}{}
+
+\begin{document}
+  \Cstart
+  \sep{4}
+    \item $\Dfs \ln'(x) = \frac{1}{x}$
+    \item $\Dfs (\log_bx)' = \frac{1}{x \ln b}$
+    \item $\Dfs (x^\al)' = \al \cdot x^{\al-1}$
+    \item $\Dfs (\al^x)' = \al^x \ln \al$
+  \sep{4}
+    \item $\Ds \sin'(x) = \cos(x)$
+    \item $\Ds \cos'(x) = -\sin(x)$
+    \item $\Ds \left(1 \over x\right)' = -\frac{1}{x^2}$
+    \item $\Ds \left(\sqrt{x}\right)' = \frac{1}{2\sqrt{x}}$
+  \Csep
+    \item $\ds \arcsin'(x) = \frac{1}{\sqrt{1-x^2}}$
+    \item $\ds \arccos'(x) = -\frac{1}{\sqrt{1-x^2}}$
+  \Csep
+    \item $\ds \arctan'(x) = \frac{1}{x^2+1}$
+    \item $\ds \tan'(x) = \frac{1}{\cos^2(x)}$
+  \Csep
+    \item $\ds \arcctg'(x) = -\frac{1}{x^2+1}$
+    \item $\ds \ctg'(x) = -\frac{1}{\sin^2(x)}$
+  \end{multicols}
+    \vspace{0.1cm} \hrule \vspace{-0.1cm}
+  \begin{multicols}{2}
+    \item $\ds (1+x)^\al = \sum_{\Tk=0}^{\Tn} \Cbin{\al}{\Tk} x^\Tk \To$
+    \item $\ds \ln(1+x) = \sum_{\Tk=1}^{\Tn} \frac{(-1)^{\Tk-1}x^\Tk}{\Tk} \To$
+  \Csep
+    \item $\ds \cos x = \sum_{\Tk=0}^{\Tn} (-1)^\Tk \frac{x^{2\Tk}}{2\Tk!} \To$
+    \item $\ds \sin x = \sum_{\Tk=0}^{\Tn} (-1)^\Tk \frac{x^{2\Tk+1}}{(2\Tk+1)!} \To$
+  \Csep
+    \item $\ds e^x = \sum_{\Tk=0}^{\Tn} \frac{x^\Tk}{\Tk!} \To$
+    \item $\Ds \frac{1}{1-x} = \sum_{\Tk=0}^{\Tn} x^\Tk \To$
+  \Csep
+    \item $\ds \arcsin x = x + \frac{x^3}{6} + \frac{3x^5}{40} + \cdots$
+    \item $\ds \sqrt{1+x} = 1 + \frac{x}{2} - \frac{x^2}{8} + \frac{x^3}{16} - \frac{5x^4}{128} + \cdots$
+  \Cend
+\end{document}
