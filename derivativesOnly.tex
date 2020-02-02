@@ -68,17 +68,29 @@
     \item $\ds \ctg'(x) = -\frac{1}{\sin^2(x)}$
   \end{multicols}
     \vspace{0.1cm} \hrule \vspace{-0.1cm}
-  \begin{multicols}{2}
-    \item $\ds (1+x)^\al = \sum_{\Tk=0}^{\Tn} \Cbin{\al}{\Tk} x^\Tk \To$
-    \item $\ds \ln(1+x) = \sum_{\Tk=1}^{\Tn} \frac{(-1)^{\Tk-1}x^\Tk}{\Tk} \To$
-  \Csep
-    \item $\ds \cos x = \sum_{\Tk=0}^{\Tn} (-1)^\Tk \frac{x^{2\Tk}}{2\Tk!} \To$
-    \item $\ds \sin x = \sum_{\Tk=0}^{\Tn} (-1)^\Tk \frac{x^{2\Tk+1}}{(2\Tk+1)!} \To$
-  \Csep
-    \item $\ds e^x = \sum_{\Tk=0}^{\Tn} \frac{x^\Tk}{\Tk!} \To$
-    \item $\Ds \frac{1}{1-x} = \sum_{\Tk=0}^{\Tn} x^\Tk \To$
-  \Csep
-    \item $\ds \arcsin x = x + \frac{x^3}{6} + \frac{3x^5}{40} + \cdots$
-    \item $\ds \sqrt{1+x} = 1 + \frac{x}{2} - \frac{x^2}{8} + \frac{x^3}{16} - \frac{5x^4}{128} + \cdots$
-  \Cend
+  % \begin{multicols}{2}
+    % \item $\ds (1+x)^\al = x - \dfrac{x^2}{2} + \dfrac{x^3}{3} = \sum_{\Tk=0}^{\Tn} \Cbin{\al}{\Tk} x^\Tk \To$
+    % \item $\ds \ln(1+x) = \sum_{\Tk=1}^{\Tn} \frac{(-1)^{\Tk-1}x^\Tk}{\Tk} \To$
+  % \Csep
+    % \item $\ds \cos x = \sum_{\Tk=0}^{\Tn} (-1)^\Tk \frac{x^{2\Tk}}{2\Tk!} \To$
+    % \item $\ds \sin x = \sum_{\Tk=0}^{\Tn} (-1)^\Tk \frac{x^{2\Tk+1}}{(2\Tk+1)!} \To$
+  % \Csep
+    % \item $\ds e^x = \sum_{\Tk=0}^{\Tn} \frac{x^\Tk}{\Tk!} \To$
+    % \item $\Ds \frac{1}{1-x} = \sum_{\Tk=0}^{\Tn} x^\Tk \To$
+  % \end{multicols}
+    \item $\ds (1+x)^\al
+      = \sum_{\Tk=0}^{\Tn} \Cbin{\al}{\Tk} x^\Tk \To$
+    \item $\ds \ln(1+x) = x - \dfrac{x^2}{2} + \dfrac{x^3}{3} - \operatorname{o}(x^3)
+      = \sum_{\Tk=1}^{\Tn} \frac{(-1)^{\Tk-1}x^\Tk}{\Tk} \To$
+    \item $\ds \cos x = 1 - \frac{x^2}{2!} + \frac{x^4}{4!} - \operatorname{o}(x^5)
+      = \sum_{\Tk=0}^{\Tn} (-1)^\Tk \frac{x^{2\Tk}}{2\Tk!} \To$
+    \item $\Ds \frac{1}{1-x} = 1 + x + x^2 + x^3 + \operatorname{o}(x^3)
+      = \sum_{\Tk=0}^{\Tn} x^\Tk \To$
+    \item $\ds \arcsin x = x + \frac{x^3}{6} + \frac{3x^5}{40} + \operatorname{o}(x^6)
+      =\sum_{\Tk=0}^{\Tn} \frac{(2\Tk)!}{4^\Tk (\Tk!)^2 (2\Tk+1)} x^{2\Tk+1} \To$
+    % \item $\ds \sqrt{1+x} = 1 + \frac{x}{2} - \frac{x^2}{8} + \frac{x^3}{16} - \frac{5x^4}{128} + \cdots$
+  \end{enumerate}
 \end{document}
+
+% 15 16 17 20 21
+%

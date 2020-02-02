@@ -1,0 +1,60 @@
+\documentclass[a4paper,12pt]{article}
+
+\usepackage{cmap} % поиск в PDF
+\usepackage{mathtext} % русские буквы в формулах
+\usepackage[english,russian]{babel} % локализация и переносы
+\usepackage[T2A]{fontenc} % кодировка
+\usepackage[utf8]{inputenc} % кодировка исходного текста
+\usepackage{amsmath}
+\usepackage{amsfonts}
+
+\usepackage{tasks}
+% \usepackage[inline]{enumitem}
+
+\usepackage[margin=0.5in]{geometry}
+\pagenumbering{gobble}
+
+\newcommand{\ds}{\displaystyle}
+
+\newcommand{\al}{\alpha} % or {a}
+\newcommand{\Ln}{\ln} % or {\log}
+\newcommand{\lln}[1]{\Ln\left|#1\right|} % or {\Ln\left(\left|#1\right|\right)}
+\newcommand{\dx}{\mathop{d\!}x} % or {\mathop{\mathrm{d}\!}x}
+\newcommand{\Dx}{\dx}
+\newcommand{\pc}{+C}
+\newcommand{\TrigFunctions}{\task $\ds \int \sin x \dx = -\cos x \pc$}
+\newcommand{\ColCount}{2}
+
+%#ifdef HIDE_REDUNDANT_CONSTANTS
+  \renewcommand{\ColCount}{3}
+  \renewcommand{\Dx}{1}
+  \renewcommand{\dx}{}
+  \renewcommand{\pc}{}
+%#endif
+
+\begin{document}
+  \begin{tasks}[style=enumerate](\ColCount)
+    \task $\ds \int x^\al \dx = \frac{x^{\al+1}}{\al+1} \pc$
+    \task $\ds \int \frac{\Dx}{x+a} = \lln{x+a} \pc$
+    \task $\ds \int a^x \dx = \frac{a^x}{\Ln a} \pc$
+%#ifndef HIDE_REDUNDANT_CONSTANTS
+    \task $\ds \int e^x \dx = e^x \pc$
+%#endif
+    \task $\ds \int \frac{\Dx}{x^2 + a^2} = \frac{1}{a}\arctan{\frac{x}{a}} \pc$
+    \task $\ds \int \frac{\Dx}{x^2 - a^2} = \frac{1}{2a}\lln{\frac{x-a}{x+a}} \pc$
+    \task $\ds \int \frac{\Dx}{\sqrt{a^2 - x^2}} = \arcsin{\frac{x}{a}} \pc$
+    \task $\ds \int \frac{\Dx}{\sqrt{x^2 \pm a}} = \lln{x+\sqrt{x^2 \pm a}} \pc$
+%#ifdef PRINT_TRIG_FUNCTIONS
+    \task $\ds \int \sin x \dx = -\cos x \pc$
+    \task $\ds \int \cos x \dx = \sin x \pc$
+    \task $\ds \int \frac{\Dx}{\cos^2 x} \dx = \tg x \pc$
+    \task $\ds \int \frac{\Dx}{\sin^2 x} \dx = -\ctg x \pc$
+%#endif
+%#ifdef PRINT_HTRIG_FUNCTIONS
+    \task $\ds \int \sh x \dx = \ch x \pc$
+    \task $\ds \int \ch x \dx = \sh x \pc$
+    \task $\ds \int \frac{\Dx}{\ch^2 x} \dx = \th x \pc$
+    \task $\ds \int \frac{\Dx}{\sh^2 x} \dx = -\cth x \pc$
+%#endif
+  \end{tasks}
+\end{document}
