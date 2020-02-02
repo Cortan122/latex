@@ -1,0 +1,193 @@
+\documentclass{article}
+
+\usepackage{cmap} % поиск в pdf
+\usepackage{mathtext} % русские буквы в формулах
+\usepackage[english,russian]{babel} % локализация и переносы
+\usepackage[T2A]{fontenc} % кодировка в pdf (магия)
+\usepackage[utf8]{inputenc} % кодировка исходного текста
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+
+\usepackage{varwidth}
+% \usepackage[bottom]{footmisc}
+
+\usepackage{polynom} % схема горнера
+\usepackage{tikz} % рисунки
+\usepackage{wrapfig} % плавание текста вокруг рисунков
+\usepackage{systeme} % французская библиатека для красивых систем уравнений
+
+\usepackage[pscoord]{eso-pic} % The zero point of the coordinate systemis the lower left corner of the page (the default).
+\newcommand{\placetextbox}[3]{ % \placetextbox{<horizontal pos>}{<vertical pos>}{<stuff>}
+  \setbox0=\vbox{#3} % Put <stuff> in a box
+  \AddToShipoutPictureFG*{ % Add <stuff> to current page foreground
+    \put(\LenToUnit{#1\paperwidth},\LenToUnit{#2\paperheight}){\vtop{{\null}\makebox[0pt][c]{#3}}}%
+  }
+}
+
+\usepackage{lipsum} % lorem ipsum
+
+\usepackage[margin=0.5in]{geometry}
+
+\usetikzlibrary{patterns}
+
+\renewcommand{\vec}{\overrightarrow}
+\newcommand{\ds}{\displaystyle}
+\newcommand{\abs}[1]{\left|#1\right|}
+\newcommand{\Arg}[1]{\arg\left(#1\right)}
+\newcommand{\TrigFrom}[1]{
+  \left(\cos\left({#1}\right)+i\sin\left({#1}\right)\right)
+}
+\newcommand{\DS}{\phantom{$0.5$}}
+
+\newcommand{\HeaderTable}{
+  \placetextbox{0.5}{1}{
+    \parbox[c]{\linewidth}{
+      \vspace{1cm}
+      \centering
+      \begin{tabular}{|c|c|c|c|c|c|c|c|c|}
+        \hline
+        1 & 2 & 3 & 4 & 5 & 6 & 7 & 8 & $\Sigma$ \\ \hline
+        \DS & \DS & \DS & \DS & \DS & \DS & \DS & \DS & \phantom{$10.0$} \\
+        \hline
+      \end{tabular}
+    }
+  }
+}
+
+\newcommand{\Mod}[1]{\pmod{#1}}
+
+\title{Дискретная математика. \\ Домашнее задание №1.}
+\author{AAAAA AAAAAAA \\ AAAAAA}
+
+\begin{document}
+  \maketitle
+  \HeaderTable
+
+  \section{Докажите, что для каждого натурального $n \geq 1$ верно}
+  $$\sum_{k=1}^n k^2 = \frac{n(n+1)(2n+1)}{6}$$
+  сначала нам надо доказать это для $n=1$, будет $\ds 1^2 = \frac{1 \cdot 2 \cdot 3}{6}$ \\
+  потом нам надо доказать это для $n+1$, если нам дано это для $n$, \\
+  тоесть $\ds \frac{n(n+1)(2n+1)}{6} + (n+1)^2 = \frac{(n+1)(n+2)(2(n+1)+1)}{6}$ \\
+  $\ds \frac{n(n+1)(2n+1)}{6} + n^2 + 2n + 1 = \frac{(n+1)(n+2)(2n+3)}{6}$ \\
+  $\ds n(n+1)(2n+1) + 6n^2 + 12n + 6 = (n+1)(n+2)(2n+3)$ \\
+  $\ds 2n^3 + 3n^2 + n + 6n^2 + 12n + 6 = 2n^3 + 9n^2 + 13n + 6$ \\
+  $\ds 2n^3 + 9n^2 + 13n + 6 = 2n^3 + 9n^2 + 13n + 6$ \\
+  $\blacksquare$ (а дальше по индукции)
+
+  \section{Используя лишь рекурсивное определение сложения и индукцию, докажите что при всех $n, m \in \mathbb{N}$ верно:}
+  \begin{center}
+    \begin{varwidth}{\textwidth}
+      \begin{enumerate}
+        \item $S(m+n) = m+S(n)$
+        \item $n+m = m+n$
+      \end{enumerate}
+    \end{varwidth}
+  \end{center}
+  вот рекурсивное определение сложения:
+  $$ 0+n=n \qquad \textrm{и} \qquad S(m+n) = S(m)+n $$
+  \subsection{Докажите, что $S(m+n) = m+S(n)$}
+  \label{recsymetry}
+  мы делаем индукцию для $m$ \\
+  сначала нам надо доказать это для $m=0$, будет $ S(0+n) = 0+S(n) $; $S(n)=S(n)$ \\
+  потом нам надо доказать это для $S(m)$, если нам дано это для $m$, \\
+  тоесть $ S(m+n) = m+S(n) \implies S(S(m)+n) = S(m)+S(n) $ \\
+  $ S(m+n) = m+S(n) $ \\
+  $ S(S(m+n)) = S(m+S(n)) $ \\
+  $ S(S(m+n)) = S(m)+S(n) $ \\
+  $ S(S(m)+n) = S(m)+S(n) $ \\
+  $\blacksquare$ (а дальше по индукции)
+  \subsection{Докажите, что $n+m = m+n$}
+  мы делаем индукцию для $m$ \\
+  сначала нам надо доказать это для $m=0$, тоесть $ n+0 = 0+n $, это доказано в \ref{zerosymetry} \\
+  потом нам надо доказать это для $S(m)$, если нам дано это для $m$, \\
+  тоесть $ n+m = m+n \implies n+S(m) = S(m)+n $ \\ \\
+  $ n+m = m+n $ \\
+  $ S(n+m) = S(m+n) $ \qquad здесь мы используем то, что мы доказали в \ref{recsymetry} \\
+  $ n+S(m) = S(m)+n $ \\
+  $\blacksquare$ (а дальше по индукции)
+  \subsubsection{Докажите, что $n+0 = n$}
+  \label{zerosymetry}
+  мы делаем индукцию для $n$ \\
+  сначала нам надо доказать это для $n=0$, тоесть $ 0+0 = 0+0 $; $ 0 = 0 $ \\
+  потом нам надо доказать это для $S(n)$, если нам дано это для $n$, \\
+  тоесть $ n+0 = n \implies S(n)+0 = S(n) $ \\
+  $ n+0 = n $ \\
+  $ S(n+0) = S(n) $ \\
+  $ S(n)+0 = S(n) $ \\
+  $\blacksquare$ (а дальше по индукции)
+
+  \section{В некоторой стране лишь конечно много городов, причем любые два различных города соединены дорогой с односторонним движением. Докажите, что есть город, из которого можно добраться в любой другой по имеющимся дорогам}
+  назавём город, из которого можно добраться в любой другой по имеющимся дорогам, столицей \\
+  мы делаем индукцию для количества городов (назавём это $n$) \\
+  стоит заметить, что для $n=0$ это неработает (столица неможет существовать, потомучто она город а городов нет) \\
+  сначала нам надо доказать это для $n=1$, но тут всё очевидно, тк других городов нет \\
+  потом нам надо доказать это для $n+1$, если нам дано это для $n$, \\
+  тоесть если мы добавляем город (назавём его $B$) и столица (назавём её $A$) существует,
+  то в получившемся графе тоже будет существовать столица, как бы мы не провели новые дороги (все остальные города мы назавём $C$) \\
+  если дорога между $A$ и $B$ идет из $A$ в $B$, то $A$ остаётся столицей, тк из $A$ можно попасть и в $C$ и в $B$, \\
+  а если она из $B$ в $A$, то $B$ станет новой столицей, тк из $B$ можно попасть в $A$, а из $A$ в $С$ \\
+  $\blacksquare$ (а дальше по индукции)
+
+  \section{Докажите, что $\forall n\in\mathbb{N}:\exists k\in\mathbb{N}: 1+\frac{1}{2}+\frac{1}{3}+\cdots+\frac{1}{k} \geq n$}
+  определение безконечного предела последовательности $x_n$:
+  \[
+    \forall n\in\mathbb{R}:\exists k\in\mathbb{N}:\forall m \geq k: x_m > n
+    \qquad\iff\qquad
+    \lim_{n \to \infty} x_n = +\infty
+  \]
+  если мы возмём $\ds x_n = \sum_{k=1}^n \frac{1}{k}$, тогда из $\ds \lim_{n \to \infty} x_n = +\infty $ будет следовать наше утверждение,
+  потомучто утверждение становится менее сильным когда мы убераем квантор "$\forall$"{} и когда уменьшаем область первого квантара из $\mathbb{R}$ в $\mathbb{N}$
+  \subsection{Докажите, что гармонический ряд расходится \protect\footnote{Если предел последовательности частичных сумм несуществует или бесконечен, то говорят, что ряд расходится}}
+  \begin{align*}
+  \sum_{k=1}^\infty \frac{1}{k}
+  & = 1 + \left[\frac{1}{2}\right] + \left[\frac{1}{3} + \frac{1}{4}\right]
+  + \left[\frac{1}{5} + \frac{1}{6} + \frac{1}{7} + \frac{1}{8}\right] + \left[\frac{1}{9}+\cdots\right] +\cdots \\
+  & \geq 1 + \left[\frac{1}{2}\right] + \left[\frac{1}{4} + \frac{1}{4}\right]
+  + \left[\frac{1}{8} + \frac{1}{8} + \frac{1}{8} + \frac{1}{8}\right] + \left[\frac{1}{16}+\cdots\right] +\cdots \\
+  & = 1 + \frac{1}{2} + \frac{1}{2} + \frac{1}{2} + \frac{1}{2} + \cdots
+  \end{align*}
+  \vspace{1cm} % footnote spacer
+
+  \section{Найдите две последние цифры десятичной записи числа $99^{1000}$}
+  "\underline{две} последние цифры \underline{десятичной} записи"{}
+  это насамомделе остакток деления на $10^2$ тоесть нам надо найти $99^{1000} \mod{100}$ \\
+  $99 \equiv -1 \Mod{100} \implies 99^{1000} \equiv (-1)^{1000} \equiv \left((-1)^2\right)^{500} \equiv 1^{500} \equiv 1 \Mod{100}$ \\
+  ответ \fbox{$01$}
+
+  \section{Докажите, что $a^3$ и $b^3$ сравнимы по модулю $a-b$, если $a>b$}
+  если $x$ и $y$ сравнимы по модулю $m$, то $x-y \equiv 0 \Mod{m}$ \\
+  $a^3 - b^3 = (a-b)(a^2+ab+b^2)$ \\
+  тк у нас все числа целые, то $(a^2+ab+b^2)$ тоже целое и $a^3 - b^3$ делится на $(a-b)$
+
+  \section{Докажите, что если $5m+3n \equiv 0 \Mod{11}$, то $9m+n \equiv 0 \Mod{11}$}
+  тк здесь всё происходит $\operatorname{mod}11$, то мы можем расматривать только $m,n \in [0;10]$ \\
+  ещё, тк $11$ это простое чисто, то у нас $\ds \forall k \neq 0: \exists!k^{-1}: k \cdot k^{-1} \equiv 1 \Mod{11}$ \\
+  $\ds 5m+3n \equiv 0 \Mod{11} \implies 5m \equiv -3n \equiv 8n \Mod{11} \implies m \equiv 8 \cdot 5^{-1}n \Mod{11}$ \\
+  $5^{-1}$ мы можем найти только перебором, $5 \cdot 9 = 45 = 4 \cdot 11 + 1 \implies 5^{-1} \equiv 9 \Mod{11}$ \\
+  $\ds m \equiv 8 \cdot 5^{-1}n \Mod{11} \implies m \equiv 8 \cdot 9 n \equiv 6n \Mod{11}$ \\
+  мы можем проверить это (то что $m \equiv 6n$), подставив это в $5m+3n \equiv 0 \Mod{11}$, \\
+  будет $30n+3n \equiv 33n \equiv 0 \Mod{11}$, что очевидно True \\
+  теперь мы можем подставить это во второе выражение и получается $54n+n \equiv 55n \equiv 0 \Mod{11}$
+
+  \section{В некотором языке программирования имеется тип \texttt{Int}, содержащий все целые числа в отрезке $[-M; M-1]$, где $M$ -- большое натуральное число. Если целое число $x$, возникшее в результате вычислений, оказывается вне этого отрезка (т. е. происходит переполнение), то $x$ представляется в \texttt{Int} некоторым числом $I(x) \in [-M; M-1]$. При этом для любого $x \in \mathbb{Z}$ выполнятся равенство: $ I(x) = остаток(x+M, 2M) - M $. Докажите, что для любых целых $x$ и $y$ верно}
+  \begin{center}
+    \begin{varwidth}{\textwidth}
+      \begin{enumerate}
+        \item если $x \in [-M; M-1]$, то $I(x) = x$
+        \item $I(x+y) = I(I(x)+I(y))$
+        \item $I(xy) = I(I(x) \cdot I(y))$
+      \end{enumerate}
+    \end{varwidth}
+  \end{center}
+  \subsection{Докажите, что если $x \in [-M; M-1]$, то $I(x) = x$}
+  если $x \in [-M; M-1]$, то $x+M \in [0; 2M-1]$, поэтому $ x+M \operatorname{mod} 2M = x+M $, и $ I(x) = x+M-M = x$
+  \subsection{Докажите, что $I(x+y) = I(I(x)+I(y))$ и $I(xy) = I(I(x) \cdot I(y))$}
+  если мы заменим в определение $I$ остакток на $\operatorname{mod}$, то у нас получается что $I(x) \equiv x \Mod{2M}$,
+  и для каждого клсса эквивавлентности по модулю $2M$ есть одно уникальное значение $I$,
+  потомучто $I$ зависит только от $остаток(x+M, 2M)$, а не от $x$ напрямую,
+  и $остаток(x+M, 2M)$ это типа порядковый номер класса эквивавлентности $x+M \Mod{2M}$,
+  поэтому мы можем всё посчитать в кольце $\mathbb{Z}_{2M}$
+  и только потом перевести результат в $[-M; M-1]$, вычев из него $M$
+
+\end{document}
