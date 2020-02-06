@@ -1,4 +1,5 @@
 *
 !*.tex
+!*.sty
 !*.gitignore
 !makefile

@@ -8,19 +8,12 @@
 \usepackage{amsmath}
 \usepackage{amsfonts}
 \usepackage{amssymb}
+\usepackage{headertable}
 
 \usepackage{polynom} % схема горнера
 \usepackage{tikz} % рисунки
 \usepackage{wrapfig} % плавание текста вокруг рисунков
 \usepackage{systeme} % французская библиатека для красивых систем уравнений
-
-\usepackage[pscoord]{eso-pic} % The zero point of the coordinate systemis the lower left corner of the page (the default).
-\newcommand{\placetextbox}[3]{ % \placetextbox{<horizontal pos>}{<vertical pos>}{<stuff>}
-  \setbox0=\vbox{#3} % Put <stuff> in a box
-  \AddToShipoutPictureFG*{ % Add <stuff> to current page foreground
-    \put(\LenToUnit{#1\paperwidth},\LenToUnit{#2\paperheight}){\vtop{{\null}\makebox[0pt][c]{#3}}}%
-  }
-}
 
 \usepackage{lipsum} % lorem ipsum
 
@@ -42,19 +35,7 @@
 
 \begin{document}
   \maketitle
-
-  \placetextbox{0.5}{1}{
-    \parbox[c]{\linewidth}{
-      \vspace{1cm}
-      \centering
-      \begin{tabular}{|c|c|c|c|c|c|c|c|c|c|c|}
-        \hline
-        1 & 2 & 3 & 4 & 5 & 6 & 7 & 8 & 9 & 10 & $\Sigma$ \\ \hline
-        \DS & \DS & \DS & \DS & \DS & \DS & \DS & \DS & \DS & \DS & \phantom{$10.0$} \\
-        \hline
-      \end{tabular}
-    }
-  }
+  \HeaderTable{10}
 
   \section{Решить систему уравнений}
   \[
@@ -260,7 +241,7 @@
   $$ A = (-9, -3, -7) $$
   $N = (5, 1, -2)$ это нормаль к плоскости $P$ \\
   $\ds \rho = \frac{\abs{A \cdot N + 9}}{\abs{N}}$ это формула расстояния от точки до плоскости \\
-  $\ds \rho = \frac{\abs{-5\cdot 9 -3 +2\cdot 7 + 9}}{\sqrt{5^2+1+2^2}} = \frac{\abs{-25}}{\sqrt{30}} = 5\sqrt{5 \over 6}$ \\
+  $\ds \rho = \frac{\abs{-5\cdot 9 -3 +2\cdot 7 + 9}}{\sqrt{5^2+1+2^2}} = \frac{\abs{-25}}{\sqrt{30}} = 5\sqrt\frac{5}{6}$ \\
   $A'$ мы можем получить вычев из $A$ нормализованный нормальный вектор домножанный на $2\rho$, и мы убераем модуль в расстоянии,
   чтобы наш вектор всегда показыал на точку, а не от неё \\
   $\ds A' = A - 2\frac{A \cdot N + 9}{\abs{N}^2} \cdot N = A + \frac{5}{3} N = \left(-\frac{2}{3}, -\frac{4}{3}, -\frac{31}{3}\right)$
