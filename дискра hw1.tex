@@ -8,28 +8,11 @@
 \usepackage{amsmath}
 \usepackage{amsfonts}
 \usepackage{amssymb}
+\usepackage{headertable}
 
 \usepackage{varwidth}
-% \usepackage[bottom]{footmisc}
-
-\usepackage{polynom} % схема горнера
-\usepackage{tikz} % рисунки
-\usepackage{wrapfig} % плавание текста вокруг рисунков
-\usepackage{systeme} % французская библиатека для красивых систем уравнений
-
-\usepackage[pscoord]{eso-pic} % The zero point of the coordinate systemis the lower left corner of the page (the default).
-\newcommand{\placetextbox}[3]{ % \placetextbox{<horizontal pos>}{<vertical pos>}{<stuff>}
-  \setbox0=\vbox{#3} % Put <stuff> in a box
-  \AddToShipoutPictureFG*{ % Add <stuff> to current page foreground
-    \put(\LenToUnit{#1\paperwidth},\LenToUnit{#2\paperheight}){\vtop{{\null}\makebox[0pt][c]{#3}}}%
-  }
-}
-
-\usepackage{lipsum} % lorem ipsum
 
 \usepackage[margin=0.5in]{geometry}
-
-\usetikzlibrary{patterns}
 
 \renewcommand{\vec}{\overrightarrow}
 \newcommand{\ds}{\displaystyle}
@@ -40,21 +23,6 @@
 }
 \newcommand{\DS}{\phantom{$0.5$}}
 
-\newcommand{\HeaderTable}{
-  \placetextbox{0.5}{1}{
-    \parbox[c]{\linewidth}{
-      \vspace{1cm}
-      \centering
-      \begin{tabular}{|c|c|c|c|c|c|c|c|c|}
-        \hline
-        1 & 2 & 3 & 4 & 5 & 6 & 7 & 8 & $\Sigma$ \\ \hline
-        \DS & \DS & \DS & \DS & \DS & \DS & \DS & \DS & \phantom{$10.0$} \\
-        \hline
-      \end{tabular}
-    }
-  }
-}
-
 \newcommand{\Mod}[1]{\pmod{#1}}
 
 \title{Дискретная математика. \\ Домашнее задание №1.}
@@ -62,7 +30,7 @@
 
 \begin{document}
   \maketitle
-  \HeaderTable
+  \HeaderTable{8}
 
   \section{Докажите, что для каждого натурального $n \geq 1$ верно}
   $$\sum_{k=1}^n k^2 = \frac{n(n+1)(2n+1)}{6}$$

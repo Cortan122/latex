@@ -1,0 +1,29 @@
+\usepackage[pscoord]{eso-pic} % The zero point of the coordinate systemis the lower left corner of the page (the default).
+\newcommand{\placetextbox}[3]{ % \placetextbox{<horizontal pos>}{<vertical pos>}{<stuff>}
+  \setbox0=\vbox{#3} % Put <stuff> in a box
+  \AddToShipoutPictureFG*{ % Add <stuff> to current page foreground
+    \put(\LenToUnit{#1\paperwidth},\LenToUnit{#2\paperheight}){\vtop{{\null}\makebox[0pt][c]{#3}}}%
+  }
+}
+
+\usepackage{expl3}
+\ExplSyntaxOn
+\cs_new_eq:NN \Repeat \prg_replicate:nn
+\ExplSyntaxOff
+
+\newcounter{CRTcounter}
+\newcommand{\HeaderTable}[1]{
+  \placetextbox{0.5}{1}{
+    \parbox[c]{\linewidth}{
+      \vspace{1cm}
+      \centering
+      \setcounter{CRTcounter}{0}
+      \begin{tabular}{|\Repeat{#1}{c|}c|}
+        \hline
+        \Repeat{#1}{\stepcounter{CRTcounter}\arabic{CRTcounter} &} $\Sigma$ \\ \hline
+        \Repeat{#1}{\DS &} \phantom{$10.0$} \\
+        \hline
+      \end{tabular}
+    }
+  }
+}
