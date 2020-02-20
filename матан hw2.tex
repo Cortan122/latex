@@ -1,0 +1,393 @@
+\documentclass{article}
+
+\usepackage{cmap} % поиск в pdf
+\usepackage{mathtext} % русские буквы в формулах
+\usepackage[english,russian]{babel} % локализация и переносы
+\usepackage[T2A]{fontenc} % кодировка в pdf (магия)
+\usepackage[utf8]{inputenc} % кодировка исходного текста
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage{gensymb}
+\usepackage{headertable}
+
+\usepackage{polynom}
+\usepackage{tikz}
+\usepackage{graphicx}
+\usepackage[margin=0.5in]{geometry}
+\usepackage[gobble=auto]{pythontex}
+
+\polyset{style=D, vars=xt}
+
+\tikzset{
+  bctleft/.style={.},
+  text left/.style={bctleft/.append style={#1}},
+  bctright/.style={.},
+  text right/.style={bctright/.append style={#1}},
+}
+\newcommand\bicolortext[2][]{%
+  \tikz[baseline=(n.base),inner sep=0pt,outer xsep=0pt,#1]{
+    \node(n){\phantom{#2}};
+    \foreach \a/\c in {north west/bctleft,south east/bctright}{
+      \begin{scope}
+        \clip(n.south west)--(n.\a)--(n.north east)--cycle;
+        \node[\c]at(n){#2};
+      \end{scope}
+}}}
+\newcommand{\pink}{\bicolortext[text left=orange, text right=blue]}
+
+\usepackage{xcolor}
+\definecolor{Mypink}{HTML}{ff80ff}
+\newcommand{\red}[1]{{\color{red}{#1}}}
+\newcommand{\orange}[1]{{\color{orange}{#1}}}
+\newcommand{\blue}[1]{{\color{blue}{#1}}}
+\newcommand{\teal}[1]{{\color{teal}{#1}}}
+% \newcommand{\pink}[1]{{\color{Mypink}{#1}}}
+
+\renewcommand{\vec}{\overrightarrow}
+\newcommand{\ds}{\displaystyle}
+\newcommand{\D}[1]{\mathop{d\!}{#1}}
+\newcommand{\dx}{\D{x}}
+\newcommand{\dy}{\D{y}}
+\newcommand{\du}{\D{u}}
+\newcommand{\dt}{\D{t}}
+\newcommand{\DS}{\phantom{$0.5$}}
+\renewcommand{\L}{\left}
+\newcommand{\R}{\right}
+\newcommand{\F}{\frac}
+\renewcommand{\C}{+C}
+
+\title{Математический анализ \\ Домашнее задание №2}
+\author{AAAAA AAAAAAA \\ AAAAAA \\ Вариант 4}
+
+\begin{document}
+  \maketitle
+  \HeaderTable{5}
+
+  \begin{pycode}
+    import sympy as sp
+    import numpy as np
+    import matplotlib.pyplot as plt
+    from sympy.abc import *
+  \end{pycode}
+
+  \section{Проведя полное исследование построить график функции}
+  \begin{pycode}
+    f = lambda x,np: np.cbrt(((x+1)/(x+2))**2)
+
+    pointX = -7/6
+    X = np.linspace(-6,6, 1000)
+    plt.plot(X, f(X,np), label="$y="+sp.latex(f(x,sp))+"$")
+    plt.plot([-10,10],[1,1], '--', label="$y=1$")
+    plt.plot([-2,-2],[-10,10], '--', label="$x=-2$")
+    plt.scatter(pointX, f(pointX,np), label="$y''=0$")
+    plt.xlim(-5.5,5.5)
+    plt.ylim(-0.5,5.5)
+
+    ax = plt.gca()
+    ax.set_xticks(np.linspace(-5, 5, 11))
+    ax.set_aspect('equal')
+    # ax.spines['left'].set_position('center')
+    # ax.spines['bottom'].set_position('center')
+    # ax.spines['right'].set_color('none')
+    # ax.spines['top'].set_color('none')
+
+    plt.grid()
+    plt.legend()
+    plt.savefig('plot1.pdf', bbox_inches='tight')
+  \end{pycode}
+  \[ y = \py{sp.latex(f(x,sp))} \]
+
+  \subsection{Область определения}
+  у нас из нехороших функций здесь только $\dfrac{x}{y}$ и $\sqrt[n]{x}$ \\
+  корень нечетной степени определён везде на $\mathbb{R}$, поэтому тут всё норм, надо только провертить что мы не делим на 0 \\
+  в знаменателе у нас $x+2$, тоеcть $x\not=-2$ \\
+  \fbox{$\mathbb{R} - \{-2\}$}
+
+  \subsection{Точки разрыва}
+  точка $x=-2$ также является точкой разрыва \\
+  это точка разрыва второго рода, потомучто оба передела $=+\infty$
+
+  \subsection{Вертикальные асимптоты}
+  тут тоже $x=-2$, потомучто оба передела $=+\infty$
+
+  \subsection{Нули}
+  поскольку и $\sqrt[3]{x}$ и $x^2$ сохраняют нули, нам надо просто найти нули в числителе $x+1$ \\
+  получаестся $x=-1$, а знаки здесть не меняются, тк у нас вся функция $\geq 0$ изза того что всё под квадоатом \\
+  \fbox{$-1$}
+
+  \subsection{Периодичность}
+  у нас нашёлся только один корени и он не ноль, поэтому функция не четная, не нечетная, и не периодическая
+
+  \subsection{Пределы на $\infty$}
+  $\ds \sqrt[3]{\left(\frac{x+1}{x+2}\right)^2} = \sqrt[3]{\left(\frac{x+2-1}{x+2}\right)^2} = \sqrt[3]{\left(1-\frac{1}{x+2}\right)^2}$ \\
+  $\ds \lim_{x \to -\infty} \sqrt[3]{\left(1-\frac{1}{x+2}\right)^2} = \sqrt[3]{\left(1+0\right)^2} = 1$ \\
+  $\ds \lim_{x \to +\infty} \sqrt[3]{\left(1-\frac{1}{x+2}\right)^2} = \sqrt[3]{\left(1-0\right)^2} = 1$
+
+  \subsection{Горизонтальные асимптоты}
+  поскольку у нас приделы на обоих безконечностях равны $1$, у нас $y=1$ это горизонтальная асимптота
+
+  \subsection{Монотонность}
+  для этого нам сначало надо найти производную \\
+  $\ds y' = \frac{2}{3}\left(\frac{x+1}{x+2}\right)^{\frac{2}{3}-1} \cdot \left(\frac{x+1}{x+2}\right)'
+  = \frac{2}{3} \sqrt[3]{\frac{x+2}{x+1}} \cdot \frac{1}{(x+2)^2}
+  % = \frac{2}{ 3 (x+2)^2 \sqrt[3]{\frac{x+1}{x+2}} }
+  $ \\
+  чтобы это быстрее упростить заменим $u = x+1$ и $v = x+2$ (так даже можно спокойно брать производные) \\
+  я ещё заменил $\sqrt[3]{x}$ на $x^{\frac{1}{3}}$, я надеюсь так можно \\
+  $\ds y' = \frac{2v^{-\frac{5}{3}}}{3u^{\frac{1}{3}}} = \frac{2}{3} v^{-\frac{5}{3}} u^{-\frac{1}{3}} $ \\
+  получаестся что знак производной совподает со знаком $\dfrac{x+2}{x+1}$ \\
+  \begin{tikzpicture}
+    \draw[->,thick] (0,0)--(6,0) node[right]{$x$};
+    \draw (2,0) -- (2,-3pt) node[anchor=north] {$-2$};
+    \draw (4,0) -- (4,-3pt) node[anchor=north] {$-1$};
+
+    \node[anchor=south] (a1) at (1,0) {$+$};
+    \node[anchor=south] (a3) at (3,0) {$-$};
+    \node[anchor=south] (a5) at (5,0) {$+$};
+  \end{tikzpicture} \\
+  производная неопределена в точках $x=-1$ и $x=-2$
+
+  \subsection{Выпуклость}
+  для этого нам сначало надо найти вторую производную \\
+  $\ds y'' = \frac{2}{3} \left( v^{-\frac{5}{3}} \left(u^{-\frac{1}{3}}\right)' + \left(v^{-\frac{5}{3}}\right)' u^{-\frac{1}{3}} \right)
+  = \frac{2}{3} \left( -\frac{1}{3} v^{-\frac{5}{3}} u^{-\frac{4}{3}} - \frac{5}{3} v^{-\frac{8}{3}} u^{-\frac{1}{3}} \right)
+  = -\frac{2}{9} \left( v^{-\frac{5}{3}} u^{-\frac{4}{3}} + 5 v^{-\frac{8}{3}} u^{-\frac{1}{3}} \right) = \\
+  = -\frac{2}{9} u^{-\frac{1}{3}} v^{-\frac{5}{3}} \left( u^{-1} + 5 v^{-1} \right)
+  = -\frac{2}{9} u^{-\frac{1}{3}} v^{-\frac{5}{3}} \left( \frac{1}{u} + \frac{5}{v} \right)
+  = -\frac{2}{9} u^{-\frac{1}{3}} v^{-\frac{5}{3}} \frac{v+5u}{uv}
+  = -\frac{2}{9} u^{-\frac{4}{3}} v^{-\frac{8}{3}} (v+5u) = \\
+  = -\frac{2(6x+7)}{9(x+1)^{\frac{4}{3}}(x+2)^{\frac{8}{3}}}
+  = -\frac{2(6x+7)}{9\sqrt[3]{ (x+1)^4 (x+2)^8 }}
+  $ \\
+  получаестся что знак производной совподает со знаком $6x+7$ \\
+  \begin{tikzpicture}
+    \draw[->,thick] (0,0)--(8,0) node[right]{$x$};
+    \draw (2,0) -- (2,-3pt) node[anchor=north] {$-2$};
+    \draw (4,0) -- (4,-3pt) node[anchor=north] {$-\frac{7}{6}$};
+    \draw (6,0) -- (6,-3pt) node[anchor=north] {$-1$};
+
+    \node[anchor=south] (a1) at (1,0) {$+$};
+    \node[anchor=south] (a3) at (3,0) {$+$};
+    \node[anchor=south] (a3) at (5,0) {$-$};
+    \node[anchor=south] (a3) at (7,0) {$-$};
+  \end{tikzpicture} \\
+  второя производная неопределена в точках $x=-1$ и $x=-2$ и у нас есть точка перегиба в $x=-\frac{7}{6}$
+  % $\ds y'' = \frac{2}{3} \left( \sqrt[3]{\frac{x+2}{x+1}} \left((x+2)^{-2}\right)' + \left(\sqrt[3]{\frac{x+2}{x+1}}\right)' (x+2)^{-2} \right)$ \\
+  % $\ds \left((x+2)^{-2}\right)' = -2(x+2)^{-3} $ \\
+  % $\ds \left(\sqrt[3]{\frac{x+2}{x+1}}\right)' = \frac{1}{3} \sqrt[3]{\left(\frac{x+1}{x+2}\right)^2} \cdot \frac{1}{(x+1)^2} $ \\
+  % $\ds y'' = \frac{2}{3} \left( -2\sqrt[3]{\frac{x+2}{x+1}}(x+2)^{-3} + \frac{1}{3} \sqrt[3]{\left(\frac{x+1}{x+2}\right)^2} \frac{(x+2)^{-2}}{(x+1)^2} \right)$ \\
+
+  % $\ds y'' = \frac{2}{3} \left( -2\sqrt[3]{\frac{v}{u}}v^{-3} + \frac{1}{3} \sqrt[3]{\left(\frac{u}{v}\right)^2} \frac{v^{-2}}{u^2} \right)
+  % = \frac{2}{3} v^{-2} \left( -2\frac{v^{\frac{1}{3}}}{u^{\frac{1}{3}}}v^{-1} + \frac{1}{3} \frac{u^{\frac{2}{3}}}{v^{\frac{2}{3}}} \frac{1}{(vu)^2} \right)
+  % = \frac{2}{3} v^{-2} \left( -2\frac{v^{-\frac{2}{3}}}{u^{\frac{1}{3}}} + \frac{1}{3} \frac{u^{-\frac{4}{3}}}{v^{\frac{8}{3}}} \right) = \\
+  % = \frac{2}{3v^2} \left( -\frac{2}{v^{\frac{2}{3}}u^{\frac{1}{3}}} + \frac{1}{3u^{\frac{4}{3}}v^{\frac{8}{3}}} \right)
+  % = -\frac{4}{3u^{\frac{1}{3}}v^{\frac{8}{3}}} + \frac{2}{9u^{\frac{4}{3}}v^{\frac{14}{3}}}
+  % = -\frac{12uv^2}{9u^{\frac{4}{3}}v^{\frac{14}{3}}} + \frac{2}{9u^{\frac{4}{3}}v^{\frac{14}{3}}}
+  % = \frac{2-12uv^2}{9u^{\frac{4}{3}}v^{\frac{14}{3}}}
+  % $ \\
+
+  \subsection{График}
+  \begin{center}
+    \includegraphics{plot1.pdf}
+  \end{center}
+  \newpage
+
+  \section{Найти интеграл}
+  \[ \int 2^x \sin 5x \dx \]
+  $\ds \sin x = \frac{e^{ix}-e^{-ix}}{2i}  \qquad  2^x = e^{x\ln 2} \qquad$
+  ещё заменим $u = e^{5ix}$ и $v = 2^x = e^{x\ln 2}$ \\
+  $\ds 2^x \sin 5x = e^{x\ln 2}(e^{i5x}-e^{-i5x}) \frac{1}{2i} = \L(e^{x(5i+\ln 2)} - e^{x(-5i+\ln 2)}\R) \frac{1}{2i}$ \\
+  $\ds \int 2^x \sin 5x \dx = \frac{1}{2i} \L(\int e^{x(5i+\ln 2)} \dx - \int e^{x(-5i+\ln 2)} \dx\R)
+  = \frac{1}{2i} \L( \frac{e^{x(5i+\ln 2)}}{i+\ln 2} - \frac{e^{x(-5i+\ln 2)}}{-i+\ln 2} \R) \C = \\
+  = \frac{(-5i+\ln 2)e^{x(5i+\ln 2)} - (5i+\ln 2)e^{x(-5i+\ln 2)}}{2i\L(25+\ln^2(2)\R)} \C
+  = \frac{ (-5i+\ln 2)vu - (5i+\ln 2)vu^{-1} }{2i\L(25+\ln^2(2)\R)} \C = \\
+  = v\frac{ -5iu+u\ln 2 - 5iu^{-1}-u^{-1}\ln 2 }{2i\L(25+\ln^2(2)\R)} \C
+  = \frac{v}{25+\ln^2(2)} \frac{ -5i\orange{(u+u^{-1})} + \blue{(u-u^{-1})}\ln 2 }{\pink{2}\blue{i}} \C = \\
+  = \frac{v}{25+\ln^2(2)} \L( -5i\frac{\orange{\cos 5x}}{i} + \blue{\sin 5x} \ln 2 \R) \C
+  = \frac{2^x\L( \ln(2) \sin 5x -5\cos 5x \R)}{25+\ln^2(2)} \C
+  $
+
+  \section{Найти интеграл}
+  \[ \int \frac{x^3+2x^2+3x+4}{x^4+x^3+2x^2} \dx \]
+
+  \subsection{Решение способом через комплексные числа}
+  $\ds x^4+x^3+2x^2 = x^2 \L(x^2+x+2\R) = x^2 \L(x-\F{-1+i\sqrt{7}}{2}\R) \L(x-\F{-1-i\sqrt{7}}{2}\R)$ \\
+  $\ds \frac{x^3+2x^2+3x+4}{x^4+x^3+2x^2} = \F{A+Ex}{x^2} + \F{B}{x-\F{-1+i\sqrt{7}}{2}} + \F{D}{x-\F{-1-i\sqrt{7}}{2}}$ \\
+  $\ds x^3+2x^2+3x+4
+  = \L(A+Ex\R)\L(x-\F{-1+i\sqrt{7}}{2}\R)\L(x-\F{-1-i\sqrt{7}}{2}\R) + Bx^2\L(x-\F{-1-i\sqrt{7}}{2}\R) + Dx^2\L(x-\F{-1+i\sqrt{7}}{2}\R) = \\
+  = \L(A+Ex\R)\L(x^2+x+2\R) + Bx^2\L(x-\F{-1-i\sqrt{7}}{2}\R) + Dx^2\L(x-\F{-1+i\sqrt{7}}{2}\R) = \\
+  = Ax^{2} + Ax + 2A + Bx^{3} + \F{Bx^{2}}{2} + \F{\sqrt{7}iBx^{2}}{2} + Dx^{3} + \F{Dx^{2}}{2} - \F{\sqrt{7}iDx^{2}}{2} + Ex^{3} + Ex^{2} + 2Ex
+  =\\= 2A + x\L(A + 2E\R) + x^{2}\L(A + \F{B}{2} + \F{\sqrt{7}iB}{2} + \F{D}{2}-\F{\sqrt{7}iD}{2} + E\R) + x^{3}\L(B + D + E\R)
+  $ \\
+  $\begin{cases}
+    4 = 2A \\
+    3 = A+2E \\
+    2 = A+E + B\F{1+\sqrt{7}i}{2} + D\F{1-\sqrt{7}i}{2} \\
+    1 = B+D+E \\
+  \end{cases}$ \\
+  $A = 2; \qquad E = \F{1}{2}; \qquad B+D = \F{1}{2}; \qquad B\F{1+\sqrt{7}i}{2} + D\F{1-\sqrt{7}i}{2} = -\F{1}{2}$ \\
+  здесь $B$ и $D$ могут быть комплексными, поэтому надо записать их как $B=U+iV$ и $D=W+iZ$ \\
+  $ U+iV + W+iZ = \F{1}{2}; \qquad U + W = \F{1}{2}; \qquad Z=-V $ \\
+  $\ds -1 = B(1+\sqrt{7}i) + D(1-\sqrt{7}i)
+  = U + \sqrt{7}iU - \sqrt{7}V + iV + W - \sqrt{7}iW + \sqrt{7}Z + iZ =\\
+  = U - \sqrt{7}V + W + \sqrt{7}Z + i\L(\sqrt{7}U + V - \sqrt{7}W + Z\R)
+  $ \\
+  $\begin{cases}
+    U = \F{1}{2}-W \\
+    Z = -V \\
+    U - \sqrt{7}V + W + \sqrt{7}Z = -1 \\
+    \sqrt{7}U + V - \sqrt{7}W + Z = 0 \\
+  \end{cases} \hfill \begin{cases}
+    \F{3}{2} - 2\sqrt{7}V = 0 \\
+    U = W \\
+  \end{cases} \hfill \begin{cases}
+    U = \frac{1}{4} \\
+    V = \frac{3 \sqrt{7}}{28} \\
+    W = \frac{1}{4} \\
+    Z = - \frac{3 \sqrt{7}}{28} \\
+  \end{cases}$ \\
+  $\ds \F{x^3+2x^2+3x+4}{x^4+x^3+2x^2}
+  = \F{\F{1}{4}-\F{3\sqrt{7}i}{28}}{x+\F{1}{2}+\F{\sqrt{7}i}{2}} + \F{\F{1}{4}+\F{3\sqrt{7}i}{28}}{x+\F{1}{2}-\F{\sqrt{7}i}{2}}
+  + \blue{ \F{\F{x}{2}+2}{x^{2}} }
+  = \F{\F{1}{4}-\F{3\sqrt{7}i}{28}}{x+\F{1}{2}+\F{\sqrt{7}i}{2}} + \F{\F{1}{4}+\F{3\sqrt{7}i}{28}}{x+\F{1}{2}-\F{\sqrt{7}i}{2}}
+  + \blue{ \F{1}{2x} + \F{2}{x^{2}} }
+  $ \\
+  $\ds \int \F{x^3+2x^2+3x+4}{x^4+x^3+2x^2} \dx
+  = \int \F{\F{1}{4}-\F{3\sqrt{7}i}{28}}{x+\F{1}{2}+\F{\sqrt{7}i}{2}} \dx +
+  \int \F{\F{1}{4}+\F{3\sqrt{7}i}{28}}{x+\F{1}{2}-\F{\sqrt{7}i}{2}} \dx +
+  \int \F{1}{2x} \dx + \int \F{2}{x^{2}} \dx
+  =\\= \orange{\F{1}{4}}-\F{3\sqrt{7}i}{28} \log\L(\red{x+\F{1}{2}+\F{\sqrt{7}i}{2}}\R) +
+  \orange{\F{1}{4}}+\F{3\sqrt{7}i}{28} \log\L(\blue{x+\F{1}{2}-\F{\sqrt{7}i}{2}}\R) +
+  \F{1}{2} \log x - \F{2}{x} \C
+  =\\= \orange{\F{1}{2}} + \F{1}{2}\log x - \F{2}{x} \C +
+  \F{3\sqrt{7}i}{28} \log\L(\F{ \blue{x+\F{1}{2}-\F{\sqrt{7}i}{2}} }{ \red{x+\F{1}{2}+\F{\sqrt{7}i}{2}} }\R)
+  $
+
+  \subsection{Нормальное решение}
+  $\ds x^4+x^3+2x^2 = x^2 \L(x^2+x+2\R)$ \\
+  \polylongdiv{x^3+2x^2+3x+4}{x^2+x+2} \\
+  $\ds x^3+2x^2+3x+4 = \L(x^2 + x + 2\R)\L(x+1\R)+2 \qquad$ (мы разделили многочлен) \\
+  $\ds \F{x^3+2x^2+3x+4}{x^4+x^3+2x^2} = \F{\L(x^2 + x + 2\R)\L(x+1\R)+2}{x^2 \L(x^2+x+2\R)}
+  = \F{x+1}{x^2} + \F{2}{x^2 \L(x^2+x+2\R)} = \F{1}{x} + \F{1}{x^2} + \F{2}{x^2 \L(x^2+x+2\R)} $ \\
+  $\ds \int \F{x^3+2x^2+3x+4}{x^4+x^3+2x^2} \dx
+  = \int \F{\dx}{x} + \int \F{\dx}{x^2} + \int \F{2\dx}{x^2 \L(x^2+x+2\R)}
+  = \log x - \F{1}{x} + 2\int \F{\dx}{x^2 \L(x^2+x+2\R)} $ \\
+  $\ds \int \F{\dx}{x^2 \L(x^2+x+2\R)} = \F{A}{x} + \int \F{E}{x} \dx + \int \F{B+xD}{x^2+x+2} \dx$ \\
+  $\ds \F{1}{x^2 \L(x^2+x+2\R)} = -\F{A}{x^2} + \F{E}{x} + \F{B+xD}{x^2+x+2}$ \\
+  $\ds 1 = - A\L(x^2+x+2\R) + Ex\L(x^2+x+2\R) + x^2\L(B+xD\R)
+  = -Ax^2-Ax-2A + Bx^2 + Dx^3 + Ex^3+Ex^2+2Ex
+  =\\= x^3\L(D+E\R) + x^2\L(B+E-A\R) + x\L(2E-A\R) - 2A
+  $ \\
+  $\begin{cases}
+    D+E = 0 \\
+    B+E-A = 0 \\
+    2E-A = 0 \\
+    -2A = 1 \\
+  \end{cases} \hfill \begin{cases}
+    A = -\F{1}{2} \\
+    B = -\F{1}{4} \\
+    D = \F{1}{4} \\
+    E = -\F{1}{4} \\
+  \end{cases}$ \\
+  $\ds \int \F{\dx}{x^2 \L(x^2+x+2\R)} = -\F{1}{2x} - \int \F{\dx}{4x} + \int \F{\F{x}{4} -\F{1}{4}}{x^2+x+2} \dx
+  = -\F{1}{2x} - \F{1}{4} \log x + \F{1}{4} \int \F{x-1}{x^2+x+2} \dx $ \\
+  $\ds \int \F{x-1}{x^2+x+2} \dx = \F{1}{2} \int \F{\blue{2x+1}-\orange{3}}{x^2+x+2} \dx =
+  \begin{bmatrix}
+    x^2+x+2 = u \\
+    \du = \blue{2x+1} \\
+  \end{bmatrix} = \F{1}{2} \int \F{\blue{\du}}{u} - \F{1}{2} \int \F{\orange{3}\dx}{x^2+x+2}
+  = \F{1}{2} \log\L(x^2+x+2\R) - \F{3}{2} \int \F{\dx}{x^2+x+2} $ \\
+  $\ds \int \F{\dx}{x^2+x+2} = \int \F{\dx}{\L(x+\F{1}{2}\R)^2+\F{7}{4}} =
+  \begin{bmatrix}
+    x+\F{1}{2} = y \\
+    \dx = \dy \\
+  \end{bmatrix} = \int \F{\dy}{y^2+\F{7}{4}} = \F{2}{\sqrt{7}} \arctan\L(\F{2y}{\sqrt{7}}\R) = \F{2}{\sqrt{7}} \arctan\L(\F{2x+1}{\sqrt{7}}\R) \C$ \\
+  теперь рекурсивно делаем подстановОчки обратно: \\
+  $\ds \int \F{x-1}{x^2+x+2} \dx = \F{1}{2} \log\L(x^2+x+2\R) - \F{3}{\sqrt{7}} \arctan\L(\F{2x+1}{\sqrt{7}}\R) \C$ \\
+  $\ds \int \F{\dx}{x^2 \L(x^2+x+2\R)} =
+  -\F{1}{2x} - \F{1}{4} \log x + \F{1}{8} \log\L(x^2+x+2\R) - \F{3}{4\sqrt{7}} \arctan\L(\F{2x+1}{\sqrt{7}}\R) \C$ \\
+  $\ds \int \F{x^3+2x^2+3x+4}{x^4+x^3+2x^2} \dx = \blue{\log x} - \orange{\F{1}{x}} +
+  -\orange{\F{1}{x}} - \blue{\F{1}{2}\log x} + \F{1}{4} \log\L(x^2+x+2\R) - \F{3}{2\sqrt{7}} \arctan\L(\F{2x+1}{\sqrt{7}}\R) \C
+  =\\= -\orange{\F{2}{x}} + \blue{\F{1}{2}\log x} + \F{1}{4} \log\L(x^2+x+2\R) - \F{3}{2\sqrt{7}} \arctan\L(\F{2x+1}{\sqrt{7}}\R) \C $
+
+  \newpage
+  \section{Найти интеграл}
+  \[ \int \frac{\dx}{\cos 2x - \sin 2x} \]
+  $\ds \frac{1}{\cos 2x - \sin 2x} = \frac{\sin 45\degree}{\cos 2x\cos 45\degree - \sin 2x\sin 45\degree}
+  = \frac{\sin 45\degree}{\cos(2x-45\degree)}
+  $ \\
+  $\ds \int \frac{\dx}{\cos 2x - \sin 2x} = \sin 45\degree \int \frac{\dx}{\cos(2x-45\degree)}
+  = \begin{bmatrix}
+    2x-45\degree = y \\
+    2\dx = \dy
+  \end{bmatrix}
+  = \frac{\sin 45\degree}{2} \int \frac{\dy}{\cos y}
+  $ \\
+  заменим $\ds u = \tan \frac{y}{2}$, тогда
+  $\ds \cos^2 \frac{y}{2} = \frac{1}{1+u^2} $ и
+  $\ds \sin^2 \frac{y}{2} = 1-\frac{1}{1+u^2} = \frac{u^2}{1+u^2} $
+  и $y=2\arctan u$, поэтому $\ds \dy = \frac{2\du}{1+u^2}$ \\
+  $\ds \frac{1}{\cos y} = \frac{1}{\cos^2 \frac{y}{2} - \sin^2 \frac{y}{2}}
+  = \frac{1}{\frac{1}{1+u^2} - \frac{u^2}{1+u^2}} = \frac{1+u^2}{1-u^2}
+  $ \\
+  $\ds \int \frac{\dy}{\cos y} = 2 \int \frac{\du}{1+u^2} \frac{1+u^2}{1-u^2}
+  = 2 \int \frac{\du}{1-u^2} = 2 \int \frac{\du}{(1-u)(1+u)} = 2 \int \L(\frac{A}{1+u} + \frac{B}{1-u}\R) \du
+  = 2 \int \L(\frac{0.5}{1+u} + \frac{0.5}{1-u}\R) \du
+  = \int \frac{\du}{1+u} + \int \frac{\du}{1-u} = \log(1+u) + \log(1-u) \C
+  = \log\L(1+\tan\L(x-\frac{\pi}{8}\R)\R) + \log\L(1-\tan\L(x-\frac{\pi}{8}\R)\R) \C
+  $
+
+  \section{Найти интеграл}
+  \[ \int \frac{\dx}{x^3\sqrt{2x^2+2x+1}} \]
+  делаем подстановку Эйлера: \\
+  $\ds \sqrt{2x^2+2x+1} = xt+1$ \\
+  $\ds 2x^2+2x+1 = x^2t^2 + 2xt + 1$ \\
+  $\ds x\L(2x + 2\R) = x\L(xt^2 + 2t\R)$ \\
+  $\ds 2x + 2 = xt^2 + 2t$ \\
+  $\ds x\L(2 - t^2\R) = 2t - 2$ \\
+  $\ds x = \F{2t - 2}{2 - t^2}$ \\
+  $\ds \sqrt{2x^2+2x+1} = \F{2t^2 - 2t}{2 - t^2} + 1 = \F{t^2 - 2t + 2}{2 - t^2}$ \\
+  $\ds \dx = \F{2t^2 - 4t + 4}{\L(2 - t^2\R)^2} \dt$ \\
+  $\ds t = \F{\sqrt{2x^2+2x+1}-1}{x} $ \\
+  $\ds \int \F{\blue{\dx}}{\red{x^3}\orange{\sqrt{2x^2+2x+1}}}
+  = \int \F{ \blue{\L(2t^2-4t+4\R)} \red{\L(2 - t^2\R)^3} \orange{\L(2 - t^2\R)} }{ \red{\L(2t - 2\R)^3} \blue{\L(2 - t^2\R)^2} \orange{\L(t^2 - 2t + 2\R)} } \dt
+  = \F{1}{4} \int \F{ \L(2 - t^2\R)^2 }{ \L(t - 1\R)^3 } \dt
+  = \F{1}{4} \int \F{ t^4 - 4t^2 + 4 }{ t^3 - 3t^2 + 3t - 1 } \dt
+  $ \\
+  \polylongdiv{t^4 - 4t^2 + 4}{t^3 - 3t^2 + 3t - 1} \\
+  $\ds \int \F{ t^4 - 4t^2 + 4 }{ t^3 - 3t^2 + 3t - 1 } \dt
+  = \int t \dt + \int 3 \dt + \int \F{2t^2-8t+7}{t^3 - 3t^2 + 3t - 1} \dt
+  = \F{t^2}{2} + 3t + \int \F{2t^2-8t+7}{\L(t - 1\R)^3} \dt$ \\
+  $\ds \int \F{2t^2-8t+7}{\L(t - 1\R)^3} \dt = \F{A+Bt}{\L(t - 1\R)^2} + \int \F{D}{t - 1} \dt $ \\
+  $\ds \F{2t^2-8t+7}{\L(t - 1\R)^3} = \F{D}{t - 1} + \F{B}{\L(t - 1\R)^2} - 2\F{A+Bt}{\L(t - 1\R)^3}$ \\
+  $\ds 2t^2-8t+7 = D\L(t - 1\R)^2 + B\L(t - 1\R) - 2A - 2Bt = -2A - Bt - B + Dt^2 - 2Dt + D = -2A - B + D + t\L(-B-2D\R) + Dt^2$ \\
+  $\begin{cases}
+    -2A-B+D = 7 \\
+    -B-2D = -8 \\
+    D = 2 \\
+  \end{cases} \hfill \begin{cases}
+    -2A-B = 5 \\
+    B = 4 \\
+    D = 2 \\
+  \end{cases} \hfill \begin{cases}
+    A = -\F{9}{2} \\
+    B = 4 \\
+    D = 2 \\
+  \end{cases}$ \\
+  $\ds \int \F{2t^2-8t+7}{\L(t - 1\R)^3} \dt = \F{-\F{9}{2}+4t}{\L(t - 1\R)^2} + \int \F{2}{t - 1} \dt
+  = \F{-\F{9}{2}+4t}{\L(t - 1\R)^2} + 2\log\L(t - 1\R) \C $ \\
+  $\ds \int \F{ t^4 - 4t^2 + 4 }{ t^3 - 3t^2 + 3t - 1 } \dt = \F{t^2}{2} + 3t + \F{-\F{9}{2}+4t}{\L(t - 1\R)^2} + 2\log\L(t - 1\R) \C $ \\
+  $\ds \int \F{\dx}{x^3\sqrt{2x^2+2x+1}} = \F{t^2}{8} + \F{3}{4}t + \F{-\F{9}{2}+4t}{4\L(t - 1\R)^2} + \F{\log\L(t - 1\R)}{2} \C
+  =\\= \F{- \F{9}{8} + \F{\sqrt{2 x^{2} + 2 x + 1} - 1}{x}}{\L(-1 + \F{\sqrt{2 x^{2} + 2 x + 1} - 1}{x}\R)^{2}} + \F{\log{\L(-1 + \F{\sqrt{2 x^{2} + 2 x + 1} - 1}{x} \R)}}{2} + \F{3 \L(\sqrt{2 x^{2} + 2 x + 1} - 1\R)}{4 x} + \F{\L(\sqrt{2 x^{2} + 2 x + 1} - 1\R)^{2}}{8 x^{2}} \C
+  % =\\= - \F{9 x^{2}}{8 \L(x - \sqrt{2 x^{2} + 2 x + 1} + 1\R)^{2}} + \F{x \sqrt{2 x^{2} + 2 x + 1}}{\L(x - \sqrt{2 x^{2} + 2 x + 1} + 1\R)^{2}} - \F{x}{\L(x - \sqrt{2 x^{2} + 2 x + 1} + 1\R)^{2}} + \F{\log{\L(-1 + \F{\sqrt{2 x^{2} + 2 x + 1}}{x} - \F{1}{x} \R)}}{2} + \F{3 \sqrt{2 x^{2} + 2 x + 1}}{4 x} - \F{3}{4 x} + \F{\L(\sqrt{2 x^{2} + 2 x + 1} - 1\R)^{2}}{8 x^{2}}
+  % =\\= \F{\sqrt{2 x^{2} + 2 x + 1}}{3 x - 2 \sqrt{2 x^{2} + 2 x + 1} + 4 - \F{2 \sqrt{2 x^{2} + 2 x + 1}}{x} + \F{2}{x}} + \F{\log{\L(-1 + \F{\sqrt{2 x^{2} + 2 x + 1}}{x} - \F{1}{x} \R)}}{2} + \F{1}{4} - \F{1}{3 x - 2 \sqrt{2 x^{2} + 2 x + 1} + 4 - \F{2 \sqrt{2 x^{2} + 2 x + 1}}{x} + \F{2}{x}} - \F{9}{8 \L(3 - \F{2 \sqrt{2 x^{2} + 2 x + 1}}{x} + \F{4}{x} - \F{2 \sqrt{2 x^{2} + 2 x + 1}}{x^{2}} + \F{2}{x^{2}}\R)} + \F{3 \sqrt{2 x^{2} + 2 x + 1}}{4 x} - \F{1}{2 x} - \F{\sqrt{2 x^{2} + 2 x + 1}}{4 x^{2}} + \F{1}{4 x^{2}}
+  $
+  % $\ds \int \F{ t^4 - 4t^2 + 4 }{ t^3 - 3t^2 + 3t - 1 } \dt = \F{A+tB}{t^2 - 2t + 1} + \int \F{D}{t - 1} \dt $ \\
+  % $\ds \F{ t^4 - 4t^2 + 4 }{ \L(t - 1\R)^3 } = \F{D}{t - 1} + \F{B}{\L(t - 1\R)^2} - \F{2 \L(A + Bt\R)}{\L(t - 1\R)^3}$ \\
+  % $\ds t^4 - 4t^2 + 4 = D\L(t - 1\R)^2 + B\L(t - 1\R) - 2A - 2Bt$
+  % \polylongdiv{2t^2-8t+7}{t-1} \\
+  % $\ds \F{ t^4 - 4t^2 + 4 }{ t^3 - 3t^2 + 3t - 1 } = t+3 + \F{2t+6}{\L(t - 1\R)^2} + \F{1}{\L(t - 1\R)^3}$ \\
+  %
+
+\end{document}
