@@ -1,0 +1,200 @@
+\documentclass{article}
+
+\usepackage{cmap} % поиск в pdf
+\usepackage{mathtext} % русские буквы в формулах
+\usepackage[english,russian]{babel} % локализация и переносы
+\usepackage[T2A]{fontenc} % кодировка в pdf (магия)
+\usepackage[utf8]{inputenc} % кодировка исходного текста
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage{gensymb}
+\usepackage{headertable}
+
+\usepackage[hidelinks,bookmarks=false]{hyperref}
+\usepackage{xurl}
+\usepackage[margin=0.5in]{geometry}
+
+\newcommand{\notimplies}{\mathrel{{\ooalign{\hidewidth$\not\phantom{=}$\hidewidth\cr$\implies$}}}}
+
+\newcommand{\ds}{\displaystyle}
+\newcommand{\DS}{\phantom{$0.5$}}
+\newcommand{\N}{\mathbb{N}}
+\newcommand{\Z}{\mathbb{Z}}
+\newcommand{\Q}{\mathbb{Q}}
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\range}{\underline}
+\newcommand{\Aleph}{2^{\aleph_0}}
+\renewcommand{\f}{\frac}
+\renewcommand{\l}{\left}
+\renewcommand{\r}{\right}
+\renewcommand{\P}[1]{\mathcal{P}\l(#1\r)}
+\renewcommand{\emptyset}{\varnothing}
+
+\usepackage{xcolor}
+\definecolor{red}{HTML}{d62728}
+\definecolor{orange}{HTML}{ff7f0e}
+\definecolor{green}{HTML}{2ca02c}
+% \definecolor{blue}{HTML}{1f77b4}
+\newcommand{\red}[1]{{\color{red}{#1}}}
+\newcommand{\orange}[1]{{\color{orange}{#1}}}
+\newcommand{\green}[1]{{\color{green}{#1}}}
+\newcommand{\blue}[1]{{\color{blue}{#1}}}
+
+% \pagecolor{black}
+% \color{white}
+
+\title{Дискретная математика \\ Домашнее задание №2}
+\author{AAAAA AAAAAAA \\ AAAAAA}
+
+\begin{document}
+  \maketitle
+  \HeaderTable{9}
+
+  \section{Приведите пример бинарного отношения $P \subseteq \R \times \R$, являющегося}
+  Бинарное отношение R называется: % \cite{дашков}
+  \begin{enumerate}
+    \item функциональным, если $\forall x\forall y\forall z\ ((xRy \land xRz) \implies y = z)$;
+    \item инъективным, если $\forall x\forall y\forall z\ ((yRx \land zRx) \implies y = z)$;
+    \item тотальным для множества $Z$, если $\forall x \in Z\ \exists y\ xRy$;
+    \item сюръективным для множества $Z$, если $\forall y \in Z\ \exists x\ xRy$.
+  \end{enumerate}
+  \subsection{не функциональным, инъективным, не тотальным, сюръективным (для $\R$)}
+  $\begin{cases}
+    f(y) = y^2 \\
+    y \in \R \\
+  \end{cases}$ или $ \l\{(y^2, y) \mid y \in \R\r\}$
+  \subsection{функциональным, не инъективным, тотальным (для $\R$), не сюръективным}
+  $\begin{cases}
+    f(x) = x^2 \\
+    x \in \R \\
+  \end{cases}$ или $ \l\{(x, x^2) \mid x \in \R\r\}$
+
+  \section{Пусть $f : A \to B$ и $g : B \to C$. Докажите, что если $g \circ f$ инъекция, то $f$ тоже инъекция}
+  мы можем доказать от обратного \\
+  допустим $f$ не инъекция, это значит что $\exists a_1,a_2\in A:\ a_1\neq a_2 \land f(a_1)=f(a_2)=b $ \\
+  потом в $g \circ f$ когда мы будем в $g$ подставлять $b$ у нас будет $g\l(f\l(a_1\r)\r) = g\l(f\l(a_2\r)\r)$
+  и $g \circ f$ не будет инъекцией \\
+  $\blacksquare$
+
+  \section{Докажите, что функция $f: A \to B$ инъективна тогда и только тогда, когда для любого $C$ и любых $g, h: C \to A$ из $f \circ g = f \circ h$ следует $g = h$}
+  инвертировав (преобразовав) вторую часть ны получим $g \neq h \implies f \circ g \neq f \circ h$.
+  $g \neq h$ означает то что $\exists x \in C: g(x) \neq h(x)$, а
+  $f \circ g \neq f \circ h$ означает то что $\exists y \in C: f(g(y)) \neq f(h(y))$.
+  теперь, чтобы доказать прямую импликацию, нам надо просто подставить $x$ в $y$
+  и заметить что инъективная функция от разных значений никогда недаст нам одинаковое.
+  доказать обратную импликацию немного сложнее. \\
+  мы сначала заменяем $\l(\exists x \in C: g(x) \neq h(x) \implies \exists y \in C: f(g(y)) \neq f(h(y)) \r) \implies f \text{ инъективна}$ \\
+  на $f \text{ неинъективна} \implies \l(\exists x \in C: g(x) \neq h(x) \notimplies \exists y \in C: f(g(y)) \neq f(h(y)) \r)$ \\
+  тоесть $\exists \text{ неинъективная } f: \l(\exists x \in C: g(x) \neq h(x)\r) \land \neg\l(\exists y \in C: f(g(y)) \neq f(h(y))\r)$ \\
+  если мы тут снова подставим $x$ в $y$ то будет $\exists \text{ неинъективная } f: \forall z_1,z_2 \in A: f(z_1) = f(z_2)$ \\
+  очевидно такая функция существует (например она может всегда возвращать одно значение) \\
+  $\blacksquare$
+  % тут надо заменить то, что если $x \neq y$, то
+  % $f(g(y))$ всегда будет равно $f(h(y))$, тк функция, вызванная от одинаковых значений, всегда вернет одинаковые ответы.
+  % поэтому вторая часть становится $  $ $\forall z \in A: f(z) = f(z)$
+
+  \section{Приведите примеры элементов следующих множеств}
+  $$ S^N = \{f \colon N \to S\} $$ % \cite{setexpo}
+  $$ \range{n} = \{0,1,\dots,n-1\} $$ % cite ¯\_(ツ)_/¯
+  \subsection{$\Q^{\range{3}}$}
+  $\ds\begin{cases}
+    f(0) = \f{1}{2} \\
+    f(1) = \f{1}{3} \\
+    f(2) = \f{1}{5} \\
+  \end{cases}$ или $\ds \l\{\l(0,\f{1}{2}\r), \l(1,\f{1}{3}\r), \l(2,\f{1}{5}\r)\r\}$
+  \subsection{$\R^{\Q}$}
+  $\ds\begin{cases}
+    f(x) = x\pi \\
+    x \in \Q \\
+  \end{cases}$ или $\ds \l\{(x,x\pi) \mid x \in \Q\r\}$
+  \subsection{$\R^{\R\times\Z}$}
+  $\ds\begin{cases}
+    f(x,y) = x\pi^y \\
+    x \in \R \\
+    y \in \Z \\
+  \end{cases}$ или $\ds \l\{((x,y),x\pi^y) \mid x \in \R \land y \in \Z \r\}$
+
+  \section{Применяя, если нужно, теорему Кантора-Бернштейна-Шрёдера}
+  $$ \Q \sim \Z \sim \N \sim \N\times\N $$
+  $$ \R \sim \R\times\R \sim \range{2}^\N \sim \N^\N \sim \R^\N $$
+  \subsection{Докажите, что $ \N^{\N\times\Q} \times \N \sim \R^\Q $}
+  тут мы всё можем упростить заменив на равномощные множества \\
+  $ \N^{\N\times\Q} \times \N \sim \R^\Q $ \\
+  $ \N^{\N\times\N} \times \N \sim \R^\N $ \\
+  $ \N^\N \times \N \sim \R $ \\
+  $ \R\times\N \sim \R $ \\
+  тут заметим что $ \R\times\N \subseteq \R\times\R $ и $ \R \sim \R\times\{0\} \subseteq \R\times\N $ \\
+  получается $ \R \sim \R\times\{0\} \lesssim \R\times\N \lesssim \R\times\R \sim \R $, тоесть $ \R \sim \R\times\N $ \\
+  $\blacksquare$
+
+  \subsection{Докажите, что $ \range{5}^\N \sim \range{3}^\N $}
+  можем заметить что каждый элемент из $ \range{n}^\N $ это бесконечная последовательность циферок в $n$-ричной системе счисления,
+  тоесть это число в $[0;1)$ записано в $n$-ричной системе счисления.
+  получается что и $ \range{5}^\N $ и $ \range{3}^\N $ это все числа в $[0;1)$,
+  только одни записаны в 5-иричной а другие в 3-ичной системе счисления. \\
+  $\blacksquare$
+
+  \subsection{Докажите, что трехмерный куб равномощен любому своему сечению, содержащему более одной точки}
+  сечение куба, содержащие более одной точки, -- это либо отрезок либо многоугольник.
+  тк наше сечение является подмножеством куба, его мощность будет $\leq$ мощности самого куба.
+  в любом многоугольнике мы можем найти отрезок, а любой отрезок можно разделить на его длину у получить $[0;1]$.
+  тотже трюк с делением на длину можно проделать со всем кубом, и у нас будет $[0;1]^3$.
+  ещё мы можем убрать одну точку из наших отрезков, тк $\infty-1 = \infty$.
+  \\ $\ds [0;1) \sim [0;1] \sim \text{отрезок} \lesssim \text{многоугольник} \lesssim \text{куб} \sim [0;1]^3 \sim [0;1)^3 $ \\
+  теперь нам осталось только доказать, что $\ds [0;1) \sim [0;1)^3 $.
+  для этого надо построить биекцию.
+  каждое число в $[0;1)$ мы можем записать как бесконечную последовательность циферок,
+  но есть некоторые числа, как например $0.1$, которые можно так записать двумя разными способами:
+  $0.1\overline{0}$ и $0.0\overline{9}$.
+  в таких случаях мы всегда будем брать ту последовательность, в которой в периоде $0$.
+  теперь мы для любого числа из $[0;1)$ разбиваем её запись на три последовательности,
+  основываясь на остатке деления индекса на $3$, тоесть из
+  $0.\red{3}\green{1}\blue{4}\red{1}\green{5}\blue{9}\red{2}\green{6}\blue{5}\red{3}\green{5}\blue{8}\red{.}\green{.}\blue{.}$ $\l(\f{\pi}{10}\r)$
+  получится $0.\red{3123...}$, $0.\green{1565...}$ и $0.\blue{4958...}$.
+  это можно проделать и в обратную строну и у нас никогда не будет конфликтов, тоесть мы построили биекцию. \\
+  $\blacksquare$
+
+  \section{Докажите, что $\R^\R \sim \P{\R}$}
+  тут мы всё можем упростить заменив на равномощные множества \\
+  $\R^\R \sim \P{\R}$ \\
+  $\l(\range{2}^\N\r)^\R \sim \range{2}^\R$ \\
+  $\range{2}^{\N\times\R} \sim \range{2}^\R$ \\
+  $\range{2}^\R \sim \range{2}^\R$ \\
+  $\blacksquare$
+
+  \section{Пусть $X$ -- некоторое множество попарно непересекающихся восьмерок на плоскости (восьмерка состоит из двух касающихся внешним образом окружностей). Докажите, что $X \lesssim N$, т. е. что мощность $X$ не более счетной}
+  внутри каждой окружности можно найти рациональную точку.
+  мы для каждой восьмерки выбираем одну рандомную рациональную точку в каждой из её окружностей.
+  у нас получается функция от восьмерок в $\Q^4$. теперь надо доказать что это инъекция.
+  тоесть нам надо доказать, что если у двух восьмерок совпадают эти пары рациональных точек, то они пересекаются.
+  это легко доказывается из геометрии,
+  потомучто точка касания новых окружностей либо совпадает со старой,
+  либо находится в одной из старых окружностей,
+  либо старая точка находится в одной из новых окружностей.
+  мы, построив инъекцию, получили $X \lesssim \Q^4$ и тк $\Q^4 \sim \N$, в игоге $X \lesssim \N$ \\
+  $\blacksquare$
+
+  \section{Докажите, что существует множество $S \subseteq \P{\R}$, такое что выполнены все следующие условия: (а) $S \sim R$; (б) если $X, Y \in S$ и $X \neq Y$, то $X \cap Y = \emptyset$; (в) если $X \in S$, то $X \sim R$}
+  тоесть нам надо разделить $\R$ на $\Aleph$ непересекающихся кусочков, длинна каждого из которых тоже $\Aleph$.
+  тут нам понадобится тотже трюк с циферками что был в вопросе \textbf{5.3}, только тут нам надо это будет сделать наоборот.
+  мы обозначим $n$-ую циферку числа $a$ как $a\l[n\r]$, тоесть например $\l(\f{\pi}{10}\r)\l[3\r] = 4$. \\
+  $\ds S = \l\{ \l\{ y \in [0;1) \mid y[2] = x[1] \land y[4] = x[2] \cdots\land\cdots y[2n] = x[n] \r\} \mid x \in [0;1) \r\}$ \\
+  вот мы построили такое множество, и, очевидно, оно существует. \\
+  $\blacksquare$
+  % \subsection{Постройте аналогичное множество $S' \subseteq \P{\R^2}$}
+
+  \section{Пусть $C = \l\{f: \R \to \R \mid f \ \text{непрерывна} \r\}$. Докажите, что $C \sim R$}
+  любая непрерывная функция однозначно определена её рядом Тейлора, а ряд Тейлора это бесконечная последовательность цисел,
+  тоесть существует биекция между $C$ и $\R^\N$, и как мы помним из пятого вопроса $\R^\N \sim \R$.
+  получается $C \sim \R^\N \sim \R$ \\
+  $\blacksquare$
+
+  \vfill
+  \begin{thebibliography}{9}
+    \bibitem{дашков} Дашков Е. В. Введение в математическую логику // URL: \url{https://drive.google.com/file/d/1wLW9t2UFJk9tTu8nM_YAYYr9zzZwKD1W/view}
+    \bibitem{setexpo} \url{https://en.wikipedia.org/wiki/Exponentiation#Over_sets}
+    \bibitem{powerset} \url{https://en.wikipedia.org/wiki/Power_set}
+  \end{thebibliography}
+
+\end{document}
