@@ -1,0 +1,443 @@
+\documentclass{article}
+
+\usepackage{cmap} % поиск в pdf
+\usepackage{mathtext} % русские буквы в формулах
+\usepackage[english,russian]{babel} % локализация и переносы
+\usepackage[T2A]{fontenc} % кодировка в pdf (магия)
+\usepackage[utf8]{inputenc} % кодировка исходного текста
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage{gensymb}
+\usepackage{headertable}
+
+\usepackage{enumitem}
+\usepackage[hidelinks,bookmarks=false]{hyperref}
+\usepackage{xurl}
+\usepackage[margin=0.5in]{geometry}
+\usepackage{upquote}
+\usepackage[normalem]{ulem}
+\usepackage{fancyvrb}
+\usepackage[many]{tcolorbox}
+\usepackage{tasks}
+\setcounter{MaxMatrixCols}{20}
+
+\newtcolorbox{cross}{blank,breakable,parbox=false,
+  overlay={\draw[red,line width=5pt] (interior.south west)--(interior.north east);
+    \draw[red,line width=5pt] (interior.north west)--(interior.south east);}}
+
+\newcommand{\notimplies}{\mathrel{{\ooalign{\hidewidth$\not\phantom{=}$\hidewidth\cr$\implies$}}}}
+
+\newcommand{\ds}{\displaystyle}
+\newcommand{\DS}{\phantom{$0.5$}}
+\newcommand{\N}{\mathbb{N}}
+\newcommand{\Z}{\mathbb{Z}}
+\newcommand{\Q}{\mathbb{Q}}
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\Aleph}{2^{\aleph_0}}
+\renewcommand{\f}{\frac}
+\renewcommand{\l}{\left}
+\renewcommand{\r}{\right}
+\renewcommand{\emptyset}{\varnothing}
+
+\usepackage{xcolor}
+\definecolor{tablep}{HTML}{BF8040}
+\definecolor{tableq}{HTML}{FF0000}
+\definecolor{tabler}{HTML}{FF8000}
+\definecolor{tables}{HTML}{808080}
+\definecolor{tablet}{HTML}{009A55}
+\definecolor{tableu}{HTML}{006EB8}
+\definecolor{tablev}{HTML}{3EAFE4}
+\definecolor{tablew}{HTML}{800080}
+\definecolor{red}{HTML}{d62728}
+\definecolor{orange}{HTML}{ff7f0e}
+\definecolor{green}{HTML}{2ca02c}
+% \definecolor{blue}{HTML}{1f77b4}
+\newcommand{\red}[1]{{\color{red}{#1}}}
+\newcommand{\orange}[1]{{\color{orange}{#1}}}
+\newcommand{\green}[1]{{\color{green}{#1}}}
+\newcommand{\blue}[1]{{\color{blue}{#1}}}
+
+\newcommand{\p}{{\color{tablep}{p}}}
+\newcommand{\q}{{\color{tableq}{q}}}
+\renewcommand{\r}{{\color{tabler}{r}}}
+\newcommand{\s}{{\color{tables}{s}}}
+\renewcommand{\t}{{\color{tablet}{t}}}
+\renewcommand{\u}{{\color{tableu}{u}}}
+\renewcommand{\v}{{\color{tablev}{v}}}
+\newcommand{\w}{{\color{tablew}{w}}}
+\renewcommand{\S}{\hphantom{\w}}
+
+% \pagecolor{black}
+% \color{white}
+
+\title{Алгебра \\ Домашнее задание №3}
+\author{AAAAA AAAAAAA \\ AAAAAA \\ Вариант 2}
+
+\begin{document}
+  \maketitle
+  \HeaderTable{10}
+
+  \section{В циклической группе $G = \langle a \rangle$ порядка 140 найдите:}
+  Для каждого пункта посчитайте количество таких элементов.
+  \subsection{все элементы $g$ такие, что $g^{90} = 1$}
+  тоесть нам надо решить уравнение $90x \equiv 0 \pmod{140}$.
+  тут самое маленькое решение будет $\ds\f{140}{\gcd(140,\,90)}$,
+  а все остальные просто делятся на него.
+  у нас это число 14, тоесть решения у нас такие $\{0,\,14,\,28,\,42,\,56,\,70,\,84,\,98,\,112,\,126\}$
+  и всего их $\ds \f{140}{14} = \fbox{10}$.
+  \subsection{все элементы $g$ порядка $90$}
+  их нет, потомучто $90$ не делит $140$.
+
+  \section{Сколько элементов порядка $2$ в группе $D_3 \times S_3 \times \Z_6$?}
+  потомучто между $1$ и $2$ нет никаких других целых чисел,
+  чтобы у элемента был порядок $2$ надо только $x^2 = e$ и $x \neq e$.
+  чтобы у $(a,\, b,\, c)$ был порядок $2$, надо чтобы $a^2 = e$ и $b^2 = e$ и $c^2 = e$, и чтобы $(a,\, b,\, c) \neq e$.
+  тоесть чтобы получить количество элементов порядка $2$ в группе $D_3 \times S_3 \times \Z_6$,
+  надо перемножить количества элементов порядка $2$ или $1$ в маленьких группах и вычесть один.
+  в $\Z_6$ таких элементов $2$ (это $0$ и $3$).
+  в $D_3$ таких элементов $4$ (это $e$ и всё отзеркаленные).
+  в $S_3$ таких элементов тоже $4$, тк $D_3 \cong S_3$.
+  \\ ответ: $2 \cdot 4 \cdot 4 - 1 = \fbox{31}$
+
+  \section{Решить СЛАУ $Ax = b$ над $\Z_{17}$}
+  \[
+    A=\begin{bmatrix}
+      13 & 2 & 9 & 15 \\
+      2 & 7 & 1 & 13 \\
+      15 & 9 & 10 & 11 \\
+      11 & 11 & 2 & 9 \\
+    \end{bmatrix},\qquad
+    B=\begin{bmatrix}8\\3\\11\\2\end{bmatrix}
+  \]
+  нам надо сначала построить табличку обратных значений.
+  \[
+    \begin{array}{c|ccccccccccccccccc}
+      \texttt{i} & 0 & 1 & 2 & 3 & 4 & 5 & 6 & 7 & 8 & 9 & 10 & 11 & 12 & 13 & 14 & 15 & 16 \\
+      \hline
+      \texttt{i}^{-1} \mod 17 & & 1 & 9 & 6 & 13 & 7 & 3 & 5 & 15 & 2 & 12 & 14 & 10 & 4 & 11 & 8 & 16 \\
+    \end{array}
+  \]
+
+  \noindent
+  $\ds \left[\begin{matrix}13 & 2 & 9 & 15 & 8\\2 & 7 & 1 & 13 & 3\\15 & 9 & 10 & 11 & 11\\11 & 11 & 2 & 9 & 2\end{matrix}\right] $
+  $\ds \xrightarrow[\begin{matrix}  \\  \end{matrix}]{\begin{matrix} \textbf{I} \mathrel{/}= 13 \\  \end{matrix}} $
+  $\ds \left[\begin{matrix}1 & 8 & 2 & 9 & 15\\2 & 7 & 1 & 13 & 3\\15 & 9 & 10 & 11 & 11\\11 & 11 & 2 & 9 & 2\end{matrix}\right] $
+  $\ds \xrightarrow[\begin{matrix} \textbf{III} \mathrel{-}= 15 \textbf{I} \\ \textbf{IV} \mathrel{-}= 11 \textbf{I} \end{matrix}]{\begin{matrix}  \\ \textbf{II} \mathrel{-}= 2 \textbf{I} \end{matrix}} $
+  $\ds \left[\begin{matrix}1 & 8 & 2 & 9 & 15\\0 & 8 & 14 & 12 & 7\\0 & 8 & 14 & 12 & 7\\0 & 8 & 14 & 12 & 7\end{matrix}\right] $
+  $\ds \xrightarrow[\begin{matrix}  \\  \end{matrix}]{\begin{matrix}  \\ \textbf{II} \mathrel{/}= 8 \end{matrix}} $ \\
+  $\ds \left[\begin{matrix}1 & 8 & 2 & 9 & 15\\0 & 1 & 6 & 10 & 3\\0 & 8 & 14 & 12 & 7\\0 & 8 & 14 & 12 & 7\end{matrix}\right] $
+  $\ds \xrightarrow[\begin{matrix} \textbf{III} \mathrel{-}= 8 \textbf{II} \\ \textbf{IV} \mathrel{-}= 8 \textbf{II} \end{matrix}]{\begin{matrix} \textbf{I} \mathrel{-}= 8 \textbf{II} \\  \end{matrix}} $
+  $\ds \left[\begin{matrix}1 & 0 & 5 & 14 & 8\\0 & 1 & 6 & 10 & 3\\0 & 0 & 0 & 0 & 0\\0 & 0 & 0 & 0 & 0\end{matrix}\right] $
+
+  \subsection{Проверить совместимость}
+  тут в канонической матрице нет нулевых строк, которые заканчиваются не нулём, поэтому всё норм.
+
+  \subsection{Выписать решение в векторном виде}
+  % $\ds x = c_1 \begin{bmatrix}5 \\ 6 \\ 1 \\ 0\end{bmatrix} + c_2 \begin{bmatrix}14 \\ 10 \\ 0 \\ 1 \end{bmatrix}
+  % - \begin{bmatrix}8 \\ 3 \\ 0 \\ 0\end{bmatrix}
+  % = c_1 \begin{bmatrix}5 \\ 6 \\ 1 \\ 0\end{bmatrix} + c_2 \begin{bmatrix}14 \\ 10 \\ 0 \\ 1 \end{bmatrix}
+  % + \begin{bmatrix}9 \\ 14 \\ 0 \\ 0\end{bmatrix} $ \\
+  $\ds x = \begin{bmatrix}8 \\ 3 \\ 0 \\ 0\end{bmatrix} -
+   c_1 \begin{bmatrix}5 \\ 6 \\ -1 \\ 0\end{bmatrix} - c_2 \begin{bmatrix}14 \\ 10 \\ 0 \\ -1 \end{bmatrix}
+  = \begin{bmatrix}8 \\ 3 \\ 0 \\ 0\end{bmatrix} +
+  c_1 \begin{bmatrix}12 \\ 11 \\ 1 \\ 0\end{bmatrix} + c_2 \begin{bmatrix}3 \\ 7 \\ 0 \\ 1 \end{bmatrix} $
+  % $\ds x = c_1 \begin{bmatrix}5 \\ 6 \\ -1 \\ 0\end{bmatrix} + c_2 \begin{bmatrix}14 \\ 10 \\ 0 \\ -1 \end{bmatrix}
+  % + \begin{bmatrix}8 \\ 3 \\ 0 \\ 0\end{bmatrix} $
+
+  \subsection{Выписать ФСР соответствующей однородной СЛАУ}
+  $\ds x = c_1 \begin{bmatrix}12 \\ 11 \\ 1 \\ 0\end{bmatrix} + c_2 \begin{bmatrix}3 \\ 7 \\ 0 \\ 1 \end{bmatrix} $
+
+  \section{Схема Эль-Гамаля}
+  $$ a=57,\, b=45,\, x=48,\, p=103 $$
+  $$ M = b\left(a^x\right)^{-1} \operatorname{mod} p $$
+  $ a^x \operatorname{mod} p = 1 $ \\
+  $ M = 45 \cdot 1^{-1} = 45 $ \\
+  $\texttt{char(45)} = \texttt{"{}-"{}}$
+
+  \section{Алгоритм RSA}
+  \subsection{Закрытый ключ Кортана}
+  $$ c=5006,\, N=31313,\, d=3607 $$
+  $$ m = c^d \operatorname{mod} N $$
+  $\ds m = 5006^{3607} \operatorname{mod} 31313 = 101$ \\
+  $\texttt{char(101)} = \texttt{"{}e"{}}$
+
+  \subsection{Открытый ключ Алисы}
+  если тут неправильно прочитать условие то можно подумать,
+  что "{}тут нам совсем ненужен открытый ключ Алисы, потомучто она зашифровала своё сообщение открытым ключом Кортана."{},
+  но на самом деле "{}открытый ключ Алисы"{} и "{}открытый ключ Кортана"{} это одно и тоже.
+  тоесть "{}открытый ключ Алисы"{} это "{}открытый ключ, который есть у Алисы"{},
+  а не "{}открытый ключ, который соответствует закрытому ключу Алисы"{}.
+  $$ c=5006,\, N=25217,\, e=109 $$
+  $$ c = m^e \operatorname{mod} N $$
+  $$ d = e^{-1} \operatorname{mod} \varphi(N) $$
+  $$ m = c^d \operatorname{mod} N $$
+  \begin{cross}
+    поскольку здесь нам надо сломать RSA, а это можно сделать \sout{только} подбором,
+    нам надо воспользоватся магией ПрОгРаМмИрОвАнИя (тоесть просто перебрать все возможные $m$).
+    подбором мы нашли $m=13854$.
+    \begin{center}
+      \begin{BVerbatim}
+for m in range(25217):
+  if pow(m,109,25217) == 5006:
+    print(m)
+      \end{BVerbatim}
+    \end{center}
+  \end{cross}
+  \noindent
+  тут нам надо разложить $N$ на простые множители чтобы найти $\varphi(N)$. \\
+  $ 25217 = 151 \cdot 167; \qquad \varphi(25217) = 24900 $ \\
+  $ d = 109^{-1} \operatorname{mod} 24900 = 19189 $ \\
+  $ m = 5006^{19189} \operatorname{mod} 25217 = \fbox{13854} $ \\
+  это правильно потомучто перебор дал такой-же ответ.
+
+  \section{Найти $\gcd(f,\, g)$ над полем $\Z_7$}
+  $$ f(x) = x^5 + 5 x^4 + 4 x^3 + 6 x^2 + 2 x + 3 $$
+  $$ g(x) = x^5 + 2 x^4 + 6 x^3 + 5 x^2 $$
+  $\ds \f{f(x)}{g(x)} = 1 \text{ и остаток } 3 x^4 + 5 x^3 + x^2 + 2 x + 3 $ \\
+  $\ds \f{g(x)}{3 x^4 + 5 x^3 + x^2 + 2 x + 3} = 3x + 1 \text{ и остаток } $ \\
+  $\ds \f{3 x^4 + 5 x^3 + x^2 + 2 x + 3}{4x^3 + 3x^2 + 3x + 4} = 5x + 4 \text{ и остаток } 3 x^2 + 4 $ \\
+  $\ds \f{4x^3 + 3x^2 + 3x + 4}{3 x^2 + 4} = 5x+2 \text{ и остаток } 0 $ \\
+  мы можем домножить $3x^2 + 4$ на $5$ и у нас будет \fbox{$x^2+6$}
+
+  \subsection{Найти многочлены $u(x),\, v(x) \in \Z_7[x]$ такие, что $u(x)f(x) + v(x)g(x) = \gcd(f,\, g)$}
+  % {x^2 + 6, {5 x^2 + x + 2, 2 x^2 + 5 x}}
+  % $ w_0 = 1 $ \\
+  % $ w_1 = -(5x + 4) = 2x+3 $ \\
+  % $ w_2 = w_0 - w_1 \cdot q_2 = 1 - (3x + 1)(2x+3) = 15 x^2 + 17 x + 5 = x^2 + 3 x + 5 $ \\
+  % $ w_3 = w_1 - w_2 \cdot q_3 = 2x+3 - (x^2 + 3 x + 5) = -x^2 - x - 2 = 6x^2 + 6x + 5 $ \\
+  $\ds (3 x^4 + 5 x^3 + x^2 + 2 x + 3) = (4x^3 + 3x^2 + 3x + 4)(5x + 4) + (3 x^2 + 4) $ \\
+  $\ds g(x) = (3 x^4 + 5 x^3 + x^2 + 2 x + 3)(3x + 1) + (4x^3 + 3x^2 + 3x + 4) $ \\
+  $\ds f(x) = g(x) + (3 x^4 + 5 x^3 + x^2 + 2 x + 3) $ \\
+  $\ds f(x)-(3 x^4 + 5 x^3 + x^2 + 2 x + 3) = g(x) $ \\
+  $\ds f(x)-(3 x^4 + 5 x^3 + x^2 + 2 x + 3) = (3 x^4 + 5 x^3 + x^2 + 2 x + 3)(3x + 1) + (4x^3 + 3x^2 + 3x + 4) $ \\
+  $\ds f(x) = (3 x^4 + 5 x^3 + x^2 + 2 x + 3)(3x + 2) + (4x^3 + 3x^2 + 3x + 4) $ \\
+  $\ds f(x) - g(x) = (3 x^4 + 5 x^3 + x^2 + 2 x + 3) = (4x^3 + 3x^2 + 3x + 4)(5x + 4) + (3 x^2 + 4) $ \\
+  $\ds f(x) - g(x) - (4x^3 + 3x^2 + 3x + 4)(5x + 4) = (3 x^2 + 4) $ \\
+  $\ds g(x) = (f(x) - g(x))(3x + 1) + (4x^3 + 3x^2 + 3x + 4) $ \\
+  $\ds g(x)(3x + 2) = f(x)(3x + 1) + (4x^3 + 3x^2 + 3x + 4) $ \\
+  $\ds g(x)(3x + 2) + f(x)(4x + 6) = (4x^3 + 3x^2 + 3x + 4) $ \\
+  $\ds f(x) - g(x) = (g(x)(3x + 2) + f(x)(4x + 6))(5x + 4) + (3 x^2 + 4) $ \\
+  $\ds f(x) - g(x) - (g(x)(3x + 2) + f(x)(4x + 6))(5x + 4) = (3 x^2 + 4) $ \\
+  $\ds f(x)(x^2 + 3x + 6) + g(x)(6 x^2 + x) = (3 x^2 + 4) $ \\
+  \fbox{
+    $\begin{cases}
+      u(x) = 5 x^2 + x + 2 \\
+      v(x) = 2 x^2 + 5 x \\
+    \end{cases}$
+  }
+
+  \section{Рассмотрим поле $F = \Z_3[x]/\langle x^4+x^2+2 \rangle $. Через $\bar{f}$ будем обозначать смежный класс $f+\langle x^4+x^2+2 \rangle\in F$. Представить в виде $\bar{f}$, где $\deg \bar{f} < 4$, выражение}
+  $$ g(x) = \f{x}{2x} + (x^2+2x+1)(x^6+x^5+x^3+2x^2+1) - \f{x^4+2x^2+2}{2x^2+x+1} $$
+  нам надо сначала найти обратные многочлены к $2x^2+x+1$ и к $2x$.
+  это делается расширенным алгоритмом евклида.
+  мы ищем $\gcd(2x^2+x+1,\, x^4+x^2+2)$ и, когда достаём $u$ и $v$, получается $u(x)(2x^2+x+1) + v(x)(x^4+x^2+2) = 1$,
+  но $x^4+x^2+2$ это типа у нас как ноль. тоесть будет $u(x)(2x^2+x+1) = 1$, тоесть $u$ это тот самый обратный многочлен. \\
+  $\ds (2x^2+x+1)^{-1} = x^3 + x^2 + 1$ \\
+  $\ds (2x)^{-1} = 2 x^3 + 2 x$ \\
+  $\ds (x^2+2x+1)(x^6+x^5+x^3+2x^2+1) = x^8 + 3 x^7 + 3 x^6 + 2 x^5 + 4 x^4 + 5 x^3 + 3 x^2 + 2 x + 1
+  =\\= x^8 + 2 x^5 + x^4 + 2 x^3 + 2 x + 1 = 2 x^2 + x + 1 $ \\
+  $\ds (2 x^3 + 2 x)x = 2 x^4 + 2 x^2 = 2 $ \\
+  $\ds (x^4+2x^2+2)(x^3 + x^2 + 1) = x^7 + x^6 + 2 x^5 + 3 x^4 + 2 x^3 + 4 x^2 + 2 = 2 x^3 + x + 1 $ \\
+  $\ds g(x) = 2 + (2 x^2 + x + 1) + (2 x^3 + x + 1) = 2 x^3 + 2 x^2 + 2 x + 1 $
+
+  \section{Рассмотрим множество матриц, где на месте $x_i$ стоят элементы поля $\R$. Доказать, что это кольцо с операциями сложения и умножения матриц}
+  $$ \begin{bmatrix}0 & 0 & 0 & 0\\0 & 0 & 0 & 0\\0 & x_1 & x_2 & 0\\x_1 & x_3 & x_4 & x_2\end{bmatrix} $$
+  поскольку множество всех матриц $4 \times 4$ с коэффициентами из $\R$ это уже кольцо.
+  тут надо проверить только замкнутость умножения, тк ноль у нас есть, а замкнутость сложения очевидна. \\
+  $\ds \left[\begin{matrix}0 & 0 & 0 & 0\\0 & 0 & 0 & 0\\0 & x_{1} & x_{2} & 0\\x_{1} & x_{3} & x_{4} & x_{2}\end{matrix}\right] \times \left[\begin{matrix}0 & 0 & 0 & 0\\0 &
+  0 & 0 & 0\\0 & y_{1} & y_{2} & 0\\y_{1} & y_{3} & y_{4} & y_{2}\end{matrix}\right] = \left[\begin{matrix}0 & 0 & 0 & 0\\0 & 0 & 0 & 0\\0 & x_{2} y_{1} & x_{2} y_{2} & 0
+  \\x_{2} y_{1} & x_{2} y_{3} + x_{4} y_{1} & x_{2} y_{4} + x_{4} y_{2} & x_{2} y_{2}\end{matrix}\right] $ \\
+  тут видно что те числа, которым надо быть одинаковыми, одинаковые. всё у нас хорошо и замкнуто.
+  тут ещё по-хорошему надо записать отдельный вариант для каждого нулевого икса и игрека (и каждой их комбинации), но мне лень.
+
+  \subsection{Найти делители нуля}
+  чтобы у нас был делитель нуля, надо чтобы вся эта большая третья матрица была вся нулевая и чтобы не первая и не вторая небыли.
+  сначала рассмотрим случай когда $x_2 \neq 0$.
+  тогда $y_1$ и $y_2$ будут равны нулю. и поэтому равны нулю будут и $y_3$ с $y_4$.
+  тоесть у нас получилось противоречие, тк всё $y$ у нас нулевые.
+  получилась у нас $x_2 = 0$ и вот такая вот системка: \\
+  $\ds \begin{cases}
+    x_2 = 0 \\
+    x_4y_1 = 0 \\
+    x_4y_2 = 0 \\
+  \end{cases}$ \\
+  ответ:
+  $\ds \begin{bmatrix}
+    0 & 0 & 0 & 0\\0 & 0 & 0 & 0\\0 & x_1 & 0 & 0\\x_1 & x_3 & 0 & 0
+  \end{bmatrix} \times \begin{bmatrix}
+    0 & 0 & 0 & 0\\0 & 0 & 0 & 0\\0 & y_1 & y_2 & 0\\y_1 & y_3 & y_4 & y_2
+  \end{bmatrix} = 0,\qquad$
+  $\ds \begin{bmatrix}
+    0 & 0 & 0 & 0\\0 & 0 & 0 & 0\\0 & x_1 & 0 & 0\\x_1 & x_3 & x_4 & 0
+  \end{bmatrix} \times \begin{bmatrix}
+    0 & 0 & 0 & 0\\0 & 0 & 0 & 0\\0 & 0 & 0 & 0\\0 & y_3 & y_4 & 0
+  \end{bmatrix} = 0$ \\
+  но последнею матрицу с $y_3$ и $y_4$ можно не считать, тк она делитель нуля только правый (но не левый).
+  всё остальное норм работает с обеих сторон.
+
+  \section{Занумеруйте элементы группы $\Z_3 \times D_3$}
+  \begin{tasks}[style=enumerate](6)
+    \task $ \left(0,\, R_0\right) $
+    \task $ \left(1,\, R_0\right) $
+    \task $ \left(2,\, R_0\right) $
+    \task $ \left(0,\, R_{60}\right) $
+    \task $ \left(1,\, R_{60}\right) $
+    \task $ \left(2,\, R_{60}\right) $
+    \task $ \left(0,\, R_{120}\right) $
+    \task $ \left(1,\, R_{120}\right) $
+    \task $ \left(2,\, R_{120}\right) $
+    \task $ \left(0,\, u_0\right) $
+    \task $ \left(1,\, u_0\right) $
+    \task $ \left(2,\, u_0\right) $
+    \task $ \left(0,\, u_1\right) $
+    \task $ \left(1,\, u_1\right) $
+    \task $ \left(2,\, u_1\right) $
+    \task $ \left(0,\, u_2\right) $
+    \task $ \left(1,\, u_2\right) $
+    \task $ \left(2,\, u_2\right) $
+  \end{tasks}
+
+  \subsection{Воспользуйтесь теоремой Кэли и укажите, какой элемент из $S_{18}$ будет соответствовать элементу $(1,\, R_{120})$}
+  нам надо умножить этот элемент на каждый, но мы будем записывать все эти элементы как их индексы.
+  \[
+    \begin{array}{c|cccccccccccccccccc}
+      \times & 1 & 2 & 3 & 4 & 5 & 6 & 7 & 8 & 9 & 10 & 11 & 12 & 13 & 14 & 15 & 16 & 17 & 18 \\
+      \hline
+      8      & 8 & 9 & 7 & 2 & 3 & 1 & 5 & 6 & 4 & 17 & 18 & 16 & 11 & 12 & 10 & 14 & 15 & 13 \\
+    \end{array}
+  \]
+  теперь надо это просто записать как подстановку и у нас будет ответ. \\
+  $\begin{pmatrix}
+    1 & 2 & 3 & 4 & 5 & 6 & 7 & 8 & 9 & 10 & 11 & 12 & 13 & 14 & 15 & 16 & 17 & 18 \\
+    8 & 9 & 7 & 2 & 3 & 1 & 5 & 6 & 4 & 17 & 18 & 16 & 11 & 12 & 10 & 14 & 15 & 13 \\
+  \end{pmatrix}$
+
+  \newpage
+  \setcounter{section}{9}
+  \section{Заполните пропуски в таблице Кэли. Определите группу, которая задаётся этой таблицей}
+  вот тут список обоснований каждого перехода
+  \begin{enumerate}[label=\arabic*)]
+    \item тут мы можем заметить что пустой ряд с \t{} это наш нейтральный элемент, тк $\t^2 = \t$
+    \item в ряду \p{} у нас осталось только одно место и там нехватает \w{} \\
+    в ряду \r{} у нас осталось только одно место и там нехватает \u{} \\
+    в столбике \p{} у нас осталось только одно место и там нехватает \w{} \\
+    в столбике \s{} у нас осталось только одно место и там нехватает \r{}
+    \item в ряду \v{} у нас осталось только одно место и там нехватает \q{} \\
+    в ряду \w{} у нас осталось только одно место и там нехватает \u{} \\
+    в столбике \v{} у нас осталось только одно место и там нехватает \p{} \\
+    в столбике \r{} у нас осталось только одно место и там нехватает \q{}
+    \item в ряду \q{} у нас осталось только одно место и там нехватает \u{} \\
+    в столбике \q{} у нас осталось только одно место и там нехватает \t{} \\
+    в столбике \u{} у нас осталось только одно место и там нехватает \t{}
+    \item в столбике \w{} у нас осталось только одно место и там нехватает \s{}
+  \end{enumerate}
+  \begin{tabular}{|c|cccccccc|}
+    \hline
+     & p & q & r & s & t & u & v & w \\
+    \hline
+    p&\u &\s &\t &\v &   &\r &   &\q \\
+    q&\s &\r &\w &\t &   &\v &   &   \\
+    r&\t &\w &   &\q &   &\p &\s &\v \\
+    s&\v &   &   &\p &\S &\w &\u &\r \\
+    t&\S &\S &\S &\S &\t &\S &\S &\S \\
+    u&\r &\v &\p &\w &   &   &\q &   \\
+    v&   &\p &\s &\u &   &   &\r &\t \\
+    w&\q &   &\v &   &   &\s &\t &\p \\
+    \hline
+  \end{tabular}
+  \begin{tabular}{|c|cccccccc|}
+    \hline
+     & t & p & q & r & s & u & v & w \\
+    \hline
+    t&\t &\p &\q &\r &\s &\u &\v &\w \\
+    p&\p &\u &\s &\t &\v &\r &\S &\q \\
+    q&\q &\s &\r &\w &\t &\v &   &   \\
+    r&\r &\t &\w &   &\q &\p &\s &\v \\
+    s&\s &\v &   &   &\p &\w &\u &\r \\
+    u&\u &\r &\v &\p &\w &   &\q &   \\
+    v&\v &\S &\p &\s &\u &   &\r &\t \\
+    w&\w &\q &   &\v &   &\s &\t &\p \\
+    \hline
+  \end{tabular}
+  \begin{tabular}{|c|cccccccc|}
+    \hline
+     & t & p & q & r & s & u & v & w \\
+    \hline
+    t&\t &\p &\q &\r &\s &\u &\v &\w \\
+    p&\p &\u &\s &\t &\v &\r &\w &\q \\
+    q&\q &\s &\r &\w &\t &\v &   &   \\
+    r&\r &\t &\w &\u &\q &\p &\s &\v \\
+    s&\s &\v &   &   &\p &\w &\u &\r \\
+    u&\u &\r &\v &\p &\w &   &\q &   \\
+    v&\v &\w &\p &\s &\u &   &\r &\t \\
+    w&\w &\q &   &\v &\r &\s &\t &\p \\
+    \hline
+  \end{tabular} \\
+  \begin{tabular}{|c|cccccccc|}
+    \hline
+     & t & p & q & r & s & u & v & w \\
+    \hline
+    t&\t &\p &\q &\r &\s &\u &\v &\w \\
+    p&\p &\u &\s &\t &\v &\r &\w &\q \\
+    q&\q &\s &\r &\w &\t &\v &\p &   \\
+    r&\r &\t &\w &\u &\q &\p &\s &\v \\
+    s&\s &\v &   &\q &\p &\w &\u &\r \\
+    u&\u &\r &\v &\p &\w &   &\q &   \\
+    v&\v &\w &\p &\s &\u &\q &\r &\t \\
+    w&\w &\q &\u &\v &\r &\s &\t &\p \\
+    \hline
+  \end{tabular}
+  \begin{tabular}{|c|cccccccc|}
+    \hline
+     & t & p & q & r & s & u & v & w \\
+    \hline
+    t&\t &\p &\q &\r &\s &\u &\v &\w \\
+    p&\p &\u &\s &\t &\v &\r &\w &\q \\
+    q&\q &\s &\r &\w &\t &\v &\p &\u \\
+    r&\r &\t &\w &\u &\q &\p &\s &\v \\
+    s&\s &\v &\t &\q &\p &\w &\u &\r \\
+    u&\u &\r &\v &\p &\w &\t &\q &   \\
+    v&\v &\w &\p &\s &\u &\q &\r &\t \\
+    w&\w &\q &\u &\v &\r &\s &\t &\p \\
+    \hline
+  \end{tabular}
+  \begin{tabular}{|c|cccccccc|}
+    \hline
+     & t & p & q & r & s & u & v & w \\
+    \hline
+    t&\t &\p &\q &\r &\s &\u &\v &\w \\
+    p&\p &\u &\s &\t &\v &\r &\w &\q \\
+    q&\q &\s &\r &\w &\t &\v &\p &\u \\
+    r&\r &\t &\w &\u &\q &\p &\s &\v \\
+    s&\s &\v &\t &\q &\p &\w &\u &\r \\
+    u&\u &\r &\v &\p &\w &\t &\q &\s \\
+    v&\v &\w &\p &\s &\u &\q &\r &\t \\
+    w&\w &\q &\u &\v &\r &\s &\t &\p \\
+    \hline
+  \end{tabular} \\
+  \par\noindent
+  группа получилась абелева. а у нас есть только 3 абелевых группы, где 8 элементов.
+  это $\Z_8$, $\Z_4\times\Z_2$ и $\Z_2\times\Z_2\times\Z_2$.
+  в $\Z_2\times\Z_2\times\Z_2$ на главной диагонали только нейтральный элемент, а в $\Z_4\times\Z_2$ там только два элемента.
+  у нас на главной диагонали \t{}, \r{}, \u{}, и \p{}, и каждый из них там 2 раза.
+  поэтому наша группа точно не $\Z_2\times\Z_2\times\Z_2$, и не $\Z_4\times\Z_2$, а \fbox{$\Z_8$}.
+
+  \begin{center}
+    \begin{tabular}{|c|cccccccc|}
+      \hline
+       & t & s & p & v & u & w & r & q \\
+      \hline
+      t&\t &\s &\p &\v &\u &\w &\r &\q \\
+      s&\s &\p &\v &\u &\w &\r &\q &\t \\
+      p&\p &\v &\u &\w &\r &\q &\t &\s \\
+      v&\v &\u &\w &\r &\q &\t &\s &\p \\
+      u&\u &\w &\r &\q &\t &\s &\p &\v \\
+      w&\w &\r &\q &\t &\s &\p &\v &\u \\
+      r&\r &\q &\t &\s &\p &\v &\u &\w \\
+      q&\q &\t &\s &\p &\v &\u &\w &\r \\
+      \hline
+    \end{tabular}
+  \end{center}
+
+\end{document}
