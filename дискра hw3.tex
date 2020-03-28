@@ -1,0 +1,290 @@
+\documentclass{article}
+
+\usepackage{cmap} % поиск в pdf
+\usepackage{mathtext} % русские буквы в формулах
+\usepackage[english,russian]{babel} % локализация и переносы
+\usepackage[T2A]{fontenc} % кодировка в pdf (магия)
+\usepackage[utf8]{inputenc} % кодировка исходного текста
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage{gensymb}
+\usepackage{headertable}
+
+\usepackage[hidelinks,bookmarks=false]{hyperref}
+\usepackage{xurl}
+\usepackage[margin=0.5in]{geometry}
+\usepackage{graphicx}
+\usepackage{tikz}
+\usepackage{wrapfig}
+\usepackage{textcomp}
+
+\newcommand{\notimplies}{\mathrel{{\ooalign{\hidewidth$\not\phantom{=}$\hidewidth\cr$\implies$}}}}
+\newcommand{\VCenter}[2]{\vcenter{\hbox{\scalebox{#1}{$#2$}}}}
+
+\newcommand{\ds}{\displaystyle}
+\newcommand{\DS}{\phantom{$0.5$}}
+\newcommand{\N}{\mathbb{N}}
+\newcommand{\Z}{\mathbb{Z}}
+\newcommand{\Q}{\mathbb{Q}}
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\range}{\underline}
+\newcommand{\Aleph}{2^{\aleph_0}}
+\newcommand{\Cnk}[2]{C_{#1}^{#2}}
+\renewcommand{\f}{\frac}
+\renewcommand{\l}{\left}
+\renewcommand{\r}{\right}
+\renewcommand{\P}[1]{\mathcal{P}\l(#1\r)}
+\renewcommand{\emptyset}{\varnothing}
+
+\usepackage{xcolor}
+\definecolor{red}{HTML}{d62728}
+\definecolor{orange}{HTML}{ff7f0e}
+\definecolor{green}{HTML}{2ca02c}
+% \definecolor{blue}{HTML}{1f77b4}
+\newcommand{\red}[1]{{\color{red}{#1}}}
+\newcommand{\orange}[1]{{\color{orange}{#1}}}
+\newcommand{\green}[1]{{\color{green}{#1}}}
+\newcommand{\blue}[1]{{\color{blue}{#1}}}
+
+% \pagecolor{black}
+% \color{white}
+
+\title{Дискретная математика \\ Домашнее задание №3}
+\author{AAAAA AAAAAAA \\ AAAAAA}
+
+\begin{document}
+  \maketitle
+  \HeaderTable{13}
+
+  \section{Сколько различных натуральных делителей у числа $1224$?}
+  $1224 = 2^3 \cdot 3^2 \cdot 17$ \\
+  а количество различных натуральных делителей это всегда\cite{divisor} произведение всех степеней из prime factorization,
+  к которым мы прибавили один. \\
+  ответ: $(3+1)\cdot(2+1)\cdot(1+1) = 4\cdot3\cdot2 = \fbox{24}$
+
+  \section{Сколько есть способов разложить $7$ различных монет по $3$ различным карманам?}
+  каждая из семи монеток может быть в ровно одном кармане. получается это типа как семизначное число в троичной системе.
+  если формально, это будет количество функций (отображений) из $\range{7}$ в $\range{3}$. \\
+  ответ: $3^7 = \fbox{2187}$
+
+  \section{Рассмотрим слово $\alpha = \texttt{cbcad}$. Сколько слов длины от $1$ до $5$, составленных их букв латинского алфавита (и необязательно осмысленных), стояли бы прежде $\alpha$ в словаре?}
+  нам сначала надо найти количество слов длины $5$ стоящих до $\alpha$.
+  для этого нам надо $\texttt{cbcad}$ представить как число в 26ричной системе, тк в латинском алфавите $26$ буков.
+  количество чисел меньше когото числа равно его значению,
+  а $\texttt{cbcad}_{26} = \texttt{21203}_{26} = 3+26^2\cdot2+26^3+26^4\cdot2 = 932883$.
+  теперь нам надо найти все слова длины $4$ стоящие до $\alpha$. это будут все числа меньше $\texttt{cbca}_{26}+1$.
+  и также будет для других длин.
+  в ответе у нас будет $ \texttt{21203}_{26} + \texttt{2120}_{26}+1 + \texttt{212}_{26}+1 + \texttt{21}_{26}+1 + \texttt{2}_{26}+1$.
+  если мы это всё посчитаем \underline{\textit{\textbf{\Large на питоне}}} то будет $\fbox{970202}$.
+
+  \section{Пусть $n \in \N$. Найдите выражение в замкнутом виде для суммы:}
+  \subsection{$\ds \sum_{k=0}^n\l(-1\r)^k\Cnk{n}{k}$}
+  тут надо сначала рассмотреть случай с $n=0$, потомучто в условие так написано.
+  там будет $1$ тк $\Cnk{x}{0}$ всегда $1$. это будет также во всех пунктах этого номера.
+  нулевой элемент у нас всегда $1$.
+  потом нам надо рассмотреть случаи с $n \operatorname{mod} 2 = 1$. там получается всё симметрично,
+  потомучто $\ds \Cnk{n}{k}=\Cnk{n}{n-k}$ и там получается что знаки у этих равных элементов разные.
+  тут вообще надо нарисовать треугольник паскаля, ато ничего непонятно. \\
+  \setlength\tabcolsep{0pt}
+  \begin{tabular}{lccccccccccccc}
+    $n=0$\hspace{12pt} &\hphantom{-10}&\hphantom{-10}&\hphantom{-10}&\hphantom{-10}&\hphantom{-10}&\hphantom{-10}&1&\hphantom{-10}&\hphantom{-10}&\hphantom{-10}&\hphantom{-10}&\hphantom{-10}&\hphantom{-10} \\
+    $n=1$\hspace{12pt} &&&&&&1&\hphantom{-10}&-1&&&&& \\
+    $n=2$\hspace{12pt} &&&&&1&&-2&&1&&&& \\
+    $n=3$\hspace{12pt} &&&&1&&-3&&3&&-1&&& \\
+    $n=4$\hspace{12pt} &&&1&&-4&&6&&-4&&1&& \\
+    $n=5$\hspace{12pt} &&1&&-5&&10&&-10&&5&&-1& \\
+    $n=6$\hspace{12pt} &1&&-6&&15&&-20&&15&&-6&&1 \\
+  \end{tabular}
+  \setlength\tabcolsep{6pt} \\
+  мы тут видим что везде кроме $n=0$ у нас получается $0$, но непонятно почему это происходит в чётных $n$.
+  теперь нам осталось доказать, что у нас в чётных всё работает выразив их через нечётные.
+  мы для этого выражаем каждый элемент через сумму двух элементов над ним. \\
+  $ \red{\Cnk{2n}{0}} - \green{\Cnk{2n}{1}} + \blue{\Cnk{2n}{2}} -\cdots+ \red{\Cnk{2n}{2n}}
+  = \red{0+\Cnk{2n-1}{0}} - \green{\Cnk{2n-1}{0}-\Cnk{2n-1}{1}} + \blue{\Cnk{2n-1}{1}+\Cnk{2n-1}{2}} -\cdots+ \red{\Cnk{2n-1}{2n-1}+0} $ \\
+  теперь если мы перерасставим скобки (сгруппируем слагаемые так чтобы они взаимно уничтожались),
+  то у нас тут будет много пар где везде нули (и да рандомных нуля с краю), и сумма тоже будет ноль. \\
+  $0+\l(\red{\Cnk{2n-1}{0}} \green{-\Cnk{2n-1}{0}}\r)+\l(\green{-\Cnk{2n-1}{1}} \blue{+\Cnk{2n-1}{1}}\r)+\cdots+\l(\orange{-\Cnk{2n-1}{2n-1}} \red{+\Cnk{2n-1}{2n-1}}\r)+0$
+  \\ ответ: \fbox{$\begin{cases}
+    1 & \text{если } n=0 \\
+    0 & \text{если } n \neq 0 \\
+  \end{cases}$}
+
+  \subsection{$\ds \sum_{2|k}\Cnk{n}{k}$}
+  тут, чтобы избавится от непонятной нотации, мы запишем это как $\ds \sum_{k=0}^{2\l\lfloor n/2 \r\rfloor}\Cnk{n}{k}$.
+  теперь можно рисовать треугольник. \\
+  \setlength\tabcolsep{0pt}
+  \begin{tabular}{lccccccccccccc}
+    $n=0$\hspace{12pt} &\hphantom{10}&\hphantom{10}&\hphantom{10}&\hphantom{10}&\hphantom{10}&\hphantom{10}&1&\hphantom{10}&\hphantom{10}&\hphantom{10}&\hphantom{10}&\hphantom{10}&\hphantom{10} \\
+    $n=1$\hspace{12pt} &&&&&&1&\hphantom{10}&0&&&&& \\
+    $n=2$\hspace{12pt} &&&&&1&&0&&1&&&& \\
+    $n=3$\hspace{12pt} &&&&1&&0&&3&&0&&& \\
+    $n=4$\hspace{12pt} &&&1&&0&&6&&0&&1&& \\
+    $n=5$\hspace{12pt} &&1&&0&&10&&0&&5&&0& \\
+    $n=6$\hspace{12pt} &1&&0&&15&&0&&15&&0&&1 \\
+  \end{tabular}
+  \setlength\tabcolsep{6pt} \\
+  из того что каждый элемент треугольника паскаля это сумма двух стоящих над ним,
+  мы получаем что сумма каждого второго элемента это сумма всех элементов предыдущей строки.
+  мы также знаем что сумма всех элементов $n$-ой строки это $2^n$.
+  тоесть у нас тут $2^{n-1}$. \\
+  ответ: \fbox{$\begin{cases}
+    1 & \text{если } n=0 \\
+    2^{n-1} & \text{если } n \neq 0 \\
+  \end{cases}$}
+
+  \subsection{$\ds \sum_{k=0}^n\f{\Cnk{n}{k}}{k+1}$}
+  % \setlength\tabcolsep{0pt}
+  % \begin{tabular}{lccccccccccccc}
+  %   $n=0$\hspace{12pt} &\hphantom{$\f{10}{6}$}&\hphantom{$\f{10}{6}$}&\hphantom{$\f{10}{6}$}&\hphantom{$\f{10}{6}$}&\hphantom{$\f{10}{6}$}&\hphantom{$\f{10}{6}$}&1&\hphantom{$\f{10}{6}$}&\hphantom{$\f{10}{6}$}&\hphantom{$\f{10}{6}$}&\hphantom{$\f{10}{6}$}&\hphantom{$\f{10}{6}$}&\hphantom{$\f{10}{6}$} \\
+  %   $n=1$\hspace{12pt} &&&&&&1&\hphantom{$\f{10}{6}$}&$\f{1}{2}$&&&&& \\
+  %   $n=2$\hspace{12pt} &&&&&1&&$\f{2}{2}$&&$\f{1}{3}$&&&& \\
+  %   $n=3$\hspace{12pt} &&&&1&&$\f{3}{2}$&&$\f{3}{3}$&&$\f{1}{4}$&&& \\
+  %   $n=4$\hspace{12pt} &&&1&&$\f{4}{2}$&&$\f{6}{3}$&&$\f{4}{4}$&&$\f{1}{5}$&& \\
+  %   $n=5$\hspace{12pt} &&1&&$\f{5}{2}$&&$\f{10}{3}$&&$\f{10}{4}$&&$\f{5}{5}$&&$\f{1}{6}$& \\
+  %   $n=6$\hspace{12pt} &1&&$\f{6}{2}$&&$\f{15}{3}$&&$\f{20}{4}$&&$\f{15}{5}$&&$\f{6}{6}$&&$\f{1}{7}$ \\
+  % \end{tabular} \hfill
+  % \begin{tabular}{lccccccccccccc}
+  %   $n=0$\hspace{12pt} &\hphantom{$\f{10}{6}$}&\hphantom{$\f{10}{6}$}&\hphantom{$\f{10}{6}$}&\hphantom{$\f{10}{6}$}&\hphantom{$\f{10}{6}$}&\hphantom{$\f{10}{6}$}&1&\hphantom{$\f{10}{6}$}&\hphantom{$\f{10}{6}$}&\hphantom{$\f{10}{6}$}&\hphantom{$\f{10}{6}$}&\hphantom{$\f{10}{6}$}&\hphantom{$\f{10}{6}$} \\
+  %   $n=1$\hspace{12pt} &&&&&&1&\hphantom{$\f{10}{6}$}&$\f{1}{2}$&&&&& \\
+  %   $n=2$\hspace{12pt} &&&&&1&&1&&$\f{1}{3}$&&&& \\
+  %   $n=3$\hspace{12pt} &&&&1&&$\f{3}{2}$&&1&&$\f{1}{4}$&&& \\
+  %   $n=4$\hspace{12pt} &&&1&&2&&2&&1&&$\f{1}{5}$&& \\
+  %   $n=5$\hspace{12pt} &&1&&$\f{5}{2}$&&$\f{10}{3}$&&$\f{5}{2}$&&1&&$\f{1}{6}$& \\
+  %   $n=6$\hspace{12pt} &1&&3&&5&&5&&3&&1&&$\f{1}{7}$ \\
+  % \end{tabular}
+  % \setlength\tabcolsep{6pt} \\
+  $\ds \sum_{k=0}^n\f{\Cnk{n}{k}}{k+1} = \sum_{k=0}^n\f{n!}{k!(n-k)!(k+1)} = \sum_{k=0}^n\f{n!}{(k+1)!\l((n+1)-(k+1)\r)!}
+  = \l(\sum_{k=0}^n \Cnk{n+1}{k+1}\r)\f{1}{n+1} = \l(-1+\sum_{k=0}^{n+1} \Cnk{n}{k}\r)\f{1}{n+1} = $
+  \fbox{$\ds \f{2^{n+1}-1}{n+1}$}
+
+  \section{Каждую секунду робот делает один шаг направо или один шаг вверх. Сколькими различными путями он может попасть в точку $(m, n)$ из точки $(0, 0)$ при $m,n \in \N$?}
+  чтобы робот нашёл нашу точку надо чтобы он сделал $m$ шагов направо и $n$ шагов вверх.
+  тоесть он всего должен сделать $n+m$ шагов и $n$ из них должны быть вверх (ну а все остальные направо).
+  а сколько у нас есть способов \textit{выбрать} $n$ из $n+m$¿? \\
+  ответ: \fbox{$\Cnk{n+m}{n}$}
+
+  \section{Рассмотрим $n > 1$ идущих подряд целых чисел: $a, a+1, \dots, a+(n-1)$. Докажите, что их произведение всегда кратно $n!$}
+  это произведение будет равно $\ds x = \f{\l(a+n-1\r)!}{\l(a-1\r)!}$, а формула для $\ds \Cnk{c}{b} = \f{c!}{b!\l(c-b\r)!}$.
+  если мы туда подставим $c=a+n-1$ и $b=n$ будет $\ds \Cnk{a+n-1}{n} = \f{\l(a+n-1\r)!}{n!\l(a-1\r)!}$.
+  получается что $\ds \f{x}{n!} = \Cnk{a+n-1}{n}$, а все $\Cnk{z}{y}$ у нас целые и поэтому $\ds \f{x}{n!}$ тоже целое и $x$ всегда кратно $n!$. \\
+  $\blacksquare$
+
+  \section{Сколько существует шестизначных чисел, в записи которых поровну четных и нечетных цифр}
+  мы сначала можем решить аналогичную задачу, но с двоичными числами.
+  количество чисел $< 2^6$, в записи которых поровну четных и нечетных цифр, - это $\Cnk{6}{3}$,
+  потомучто нам надо выбрать какие $3$ цифры из $6$ будут единичками.
+  в десятичной системе нам просто надо домножить на $5^6$, тк у нас $5$ четных и $5$ нечетных цифр.
+  будет $5^6\cdot\Cnk{6}{3} = 5^6 \cdot 20 = 312500$, но нам ещё надо вычесть те числа, которые начинаются с нуля,
+  тоесть те числа $< 10^5$, в записи которых $3$ и нечетные цифры.
+  их будет $5^5\cdot\Cnk{5}{3}$ (логика тут такая же, это типа почти как рекурсия). \\
+  ответ: $5^6\cdot\Cnk{6}{3} - 5^5\cdot\Cnk{5}{3} = 5^6 \cdot 20 - 5^5 \cdot 10 = \fbox{281250}$
+
+  \section{Сколькими способами можно разделить $6$ яблок, $3$ груши и $2$ сливы между Иваном, Петром, Анной и Дарьей, если фрукты одного вида не различаются?}
+  чтобы разложить $n$ предметов по $k$ ящикам,
+  надо записать $n+(k-1)$ объектов и выбрать какие $k-1$ из них будит разделителями (а оставшиеся будут предметами).
+  тоесть получается формула для размещения $n$ предметов по $k$ ящикам: $\Cnk{n+k-1}{k-1}$ \cite{box}.
+  нам тут надо перемножить эту формулу для $k=4$ и $n=\{6,\, 3,\, 2\}$. \\
+  ответ: $ \Cnk{9}{3} \cdot \Cnk{6}{3} \cdot \Cnk{5}{3} = 84 \cdot 20 \cdot 10 = \fbox{16800} $
+
+  \section{Найдите коэффициент при $x^{57}$ в многочлене $(x^2 + x^7 + x^9)^{20}$}
+  оказывается для трёхчленов тоже есть формула \cite{trinom}, также как и у двучленов.
+  $$ (a+b+c)^n = \sum_{\stackrel{i,j,k}{i+j+k=n}}  {n \choose i,j,k}\, a^i \, b^j \, c^k $$
+  $$ {n \choose i,j,k} = \frac{n!}{i!\,j!\,k!} $$
+  тут нам на сумму надо наложить ещё одно ограничение, потомучто мы хотим коэффициент при $x^{57}$.
+  надо чтобы $a^i b^j c^k = x^{2i} x^{7j} x^{9k}$ было равно $x^{57}$, тоесть $2i+7j+9k = 57$.
+  получаем такую систему: \\
+  $\ds \begin{cases}
+    i+j+k = 20 \\
+    2i+7j+9k = 57 \\
+    i,j,k \in \N \\
+  \end{cases}$ \hfill $\begin{cases}
+    i = 20-j-k \\
+    5j+7k = 17 \\
+    i,j,k \in \N \\
+  \end{cases}$ \hfill $\begin{cases}
+    k = 1 \\
+    j = 2 \\
+    i = 17 \\
+  \end{cases}$ \\
+  у нас нашлось только одно решение, и поэтому нам ненужна сумма. \\
+  ответ: $\ds \f{20!}{1!\,2!\,17!} = \fbox{3420}$
+
+  \section{Сколькими способами можно разложить семь различных монет по трем различным карманам так, чтобы каждый карман был не пуст?}
+  из задания \textbf{2} мы знаем что всего у нас тут $3^7$ способа, и теперь нам надо убрать все случаи, где есть пустые карманы.
+  у нас есть $3$ случая, в которых у нас два пустых кармана, но нам ещё надо посчитать в скольких случаях будет ровно один пустой карман.
+  му можем посчитать количество способов засунуть эти монетки в два кармана. будет $2^7$. но это не совсем то что нам надо.
+  там в двух из $2^7$ случаев будет два пустых кармана (все монетки в одном кармане), а это мы уже посчитали.
+  потом нам надо $2^7-2$ домножить на $3$, потомучто у нас есть три разных способа выкинуть один карман. \\
+  ответ: $3^7 - 3 \cdot (2^7-2) - 3 = \fbox{1806}$
+
+  \section{Скольким способами можно переставить $10$ стоящих в ряд книг, чтобы ровно $4$ из них остались на месте?}
+  у нас есть $\Cnk{10}{4}$ способов выбрать какие книги останутся на месте, а какие будут переставлены.
+  теперь нам надо найти сколькими способами можно расставить $6$ книг так, чтобы они все переместились.
+  такая перестановка на самом деле очень смешно называется: "{}беспорядок"{}, а на английском ещё смешнее: "{}derangement"{} \cite{der}.
+  количество беспорядков размера $n$ называется субфакториалом и обозначается $!n$ \cite{sub}.
+  посчитать его можно рекурсивно, а можно просто поделить нормальный факториал на $e$ \cite{sub}.
+  тоесть $!6 = \l[\f{6!}{e}\r] = 265$, а $\Cnk{10}{4} = 210$. \\
+  ответ: $\Cnk{10}{4} \cdot !6 = 210 \cdot 265 = \fbox{55650}$
+
+  \section{Сколько чисел из $\range{2020}$ не взаимно просты с $2020$?}
+  $\varphi(2020)$ это количество чисел из $\range{2020}$ взаимно простых c $2020$.
+  тогда нам просто надо $2020 - \varphi(2020)$, а $\varphi(2020) = 800$. \\
+  ответ: $ 2020 - 800 = \fbox{1220} $
+
+  \section{Сколько есть семизначных чисел $\overline{a_7a_6 \dots a_1}$, где $a_i \leq a_{i+1}$ при всех $i$?}
+  \begin{wrapfigure}{r}{4.3cm}
+    \vspace{-.5cm}
+    \hfill
+    \begin{tikzpicture}[x=.5cm,y=.5cm]
+      \draw[step=1, gray, very thin] (0,9) grid (7,0);
+      \draw[-stealth, thick] (0,9)--
+        (0,8)--(1,8)--
+        (1,7)--(2,7)--
+        (2,5)--(3,5)--
+        (3,4)--(4,4)--
+        (4,3)--(5,3)--
+        (5,2)--(6,2)--
+        (6,2)--(7,2)--
+      (7,0);
+
+      \node[anchor=north] at (0.5,0) {$8$};
+      \node[anchor=north] at (1.5,0) {$7$};
+      \node[anchor=north] at (2.5,0) {$5$};
+      \node[anchor=north] at (3.5,0) {$4$};
+      \node[anchor=north] at (4.5,0) {$3$};
+      \node[anchor=north] at (5.5,0) {$2$};
+      \node[anchor=north] at (6.5,0) {$2$};
+
+      \node[anchor=east] at (0,0) {\texttt{\textquotesingle 0\textquotesingle}};
+      \node[anchor=east] at (0,1) {\texttt{\textquotesingle 1\textquotesingle}};
+      \node[anchor=east] at (0,2) {\texttt{\textquotesingle 2\textquotesingle}};
+      \node[anchor=east] at (0,3) {\texttt{\textquotesingle 3\textquotesingle}};
+      \node[anchor=east] at (0,4) {\texttt{\textquotesingle 4\textquotesingle}};
+      \node[anchor=east] at (0,5) {\texttt{\textquotesingle 5\textquotesingle}};
+      \node[anchor=east] at (0,6) {\texttt{\textquotesingle 6\textquotesingle}};
+      \node[anchor=east] at (0,7) {\texttt{\textquotesingle 7\textquotesingle}};
+      \node[anchor=east] at (0,8) {\texttt{\textquotesingle 8\textquotesingle}};
+      \node[anchor=east] at (0,9) {\texttt{\textquotesingle 9\textquotesingle}};
+    \end{tikzpicture}
+  \end{wrapfigure}
+  тут нам надо вспомнить задание \textbf{5}. мы представим наше число как некую гистограмму.
+  каждой циферке будет соответствовать столбик, и его высота будет равна значению этой циферки, а $x$ координата будет её индексом в числе.
+  тогда каждый путь нашего робота будет соответствовать такому числу. вот например я тут нарисовал для числа $8754322$.
+  тоесть мы можем не считать количество таких семизначных чисел, мы просто посчитаем количество различных путей нашего робота.
+  мы уже знаем что их будет $\Cnk{7+9}{7} = 11440$.
+  но мы пропустили одну очень важную деталь: у нас $a_7 \neq 0$, потомучто тогда число не будет семизначным.
+  хотя это на самом деле не так страшно. изза ограничения на циферки (они всегда должны идти вниз), у нас только одно такое число: $0000000$.
+  нам ничего не мешает просто вычесть его из ответа. \\
+  ответ: $11440 - 1 = \fbox{11439}$
+
+  \vfill
+  \begin{thebibliography}{9}
+    % \bibitem{дашков} Дашков Е. В. Введение в математическую логику // URL: \url{https://drive.google.com/file/d/1wLW9t2UFJk9tTu8nM_YAYYr9zzZwKD1W/view}
+    \bibitem{divisor} \url{https://en.wikipedia.org/wiki/Divisor#Further_notions_and_facts}
+    \bibitem{trinom} \url{https://en.wikipedia.org/wiki/Trinomial_expansion}
+    \bibitem{box} \url{http://math-hse.info/a/2014-15/soc-dm/lectures/lecture2_20150205.pdf}
+    \bibitem{der} \url{https://en.wikipedia.org/wiki/Derangement}
+    \bibitem{sub} \href{https://ru.wikipedia.org/wiki/%D0%A1%D1%83%D0%B1%D1%84%D0%B0%D0%BA%D1%82%D0%BE%D1%80%D0%B8%D0%B0%D0%BB}{\textbf{\texttt{https://ru.wikipedia.org/wiki/Субфакториал}}}
+  \end{thebibliography}
+\end{document}
