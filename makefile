@@ -10,7 +10,7 @@ cp := copy
 mp :=
 endif
 
-all: derivatives.png derivativesOnly.png integrals.png
+all: derivatives.png derivativesOnly.png integrals.png shapes.png
 
 %.tex: %_if.tex
 	sed "s/^\x25#/#/" $< | cpp ${ARGS} -x c - -o - | sed "s/^#.*$$//" > $@
