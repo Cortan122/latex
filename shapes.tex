@@ -1,0 +1,41 @@
+\documentclass[a4paper,12pt]{article}
+
+\usepackage{cmap} % поиск в PDF
+\usepackage{mathtext} % русские буквы в формулах
+\usepackage[english,russian]{babel} % локализация и переносы
+\usepackage[T2A]{fontenc} % кодировка
+\usepackage[utf8]{inputenc} % кодировка исходного текста
+\usepackage{amsmath}
+\usepackage{amsfonts}
+
+\usepackage[margin=0.5in]{geometry}
+\pagenumbering{gobble}
+
+\newcommand{\ds}{\displaystyle}
+
+\begin{document}
+
+\section{Длина дуги}
+$\ds L = \int_a^b \sqrt{1+(y'(x))^2} dx$ \\
+$\ds L = \int_{t_1}^{t_2} \sqrt{(x'(t))^2 + (y'(t))^2 + (z'(t))^2 + \cdots}\ dt$
+
+\section{Объём}
+$\ds V = \pi \int_a^b f^2(x) dx$
+
+\section{Площадь поверхности}
+$\ds S = 2\pi \int_a^b \left|y(x)\right|\sqrt{1+(y'(x))^2}\ dx$ \\
+$\ds S = 2\pi \int_{t_1}^{t_2} \left|y(x)\right|\sqrt{(x'(t))^2+(y'(x))^2}\ dt$
+
+\section{Сходимость}
+$0:$ $\ds \int_0^1 \frac{dx}{x^\alpha} $ \quad $\begin{matrix}
+  \alpha < 1 & сходится \\
+  \alpha \geq 1 & расходится \\
+\end{matrix}$ \\ $\infty:$ $\ds \int_1^{+\infty} \frac{dx}{x^\alpha} $ \quad $\begin{matrix}
+  \alpha > 1 & сходится \\
+  \alpha \leq 1 & расходится \\
+\end{matrix}$
+
+\section{Интегрирование по частям}
+$\ds \int f g' \ dx = fg - \int f' g \ dx$
+
+\end{document}
