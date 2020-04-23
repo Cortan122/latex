@@ -1,0 +1,228 @@
+\documentclass{article}
+
+\usepackage[table]{xcolor}
+\usepackage{cmap} % поиск в pdf
+\usepackage{mathtext} % русские буквы в формулах
+\usepackage[english,russian]{babel} % локализация и переносы
+\usepackage[T2A]{fontenc} % кодировка в pdf (магия)
+\usepackage[utf8]{inputenc} % кодировка исходного текста
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage{gensymb}
+\usepackage{headertable2}
+
+\usepackage[hidelinks,bookmarks=false]{hyperref}
+\usepackage{xurl}
+\usepackage[margin=0.5in]{geometry}
+\usepackage{graphicx}
+\usepackage{tikz}
+\usepackage{wrapfig}
+\usepackage{textcomp}
+\usepackage{fancyvrb}
+\usepackage[normalem]{ulem}
+
+\makeatletter
+\newcommand\incircbin{\mathpalette\@incircbin}
+\newcommand\@incircbin[2]{\mathbin{\ooalign{\hidewidth$#1#2$\hidewidth\crcr$#1\bigcirc$}}}
+\newcommand{\osim}{\incircbin{\sim}} % AC voltage source
+\makeatother
+
+\newcommand{\notimplies}{\mathrel{{\ooalign{\hidewidth$\not\phantom{=}$\hidewidth\cr$\implies$}}}}
+\newcommand{\VCenter}[2]{\vcenter{\hbox{\scalebox{#1}{$#2$}}}}
+
+\newcommand{\ds}{\displaystyle}
+\newcommand{\DS}{\phantom{$0.5$}}
+\newcommand{\N}{\mathbb{N}}
+\newcommand{\Z}{\mathbb{Z}}
+\newcommand{\Q}{\mathbb{Q}}
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\range}{\underline}
+\newcommand{\Aleph}{2^{\aleph_0}}
+\newcommand{\Cnk}[2]{C_{#1}^{#2}}
+\newcommand{\pe}[2]{({#1},\, {#2})}
+\newcommand{\p}[2]{\pe{#1}{#2},\,}
+\newcommand{\K}{\cellcolor{black}}
+\renewcommand{\f}{\frac}
+\renewcommand{\l}{\left}
+\renewcommand{\r}{\right}
+\renewcommand{\P}[1]{\mathcal{P}\l(#1\r)}
+\renewcommand{\emptyset}{\varnothing}
+
+\definecolor{red}{HTML}{d62728}
+\definecolor{orange}{HTML}{ff7f0e}
+\definecolor{green}{HTML}{2ca02c}
+% \definecolor{blue}{HTML}{1f77b4}
+\newcommand{\red}[1]{{\color{red}{#1}}}
+\newcommand{\orange}[1]{{\color{orange}{#1}}}
+\newcommand{\green}[1]{{\color{green}{#1}}}
+\newcommand{\blue}[1]{{\color{blue}{#1}}}
+
+% \pagecolor{black}
+% \color{white}
+
+\title{Дискретная математика \\ Домашнее задание №4}
+\author{AAAAA AAAAAAA \\ AAAAAA}
+
+\begin{document}
+  \maketitle
+  \HeaderTable{10}
+
+  \section{Приведите, если это возможно, пример множества $A$ и отношения $R \subseteq A^2$, таких что $R$}
+  Бинарное отношение R называется \cite{dashkov}:
+  \begin{enumerate}
+    \item рефлексивным, если $\forall x: (x,\, x) \in R$
+    \item иррефлексивным, если $\forall x: (x,\, x) \not\in R$
+    \item симметричным, если $\forall x\forall y: (xRy \implies yRx)$
+    \item антисимметричным, если $\forall x\forall y: ((xRy \land yRx) \implies x=y)$
+    \item транзитивным, если $\forall x\forall y\forall z: ((xRy \land yRz) \implies xRz)$
+  \end{enumerate}
+  \subsection{рефлексивно, симметрично, не транзитивно}
+  $\ds A = \range{3}$ \\
+  $\ds R = \l\{\p{0}{0} \p{1}{1} \p{2}{2} \p{0}{1} \p{1}{0} \p{2}{1} \pe{1}{2} \r\}$ \\
+  \setlength\tabcolsep{4pt}
+  \begin{tabular}{|c|c|c|c|}
+    \hline
+      & 0 & 1 & 2 \\ \hline
+    0 &\K &\K &   \\ \hline
+    1 &\K &\K &\K \\ \hline
+    2 &   &\K &\K \\ \hline
+  \end{tabular}
+  \setlength\tabcolsep{6pt} \\
+  симметричность тут видно по таблице, рефлексивность тоже видно (вся диагональ закрашена), а транзитивность опровергается одним контрпримером: \\
+  $\ds x = 0;\quad y = 1;\quad z = 2$ \hfill
+  $\ds (0R1 \land 1R2) \implies 0R2$ \hfill
+  $\ds (\texttt{True} \land \texttt{True}) \implies \texttt{False}$
+
+  \subsection{антисимметрично, транзитивно, не рефлексивно}
+  $\ds A = \range{2}$ \\
+  $\ds R = \l\{\pe{0}{1}\r\}$ \\
+  \setlength\tabcolsep{4pt}
+  \begin{tabular}{|c|c|c|}
+    \hline
+      & 0 & 1 \\ \hline
+    0 &   &\K \\ \hline
+    1 &   &   \\ \hline
+  \end{tabular}
+  \setlength\tabcolsep{6pt} \\
+  тут нет рефлексивности, тк $\pe{0}{0} \not\in R$,
+  антисимметричность работает потомучто у нас слева от импликации всегда будет \texttt{False}.
+  в транзитивности, чтобы слева от импликации был \texttt{True},
+  надо чтобы $x = 0 \land y = 1$ и чтобы $y = 0 \land z = 1$ (противоречие).
+  значит что транзитивность работает потомучто у нас слева от импликации всегда будет \texttt{False}.
+
+  \subsection{симметрично, транзитивно, не рефлексивно}
+  $\ds A = \range{1}$ \\
+  $\ds R = \emptyset$ \\
+  \setlength\tabcolsep{4pt}
+  \begin{tabular}{|c|c|}
+    \hline
+      & 0 \\ \hline
+    0 &   \\ \hline
+  \end{tabular}
+  \setlength\tabcolsep{6pt} \\
+  тут нет рефлексивности, тк $\pe{0}{0} \not\in R$, симметричность тут тоже видно по таблице,
+  а транзитивность работает потомучто у нас слева от импликации всегда будет \texttt{False}.
+
+  \section{Докажите что, если $P$ и $Q$ иррефлексивны, то $P \cup Q$, $P \cap Q$ и $P^{-1}$ тоже}
+  иррефлексивность это когда у нас в множестве нет пар, в которых одинаковые элементы.
+  тоесть мы можем сказать что $R$ иррефлексивно $\iff R \cap \{\text{множество всех пар, в которых одинаковые элементы}\} = \emptyset$.
+  назовём это множество $X$. будет
+  $ (P \cap Q) \cap X = P \cap (Q \cap X) = P \cap \emptyset = \emptyset $ и
+  $ (P \cup Q) \cap X = (P \cap X) \cup (Q \cap X) = \emptyset \cup \emptyset = \emptyset $.
+  а для $P^{-1}$ нам надо сначала загооглить что такое $R^{-1}$.
+  чтобы получить $R^{-1}$ мы просто меняем местами элементы каждой пары в $R$ \cite{dashkov}.
+  это совсем никак не влияет на те пары, которые нам интересны, и поэтому тут всё очевидно.
+
+  \section{Докажите что, для любого ч.у.м. $\mathcal{A} = \pe{A}{\leq}$ найдется множество $S \subseteq \P{A}$, такое что $\mathcal{A} \cong \pe{S}{\subseteq}$}
+  мы делаем отображение $A \to \P{A}$, где $x \mapsto \{y \in A \mid y \leq x\}$.
+  это будет инъекцией, изза того элемента, который туда вошёл по равенству.
+  потом мы сможем из этого сделать биекцию убрав из $\P{A}$ все элементы, в которые мы непопали (это будет $S$).
+  тоесть $S = \l\{\l\{y \in A \mid y \leq x\r\} \mid x \in A\r\}$.
+  тут вроде очевидно, что множество всех элементов меньших $x$ будет меньше множества всех элементов меньших $y$ тогда и только тогда когда $x$ меньше $y$.
+
+  \section{Найдите в ч.у.м. $\pe{\P{\N}}{\subseteq}$ непустую цепь, где нет ни наибольшего, ни наименьшего элемента}
+  если мы возьмём $A = \l\{0,\, 2,\, 4,\, 6,\, 8,\, \dots \r\}$, то мы в него можем до бесконечности убирать и добавлять элементы.
+  мы будем собирать нашу цепь $S$ из двух кусочков: $S_1$ и $S_2$, тоесть $S = S_1 \cup S_2$.
+  у нас в $S_1$ будут "{}числа"{} меньше $A$, а в $S_2$ больше.
+  получается $S_1 = \l\{ A - \range{2n} \mid n \in \N \r\}$,
+  а $S_2 = \l\{ A \cup \range{2n} \mid n \in \N \r\}$.
+  тут $A$ входит и в $S_1$ и в $S_2$, но нам както пофиг.
+
+  \section{Пусть в ч.у.м. $\mathcal{A} = \pe{A}{<}$ множество конечно $A$ и $\max_< A = \{x\}$. Докажите, что элемент $x$ наибольший в $A$}
+  TODO
+
+  \section{Явно определите какой-либо линейный порядок на множестве $\R^2$}
+  \begin{center}
+    \begin{BVerbatim}
+      function <=([x1,y1], [x2,y2]){
+        if(x1 != x2)return x1 <= x2;
+        return y1 <= y2;
+      }
+    \end{BVerbatim}
+  \end{center}
+  мы тут определили линейный порядок на множестве $\R^2$ через линейный порядок на множестве $\R$ (именно поэтому он будет линейным порядком).
+  \sout{можно} (нельзя, но можно для $\N^2$) его ещё определить через сравнение строк, если мы еще подкрутим \texttt{Float.ToString()}.
+  хотя тут могут быль проблемы с иррациональными числами, но я эту функцию (которая наверху) именно на этом основывал.
+
+  \section{Рассмотрим ч.у.м. $\mathcal{A} = \pe{\pe{-1}{1}}{\leq}$ и $\mathcal{B} = \pe{\pe{-1}{0} \cup \pe{0}{1}}{\leq}$. Докажите, что $\mathcal{A} \not\cong \mathcal{B}$}
+  TODO
+
+  \section{Отношение $S$ на множестве $\N^2$ обладает следующим свойством: \\ $(a,\, b)S(c,\, d) \iff (ad = bc \text{ и } b \neq 0 \neq d) \text{ или } (a = c \text{ и } b = 0 = d)$. \\ Верно ли, что $S$ -- отношение эквивалентности?}
+  когда у нас $b = 0 = d$ всё очевидно, тк у нас тут вообще равенство.
+  потом мы можем в $ad = bc$ разделить и будет $\ds \f{a}{b} = \f{c}{d}$.
+  тоесть мы определили отображение $f: \N^2 \to \R$, где $\ds \pe{a}{b} \mapsto \f{a}{b}$.
+  получается мы сравниваем равенство значений $f(x)$ и поэтому это будет эквивалентность.
+
+  \subsection{$\protect\osim$}
+  $\forall A\forall B\quad\forall (f: A \to B)\quad$ (тут $A$ и $B$ это какието множества) \\
+  отношение определённое как $\forall a,\,b \in A: a \osim b \iff f(a)=f(b)$ будет отношением эквивалентности \\
+  доказательство рефлексивности: \\ $\forall x: x=x \\ \forall x: f(x)=f(x) \\ \forall x: x \osim x$ \\
+  доказательство симметричности: \\ $\forall x\forall y: (x=y \implies y=x)
+  \\ \forall x\forall y: (f(x)=f(y) \implies f(y)=f(x)) \\ \forall x\forall y: (x \osim y \implies y \osim x)$ \\
+  доказательство транзитивности: \\
+  $\forall x\forall y\forall z: ((x=y \land y=z) \implies x=z) \\
+  \forall x\forall y\forall z: ((f(x)=f(y) \land f(y)=f(z)) \implies f(x)=f(z)) \\
+  \forall x\forall y\forall z: ((x \osim y \land y \osim z) \implies x \osim z)$ \\
+  тоесть это работает потомучто $=$ тоже имеет все эти свойства, поскольку оно тоже отношение эквивалентности.
+
+  \section{Пусть $R$ -- бинарное отношение на множестве $A$. Когда $R$ является и частичным порядком, и отношением эквивалентности одновременно?}
+  для эквивалентности надо рефлексивность, симметричность и транзитивность \cite{equiv}.
+  для порядка надо рефлексивность, антисимметричность и транзитивность \cite{order}.
+  чтобы у нас была одновременно симметричность и антисимметричность, нам надо чтобы закрашенные клеточки были только по диагонали.
+  тоесть $\ds R \subseteq \{\pe{x}{x} \mid x \in A\}$, но у нас рефлексивность и $\ds \{\pe{x}{x} \mid x \in A\} \subseteq R$.
+  поэтому $\ds R = \{\pe{x}{x} \mid x \in A\}$.
+
+  тут ещё надо рассмотреть случай когда у нас строгий порядок ($<$ а не $\leq$).
+  там вместо рефлексивности будет иррефлексивность.
+  у нас для строгого надо иррефлексивность, а для эквивалентности рефлексивность.
+  а когда у нас быть иррефлексивность и рефлексивность одновременно?
+  когда $A$ пустое множество.
+  но это уже учтено в предыдущем параграфе.
+
+  \section{Отношение $E$ на множестве $\range{2}^\N$ определяется так: $fEg$ тогда и только тогда, когда $f = g \circ \sigma$ для некоторой биекции $\sigma: \N \to \N$}
+  элементы множества $\range{2}^\N$ можно рассматривать как числа от 0 до 1 записанные в двоичной системе.
+  тоесть чтобы из одного такого числа можно было получить другое перестановкой битиков,
+  нужно чтобы в них совпадало количество \texttt{0} и \texttt{1}.
+  тут мы можем определить отображение $f: \range{2}^\N \to (\N \cup \{\infty\})^2$,
+  где $x \mapsto \pe{\text{количество нулей в }x}{\text{количество единиц в }x}$, но оно небудет сюръективным,
+  тк хотябы один из элементов должен быть $\infty$, потомучто их сумма должна быть $\infty$.
+  назовём множество таких (у которых сумма $\infty$) пар из $(\N \cup \{\infty\})^2$ -- $I$.
+
+  \subsection{Докажите, что $E$ -- отношение эквивалентности}
+  тут мы просто можем снова воспользоватся $\osim$, который был доказан в \textbf{8.1}.
+
+  \subsection{Докажите, что множество $\range{2}^\N / E$ счетно}
+  тут каждый элемент в $I$ соответствует своему классу эквивалентности. \\
+  $I \lesssim (\N \cup \{\infty\})^2 \sim \N^2 \sim \N$ тоесть $I \lesssim \N$, \\
+  но мы можем привести $\N$ примеров элементов из $I$, потомучто $\forall n \in \N: \pe{n}{\infty} \in I$, \\
+  поэтому $I \gtrsim \N$, тоесть $I ~ \N$. \\
+  $\blacksquare$
+
+  \vfill
+  \begin{thebibliography}{9}
+    \bibitem{dashkov} Дашков Е. В. Введение в математическую логику // URL: \url{https://drive.google.com/file/d/1wLW9t2UFJk9tTu8nM_YAYYr9zzZwKD1W/view}
+    \bibitem{equiv} \url{https://ru.wikipedia.org/wiki/%D0%9E%D1%82%D0%BD%D0%BE%D1%88%D0%B5%D0%BD%D0%B8%D0%B5_%D1%8D%D0%BA%D0%B2%D0%B8%D0%B2%D0%B0%D0%BB%D0%B5%D0%BD%D1%82%D0%BD%D0%BE%D1%81%D1%82%D0%B8}
+    \bibitem{order} \url{https://ru.wikipedia.org/wiki/%D0%9E%D1%82%D0%BD%D0%BE%D1%88%D0%B5%D0%BD%D0%B8%D0%B5_%D0%BF%D0%BE%D1%80%D1%8F%D0%B4%D0%BA%D0%B0}
+  \end{thebibliography}
+\end{document}
