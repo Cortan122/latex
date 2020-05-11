@@ -21,6 +21,7 @@
 \usepackage{textcomp}
 \usepackage{fancyvrb}
 \usepackage[normalem]{ulem}
+\usepackage{pgfplots}
 
 \makeatletter
 \newcommand\incircbin{\mathpalette\@incircbin}
@@ -60,6 +61,9 @@
 
 % \pagecolor{black}
 % \color{white}
+
+\pgfplotsset{soldot/.style={color=blue,only marks,mark=*}}
+\pgfplotsset{holdot/.style={color=blue,fill=white,only marks,mark=*}}
 
 \title{Дискретная математика \\ Домашнее задание №4}
 \author{AAAAA AAAAAAA \\ AAAAAA}
@@ -145,12 +149,23 @@
   если мы возьмём $A = \l\{0,\, 2,\, 4,\, 6,\, 8,\, \dots \r\}$, то мы в него можем до бесконечности убирать и добавлять элементы.
   мы будем собирать нашу цепь $S$ из двух кусочков: $S_1$ и $S_2$, тоесть $S = S_1 \cup S_2$.
   у нас в $S_1$ будут "{}числа"{} меньше $A$, а в $S_2$ больше.
-  получается $S_1 = \l\{ A - \range{2n} \mid n \in \N \r\}$,
+  получается $S_1 = \l\{ A \setminus \range{2n} \mid n \in \N \r\}$,
   а $S_2 = \l\{ A \cup \range{2n} \mid n \in \N \r\}$.
   тут $A$ входит и в $S_1$ и в $S_2$, но нам както пофиг.
 
   \section{Пусть в ч.у.м. $\mathcal{A} = \pe{A}{<}$ множество конечно $A$ и $\max_< A = \{x\}$. Докажите, что элемент $x$ наибольший в $A$}
-  TODO
+  тут очень непонятное условие.
+  если его прочитать, то начинаешь думать что от тебя хотят доказать что "{}если максимальный есть только один то он наибольший"{}.
+  и возникает вопрос: "{}чем максимальный отличается от наибольшего?"{}.
+  только потом, после a not inconsiderable amount of time, spent on extensive research, стало понятно что:
+  $$ x \in \operatorname{max}_{<} A \iff \forall y \in A: x \not< y $$
+  $$ x \text{ наибольший в } A \iff \forall y \in A: y \leq x $$
+  мы тут доказываем от обратного. мы предполагаем что $x$ не наибольший, тоесть что $\exists y: y \not\leq x$.
+  \sout{назовём этот $y$ $z$.} пусть этот $y$ (какойнибудь из этих $y$) называется $z$.
+  мы ещё можем разложить непонятный $\not\leq$ на $\not<$ и $\neq$. получается что $z \neq x$ и $z \not< x$.
+  но из $\max_{<}$ мы знаем что $x \not< z$. значит $x$ и $z$ несравнимы.
+  из этого можно сделать вывод, что хотябы один из всех возможных $z$ (тот который максимальный, а он есть тк множество небесконечно)
+  тоже входит в $\max_{<}$ и, поэтому в $\max_{<}$ будет больше одного элемента. противоречие.
 
   \section{Явно определите какой-либо линейный порядок на множестве $\R^2$}
   \begin{center}
@@ -162,11 +177,64 @@
     \end{BVerbatim}
   \end{center}
   мы тут определили линейный порядок на множестве $\R^2$ через линейный порядок на множестве $\R$ (именно поэтому он будет линейным порядком).
-  \sout{можно} (нельзя, но можно для $\N^2$) его ещё определить через сравнение строк, если мы еще подкрутим \texttt{Float.ToString()}.
+  \sout{можно} (нельзя, но можно для $\N^2$) его ещё определить через сравнение строк, если мы ещё подкрутим \texttt{Float.ToString()}.
   хотя тут могут быль проблемы с иррациональными числами, но я эту функцию (которая наверху) именно на этом основывал.
 
+  тут рекурсивный аргумент про наследование свойств отношения от $\leq$, которое определено на $\R$,
+  очень похож на то что происходит в \textbf{8.1}.
+  там мы доказываем что $\osim$ определенное через $=$ является отношением эквивалентности, потомучто $=$ это тоже эквивалентность.
+
   \section{Рассмотрим ч.у.м. $\mathcal{A} = \pe{\pe{-1}{1}}{\leq}$ и $\mathcal{B} = \pe{\pe{-1}{0} \cup \pe{0}{1}}{\leq}$. Докажите, что $\mathcal{A} \not\cong \mathcal{B}$}
-  TODO
+  мы можем этот изоморфизм сделать функцией $f: \mathcal{X} \to \mathcal{Y}$.
+  у такой функции должны быть свойства:
+  \begin{enumerate}
+    \item биекция (очевидно)
+    \item $f(-1)=-1$ и $f(1)=1$ в переделе
+    \item $\forall x : f'(x) \geq 0$ (это чтобы была инъекция и чтобы сохранялся порядок)
+    \item тут мы ещё считаем что $\mathcal{X}$ это всегда $\mathcal{A}$, а $\mathcal{Y}$ это $\pe{-1}{1}$, но с какойто дыркой.
+    (как $\mathcal{B}$, $\mathcal{C}$ и $\mathcal{D}$)
+  \end{enumerate}
+  ещё нам тут нужны два вспомогательных чума:
+  $\mathcal{C} = \pe{\pe{-1}{-0.5} \cup \pe{0.5}{1}}{\leq}$ и $\mathcal{D} = \pe{\pe{-1}{-0.5} \cup [0.5,\, 1)}{\leq}$. \\
+  для $\mathcal{A} \cong \mathcal{A}$ и для $\mathcal{A} \cong \mathcal{D}$ мы можем легко нарисовать графики.
+
+  \noindent
+  \begin{tikzpicture}
+    \begin{axis}[xlabel=$\mathcal{A}$,ylabel={$\mathcal{A}$},xmin = -1,xmax = 1,ymin = -1,ymax = 1]
+      \addplot[domain=-1:1,samples=200,color=blue] {sin(deg(x*4*pi))/5/pi + x};
+    \end{axis}
+  \end{tikzpicture} \hfill
+  \begin{tikzpicture}
+    \begin{axis}[xlabel=$\mathcal{A}$,ylabel={$\mathcal{D}$},xmin = -1,xmax = 1,ymin = -1,ymax = 1]
+      \addplot[color=blue] coordinates { (-1,-1) (0,-.5) };
+      \addplot[color=blue] coordinates { (0,.5) (1,1) };
+      \addplot[holdot] coordinates{(0,-.5)};
+      \addplot[soldot] coordinates{(0,.5)};
+    \end{axis}
+  \end{tikzpicture}
+
+  \noindent
+  \begin{wrapfigure}{r}{4cm}
+    \vspace{-.5cm}
+    \centering
+    \begin{tikzpicture}
+      \begin{axis}[xlabel=$\mathcal{B}$,ylabel={$\mathcal{C}$},xmin = -1,xmax = 1,ymin = -1,ymax = 1,width=4cm]
+        \addplot[color=blue] coordinates { (-1,-1) (0,-.5) };
+        \addplot[color=blue] coordinates { (0,.5) (1,1) };
+        \addplot[holdot] coordinates{(0,-.5)(0,.5)};
+      \end{axis}
+    \end{tikzpicture}
+    \vspace{-1cm}
+  \end{wrapfigure}
+  но для $\mathcal{A} \cong \mathcal{C}$ у нас ничего неполучится.
+  та точка где у нас разрыв (на графике это $0$, а тут это будет $r$) не должна быть разрывной в $\mathcal{A}$.
+  поэтому нам надо чтобы ровно одна из границ дырки в $\mathcal{Y}$ была закрашена,
+  потомучто если закрашены обе или если закрашенных нет, то непонятно чему равно $f(r)$.
+
+  ничего неизменится если мы будем уменьшать радиус дырки (в $\mathcal{C}$ он равен $0.5$).
+  если мы будем уменьшать радиус дырки в $\mathcal{C}$, то у нас в конце концов будет $\mathcal{B}$.
+  и ничего непоменялось: $\mathcal{B}$ также как и $\mathcal{C}$ неизоморфно $\mathcal{A}$.
+  мы даже можем нарисовать график $\mathcal{B} \cong \mathcal{C}$, но у меня кончилось место.
 
   \section{Отношение $S$ на множестве $\N^2$ обладает следующим свойством: \\ $(a,\, b)S(c,\, d) \iff (ad = bc \text{ и } b \neq 0 \neq d) \text{ или } (a = c \text{ и } b = 0 = d)$. \\ Верно ли, что $S$ -- отношение эквивалентности?}
   когда у нас $b = 0 = d$ всё очевидно, тк у нас тут вообще равенство.
@@ -216,7 +284,7 @@
   тут каждый элемент в $I$ соответствует своему классу эквивалентности. \\
   $I \lesssim (\N \cup \{\infty\})^2 \sim \N^2 \sim \N$ тоесть $I \lesssim \N$, \\
   но мы можем привести $\N$ примеров элементов из $I$, потомучто $\forall n \in \N: \pe{n}{\infty} \in I$, \\
-  поэтому $I \gtrsim \N$, тоесть $I ~ \N$. \\
+  поэтому $I \gtrsim \N$, тоесть $I \sim \N$. \\
   $\blacksquare$
 
   \vfill
