@@ -1,3 +1,13 @@
+ifeq ($(shell hostname),raspberrypi)
+SRCS = $(wildcard *.tex)
+PROGS = $(patsubst %.tex,%.pdf,$(SRCS))
+
+all: $(PROGS)
+
+%.pdf: %.tex
+	pdflatex --synctex=1 --file-line-error --shell-escape --interaction=nonstopmode "$^"
+
+else
 TMP ?= tmp
 current_dir = $(shell pwd)
 
@@ -48,3 +58,4 @@ clean:
 
 .PHONY: all clean
 .INTERMEDIATE: %.tex
+endif
