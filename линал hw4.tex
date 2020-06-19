@@ -1,0 +1,336 @@
+\documentclass{article}
+
+\usepackage{cmap} % поиск в pdf
+\usepackage{mathtext} % русские буквы в формулах
+\usepackage[english,russian]{babel} % локализация и переносы
+\usepackage[T2A]{fontenc} % кодировка в pdf (магия)
+\usepackage[utf8]{inputenc} % кодировка исходного текста
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage{gensymb}
+\usepackage{headertable}
+
+\usepackage{enumitem}
+\usepackage[margin=0.5in]{geometry}
+\setcounter{MaxMatrixCols}{20}
+
+\newcommand{\notimplies}{\mathrel{{\ooalign{\hidewidth$\not\phantom{=}$\hidewidth\cr$\implies$}}}}
+
+\newcommand{\ds}{\displaystyle}
+\newcommand{\DS}{\phantom{$0.5$}}
+\newcommand{\N}{\mathbb{N}}
+\newcommand{\Z}{\mathbb{Z}}
+\newcommand{\Q}{\mathbb{Q}}
+\newcommand{\R}{\mathbb{R}}
+\renewcommand{\f}{\frac}
+\renewcommand{\l}{\left}
+\renewcommand{\r}{\right}
+\renewcommand{\emptyset}{\varnothing}
+\renewcommand{\phi}{\varphi}
+\DeclareMathOperator{\rank}{rank}
+\DeclareMathOperator{\im}{im}
+
+\usepackage{xcolor}
+\definecolor{red}{HTML}{d62728}
+\definecolor{orange}{HTML}{ff7f0e}
+\definecolor{green}{HTML}{2ca02c}
+% \definecolor{blue}{HTML}{1f77b4}
+\newcommand{\red}[1]{{\color{red}{#1}}}
+\newcommand{\orange}[1]{{\color{orange}{#1}}}
+\newcommand{\green}[1]{{\color{green}{#1}}}
+\newcommand{\blue}[1]{{\color{blue}{#1}}}
+
+% \pagecolor{black}
+% \color{white}
+
+\title{Алгебра \\ Домашнее задание №4}
+\author{AAAAA AAAAAAA \\ AAAAAA \\ Вариант 2}
+
+\begin{document}
+  \maketitle
+  \HeaderTable{10}
+
+  \section{Найти матрицу линейного оператора, переводящего векторы $a_1 \dots a_4$ соответственно в векторы $b_1 \dots b_4$ в базисе, в котором даны координаты векторов. Найти размерности ядра и образа этого линейного отображения.}
+  $$A = \l[a_1,\, a_2,\, a_3,\, a_4\r] = \begin{bmatrix}-6&1&-8&2\\7&0&-3&10\\-5&0&-8&-3\\-3&-4&2&-3\end{bmatrix}$$
+  $$B = \l[b_1,\, b_2,\, b_3,\, b_4\r] = \begin{bmatrix}-9&1&6&-24\\-9&7&4&-22\\1&7&1&1\\-1&3&7&-9\end{bmatrix}$$
+
+  \noindent
+  $\phi$ это наша искомая матрица и, тк она матрица линейного оператора, $\phi A = B$.
+  поэтому мы её можем найти так:
+  $$\phi = BA^{-1} = \begin{bmatrix}-9&1&6&-24\\-9&7&4&-22\\1&7&1&1\\-1&3&7&-9\end{bmatrix} \begin{bmatrix}- \f{89}{472} & \f{65}{944} & \frac{285}{1888} & - \f{89}{1888}\\\f{7}{118} & - \f{25}{236} & - \f{37}{472} & - \f{111}{472}\\\f{29}{472} & - \f{53}{944} & - \f{305}{1888} & \f{29}{1888}\\\f{71}{472} & \f{33}{944} & - \f{291}{1888} & \f{71}{1888}\end{bmatrix} = \begin{bmatrix}- \f{701}{472} & - \f{1795}{944} & \f{2441}{1888} & - \f{1173}{1888}\\- \f{449}{472} & - \f{2223}{944} & \f{1581}{1888} & - \f{3753}{1888}\\\f{207}{472} & - \f{655}{944} & - \f{1347}{1888} & - \f{3097}{1888}\\- \f{263}{472} & - \f{1033}{944} & - \f{245}{1888} & - \f{1679}{1888}\end{bmatrix}$$
+  $$\det(\phi) = 0, \qquad \dim(\im(\phi))=\rank(\phi) = 3, \qquad \dim(\ker(\phi))=4-\dim(\im(\phi))=1$$
+
+  \section{Применить алгоритм нахождения жордановой нормальной формы для матрицы}
+  $$A = \begin{bmatrix}2 & 1 & 0 & 0\\14 & 7 & 1 & 0\\-113 & -57 & -6 & 0\\-123 & -59 & -8 & 1\end{bmatrix}$$
+  % print(sp.latex(sp.Matrix([[2,1,0,0], [14,7,1,0], [-113,-57,-6,0], [-123,-59,-8,1], ])))
+
+  \noindent
+  у нас тут надо сначала найти собственные значения (eigenvalues) \\
+  чтобы их найти нам надо записать характеристический многочлен:
+  $$ \det(A - \lambda E) = \lambda^{4} - 4 \lambda^{3} + 6 \lambda^{2} - 4 \lambda + 1 $$
+
+  \noindent
+  получилось что у нас оно только одно $\lambda_1 = 1$, и мы даже можем его проверить:
+  $$ \begin{bmatrix}2 & 1 & 0 & 0\\14 & 7 & 1 & 0\\-113 & -57 & -6 & 0\\-123 & -59 & -8 & 1\end{bmatrix}\begin{bmatrix}0\\0\\0\\1\end{bmatrix} = \begin{bmatrix}0\\0\\0\\1\end{bmatrix} $$
+
+  \noindent
+  чтобы найти размеры жордановых клеток мы можем использовать такую формулу:
+  $$ h(m) = f(m-1)+f(m+1) - 2f(m) $$
+  $$ f(m) = \rank\l((A-\lambda E)^m\r) $$
+
+  \noindent
+  мы можем сначала найти все $f(x)$: \hfill $f(0) = 4$ \hfill $f(1) = 2$ \hfill $f(2) = 1$ \hfill $f(3) = 0$ \\
+  а вот и все $h(x)$: \hfill $h(1) = 2+1 - 2 \cdot 4 = 1$ \hfill $h(2) = 2+0 - 2 \cdot 1 = 0$ \hfill $h(3) = 1+0 - 2 \cdot 0 = 1$ \\
+  значит у нас есть одна клетка размера 1 и одна клетка размера 3, и матрица получается такая:
+  $$ \begin{bmatrix}1 & 1 & 0 & 0\\0 & 1 & 1 & 0\\0 & 0 & 1 & 0\\0 & 0 & 0 & 1\end{bmatrix} $$
+
+  \section{На линейном пространстве $\R_3[x]$ многочленов степени не выше трех задана функция}
+  $$ f(p) = p(0) + p(4) $$
+
+  \subsection{Показать, что эта функция является линейной формой}
+  у линейности есть два свойства:
+  \subsubsection{$\alpha f(x) = f(\alpha x)$}
+  $\alpha f(x) = f(\alpha x)$ \\
+  $\alpha (x(0) + x(4)) = (\alpha x)(0) + (\alpha x)(4)$ \\
+  $\alpha x(0) + \alpha x(4) = \alpha x(0) + \alpha x(4)$ \\
+  $\blacksquare$
+
+  \subsubsection{$f(x)+f(y) = f(x+y)$}
+  $f(x)+f(y) = f(x+y)$ \\
+  $x(0)+x(4) + y(0)+y(4) = (x+y)(0) + (x+y)(4)$ \\
+  $x(0)+x(4) + y(0)+y(4) = x(0)+x(4) + y(0)+y(4)$ \\
+  $\blacksquare$
+
+  \subsection{Найти строки её координатной записи в базисе $[1,\, x,\, x^2,\, x^3]$}
+  тут нам надо просто все векторы базиса подставить в $f$, будет $f = \l(2,\, 4,\, 16,\, 64\r)$
+
+  \subsection{Найти строки её координатной записи в базисе $[1,\, x-2,\, x^2 + 5,\, x^3 - 4x^2 - x - 5]$}
+  тут нам надо просто все векторы базиса подставить в $f$, будет $f = \l(2,\, 0,\, 26,\, -14\r)$
+
+  \section{В пространстве $\R^3$ задан базис $e = (e_1,\, e_2,\, e_3)$. Найти взаимный с ним базис $f = (f^1,\, f^2,\, f^3)$}
+  $$\begin{matrix}
+    e_1 = \begin{bmatrix}4\\11\\-7\end{bmatrix} &
+    e_2 = \begin{bmatrix}-2\\-13\\1\end{bmatrix} &
+    e_3 = \begin{bmatrix}-13\\-7\\-6\end{bmatrix} &
+    e = \begin{bmatrix}4 & -2 & -13\\11 & -13 & -7\\-7 & 1 & -6\end{bmatrix}
+  \end{matrix}$$
+
+  \noindent
+  чтобы найти взаимный базис нам просто надо транспонировать инвертированную матрицу первого, тоесть $f = \l(e^{-1}\r)^T$
+  $$ f = \l(\begin{bmatrix}4 & -2 & -13\\11 & -13 & -7\\-7 & 1 & -6\end{bmatrix}^{-1}\r)^T = \left[\begin{matrix}\frac{17}{230} & - \frac{1}{46} & - \frac{31}{230}\\\frac{1}{10} & - \frac{1}{10} & - \frac{1}{10}\\- \frac{8}{115} & \frac{1}{115} & - \frac{3}{115}\end{matrix}\right]^T = \left[\begin{matrix}\frac{17}{230} & \frac{1}{10} & - \frac{8}{115}\\- \frac{1}{46} & - \frac{1}{10} & \frac{1}{115}\\- \frac{31}{230} & - \frac{1}{10} & - \frac{3}{115}\end{matrix}\right] $$
+
+  \section{С помощью ортогонализации столбцов найти QR-разложение для матрицы}
+  $$ A = \left[\begin{matrix}-2 & 4 & 2\\0 & -4 & 0\\-2 & -3 & 3\end{matrix}\right] $$
+
+  \subsection{Ортогонализация Грама-Шмидта}
+  \hfill $ a_1 = \begin{bmatrix}-2\\0\\-2\end{bmatrix} $ \hfill
+  $ a_2 = \begin{bmatrix}4\\-4\\-3\end{bmatrix} $ \hfill
+  $ a_3 = \begin{bmatrix}2\\0\\3\end{bmatrix} $ \hfill \hspace{0cm} \\
+  как $b_1$ мы просто берём один из оригинальных векторов, тоесть $b_1 = a_1$ \\
+  но $b_2$ надо искать по формуле: $\ds b_2 = a_2 - \f{a_2 \cdot b_1}{b_1 \cdot b_1}b_1$, где $a_2 \cdot b_1 = -2$ и $b_1 \cdot b_1 = 8$ \\
+  получилось что $\ds b_2 = \begin{bmatrix}4\\-4\\-3\end{bmatrix} + \f{2}{8} \begin{bmatrix}-2\\0\\-2\end{bmatrix} = \begin{bmatrix}\f{7}{2}\\-4\\- \f{7}{2}\end{bmatrix}$ \\
+  $b_3$ мы тоже ищем по формуле, но она немного другая: $\ds b_3 = a_3 - \f{a_3 \cdot b_1}{b_1 \cdot b_1}b_1 - \f{a_3 \cdot b_2}{b_2 \cdot b_2}b_2$, \\
+  $\begin{cases}
+    a_3 \cdot b_1 = -10 \\
+    a_3 \cdot b_2 = -\f{7}{2} \\
+    b_2 \cdot b_2 = \f{81}{2} \\
+  \end{cases} \implies b_3 = \begin{bmatrix}2\\0\\3\end{bmatrix} + \f{10}{8} \begin{bmatrix}-2\\0\\-2\end{bmatrix} + \f{7}{81} \begin{bmatrix}\f{7}{2}\\-4\\- \f{7}{2}\end{bmatrix} = \begin{bmatrix}- \frac{16}{81}\\- \frac{28}{81}\\\frac{16}{81}\end{bmatrix}$ \\
+  теперь нам надо их всех нормализовать \\
+  $\ds q_1 = \f{b_1}{\sqrt{b_1 \cdot b_1}} = \left[\begin{matrix}- \frac{\sqrt{2}}{2}\\0\\- \frac{\sqrt{2}}{2}\end{matrix}\right]$ \hfill
+  $\ds q_2 = \f{b_2}{\sqrt{b_2 \cdot b_2}} = \left[\begin{matrix}\frac{7 \sqrt{2}}{18}\\- \frac{4 \sqrt{2}}{9}\\- \frac{7 \sqrt{2}}{18}\end{matrix}\right]$ \hfill
+  $\ds q_3 = \f{b_3}{\sqrt{b_3 \cdot b_3}} = \left[\begin{matrix}- \frac{4}{9}\\- \frac{7}{9}\\\frac{4}{9}\end{matrix}\right]$ \hfill
+  $\ds Q = \left[\begin{matrix}- \frac{\sqrt{2}}{2} & \frac{7 \sqrt{2}}{18} & - \frac{4}{9}\\0 & - \frac{4 \sqrt{2}}{9} & - \frac{7}{9}\\- \frac{\sqrt{2}}{2} & - \frac{7 \sqrt{2}}{18} & \frac{4}{9}\end{matrix}\right]$
+
+  \subsection{Найдем $R$ составляющую разложения}
+  чтобы найти $R$ нам надо умножить транспонированную $Q$ на $A$, тоесть \\
+  $\ds R = Q^TA = \left[\begin{matrix}- \frac{\sqrt{2}}{2} & 0 & - \frac{\sqrt{2}}{2}\\\frac{7 \sqrt{2}}{18} & - \frac{4 \sqrt{2}}{9} & - \frac{7 \sqrt{2}}{18}\\- \frac{4}{9} & - \frac{7}{9} & \frac{4}{9}\end{matrix}\right]\left[\begin{matrix}-2 & 4 & 2\\0 & -4 & 0\\-2 & -3 & 3\end{matrix}\right] = \left[\begin{matrix}2 \sqrt{2} & - \frac{\sqrt{2}}{2} & - \frac{5 \sqrt{2}}{2}\\0 & \frac{9 \sqrt{2}}{2} & - \frac{7 \sqrt{2}}{18}\\0 & 0 & \frac{4}{9}\end{matrix}\right]$
+
+  \subsection{Проверка}
+  $$ QR = \left[\begin{matrix}- \frac{\sqrt{2}}{2} & \frac{7 \sqrt{2}}{18} & - \frac{4}{9}\\0 & - \frac{4 \sqrt{2}}{9} & - \frac{7}{9}\\- \frac{\sqrt{2}}{2} & - \frac{7 \sqrt{2}}{18} & \frac{4}{9}\end{matrix}\right]\left[\begin{matrix}2 \sqrt{2} & - \frac{\sqrt{2}}{2} & - \frac{5 \sqrt{2}}{2}\\0 & \frac{9 \sqrt{2}}{2} & - \frac{7 \sqrt{2}}{18}\\0 & 0 & \frac{4}{9}\end{matrix}\right] = \left[\begin{matrix}-2 & 4 & 2\\0 & -4 & 0\\-2 & -3 & 3\end{matrix}\right] = A $$
+
+  \subsection{Ответ}
+  $$ Q= \left[\begin{matrix}- \frac{\sqrt{2}}{2} & \frac{7 \sqrt{2}}{18} & - \frac{4}{9}\\0 & - \frac{4 \sqrt{2}}{9} & - \frac{7}{9}\\- \frac{\sqrt{2}}{2} & - \frac{7 \sqrt{2}}{18} & \frac{4}{9}\end{matrix}\right] \qquad R= \left[\begin{matrix}2 \sqrt{2} & - \frac{\sqrt{2}}{2} & - \frac{5 \sqrt{2}}{2}\\0 & \frac{9 \sqrt{2}}{2} & - \frac{7 \sqrt{2}}{18}\\0 & 0 & \frac{4}{9}\end{matrix}\right] $$
+
+  \section{Найдите расстояние от вектора $\alpha = (-1,\, -1,\, 5,\, -5)$ до подпространства $L$, заданного системой уравнений}
+  $$\begin{cases}
+    -10x_1 + 4x_2 - 10x_3 - 3x_4 = 0 \\
+    x_1 - 9x_2 + 10x_3 - 2x_4 = 0 \\
+    -3x_1 - 3x_2 - 10x_3 + 6x_4 = 0 \\
+  \end{cases} \qquad A = \left[\begin{matrix}-10 & 4 & -10 & -3 & 0\\1 & -9 & 10 & -2 & 0\\-3 & -3 & -10 & 6 & 0\end{matrix}\right]$$
+
+  \noindent
+  нам надо решить эту систему, и мы это сделаем приведя матрицу $A$ к каноническому виду
+
+  \noindent
+  $\left[\begin{matrix}-10 & 4 & -10 & -3 & 0\\1 & -9 & 10 & -2 & 0\\-3 & -3 & -10 & 6 & 0\end{matrix}\right]$
+  $\xrightarrow[\begin{matrix}  \\  \end{matrix}]{\begin{matrix} \textbf{I} \mathrel{/}= -10 \end{matrix}}$
+  $\left[\begin{matrix}1 & - \frac{2}{5} & 1 & \frac{3}{10} & 0\\1 & -9 & 10 & -2 & 0\\-3 & -3 & -10 & 6 & 0\end{matrix}\right]$
+  $\xrightarrow[\begin{matrix} \textbf{II} \mathrel{-}= \textbf{I} \\ \textbf{III} \mathrel{+}= 3 \textbf{I} \end{matrix}]{\begin{matrix}  \end{matrix}}$
+  $\left[\begin{matrix}1 & - \frac{2}{5} & 1 & \frac{3}{10} & 0\\0 & - \frac{43}{5} & 9 & - \frac{23}{10} & 0\\0 & - \frac{21}{5} & -7 & \frac{69}{10} & 0\end{matrix}\right]$
+  $\xrightarrow[\begin{matrix} \textbf{II} \mathrel{/}= - \frac{43}{5} \\  \end{matrix}]{\begin{matrix}  \end{matrix}}$ \\
+  $\left[\begin{matrix}1 & - \frac{2}{5} & 1 & \frac{3}{10} & 0\\0 & 1 & - \frac{45}{43} & \frac{23}{86} & 0\\0 & - \frac{21}{5} & -7 & \frac{69}{10} & 0\end{matrix}\right]$
+  $\xrightarrow[\begin{matrix}  \\ \textbf{III} \mathrel{+}= \frac{21}{5} \textbf{II} \end{matrix}]{\begin{matrix} \textbf{I} \mathrel{+}= \frac{2}{5} \textbf{II} \end{matrix}}$
+  $\left[\begin{matrix}1 & 0 & \frac{25}{43} & \frac{35}{86} & 0\\0 & 1 & - \frac{45}{43} & \frac{23}{86} & 0\\0 & 0 & - \frac{490}{43} & \frac{345}{43} & 0\end{matrix}\right]$
+  $\xrightarrow[\begin{matrix}  \\ \textbf{III} \mathrel{/}= - \frac{490}{43} \end{matrix}]{\begin{matrix}  \end{matrix}}$
+  $\left[\begin{matrix}1 & 0 & \frac{25}{43} & \frac{35}{86} & 0\\0 & 1 & - \frac{45}{43} & \frac{23}{86} & 0\\0 & 0 & 1 & - \frac{69}{98} & 0\end{matrix}\right]$
+  $\xrightarrow[\begin{matrix} \textbf{II} \mathrel{+}= \frac{45}{43} \textbf{III} \\  \end{matrix}]{\begin{matrix} \textbf{I} \mathrel{-}= \frac{25}{43} \textbf{III} \end{matrix}}$ \\
+  $\left[\begin{matrix}1 & 0 & 0 & \frac{40}{49} & 0\\0 & 1 & 0 & - \frac{23}{49} & 0\\0 & 0 & 1 & - \frac{69}{98} & 0\end{matrix}\right]$
+
+  \noindent
+  у нас получилось что ФСР этой системы $\ds v = \l(\frac{40}{49},\, -\frac{23}{49},\, -\frac{69}{98},\, -1\r)$,
+  и наше подпространство $L$ это прямая с направляющем вектором $v$ и проходящая через начало координат.
+  мы можем найти проекцию вектора $\alpha$ на прямую $L$ по формуле:
+  $\ds u = \f{\alpha \cdot v}{v \cdot v}v = \f{111/98}{22881/9604}v = \f{111 \cdot 9604}{22881 \cdot 98}v = \l(\f{2960}{7627},\, -\f{1702}{7627},\, -\f{2553}{7627},\, -\f{3626}{7627}\r)$.
+  теперь расстояние от прямой до $\alpha$ будет равно расстоянию от $u$ до $\alpha$, тоесть $\ds\l|\alpha - u\r| = \l|\l(-\f{10587}{7627},\, -\f{5925}{7627},\, \f{40688}{7627},\, -\f{34509}{7627}\r)\r| = \fbox{$\ds \sqrt{\f{392497}{7627}}$}$
+
+  \subsection{Найдите косинус угла между ними}
+  тут тоже мы используем скалярное произведение:
+  $$ \cos(\gamma) = \f{\alpha \cdot v}{\l|\alpha\r| \cdot \l|v\r|} = \f{\f{111}{98}}{\sqrt{52} \cdot \sqrt{\f{22881}{9604}}} = \fbox{$\ds \frac{37 \sqrt{297453}}{198302}$} $$
+
+  \section{Найдите расстояние между линейными многообразиями $\l\{t_1v_1 + t_2v_2 + x_1\r\}$ и $\l\{t_1w_1 + t_2w_2 + x_2\r\}$}
+  $ v_1 = \left[\begin{matrix}4\\4\\0\\-4\\-4\end{matrix}\right] $ \hfill
+  $ v_2 = \left[\begin{matrix}2\\-2\\0\\-2\\2\end{matrix}\right] $ \hfill
+  $ w_1 = \left[\begin{matrix}-3\\-3\\0\\-3\\-3\end{matrix}\right] $ \hfill
+  $ w_2 = \left[\begin{matrix}-4\\4\\0\\-4\\4\end{matrix}\right] $ \hfill
+  $ x_1 = \left[\begin{matrix}69\\-2\\89\\21\\63\end{matrix}\right] $ \hfill
+  $ x_2 = \left[\begin{matrix}76\\-92\\27\\-5\\9\end{matrix}\right] $
+
+  \noindent
+  есть теорема, которая находит расстояния между линейными многообразиями по формуле: \\
+  $\ds d = \sqrt{\f{\det(\bar{P}^T \cdot \bar{P})}{\det(P^T \cdot P)}}$,
+  где $P = \l(v_1,\, v_2,\, w_1,\, w_2\r)$ и $\bar{P} = \l(v_1,\, v_2,\, w_1,\, w_2,\, x_1-x_2\r)$
+
+  $$ P = \left[\begin{matrix}4 & 2 & -3 & -4\\4 & -2 & -3 & 4\\0 & 0 & 0 & 0\\-4 & -2 & -3 & -4\\-4 & 2 & -3 & 4\end{matrix}\right] \qquad \bar{P} = \left[\begin{matrix}4 & 2 & -3 & -4 & -7\\4 & -2 & -3 & 4 & 90\\0 & 0 & 0 & 0 & 62\\-4 & -2 & -3 & -4 & 26\\-4 & 2 & -3 & 4 & 54\end{matrix}\right] \qquad d = \sqrt{\f{9069133824}{2359296}} = \fbox{62} $$
+
+  \section{Найдите канонический вид, угол и ось поворота ортогонального оператора, заданного матрицей $A$}
+  $$ A = \left[\begin{matrix}\frac{2}{3} & - \frac{1}{3} & \frac{2}{3}\\\frac{2}{3} & \frac{2}{3} & - \frac{1}{3}\\- \frac{1}{3} & \frac{2}{3} & \frac{2}{3}\end{matrix}\right] $$
+
+  \noindent
+  для начала нам надо найти собственные значения этой матрицы, и для этого мы постромем характеристический многочлен:
+  $$ \det(A-\lambda E) = - \lambda^3 + 2 \lambda^2 - 2 \lambda + 1 = -\l(\lambda - 1\r)\l(\lambda^2 - \lambda + 1\r) \qquad
+  \lambda_1 = 1 \qquad
+  \lambda_2 = \f{1}{2} - \f{\sqrt{3}}{2}i \qquad
+  \lambda_3 = \f{1}{2} + \f{\sqrt{3}}{2}i $$
+
+  \subsection{Найдите угол поворота}
+  для того чтобы найти угол поворота нам надо найти угол, который $\lambda_3$ образует с осью реальных чисел:
+  $$ \arg\l(\lambda_3\r) = \arccos\l(\operatorname{Re}\l(\lambda_3\r)\r) = \arccos\l(\f{1}{2}\r) = \fbox{$\ds\f{\pi}{3}$} $$
+
+  \subsection{Найдите ось поворота}
+  для того чтобы найти ось поворота нам надо найти собственный вектор, соответствующий $\lambda_1$,
+  а чтобы найти собственный вектор подставь в матрицу $(A - \lambda E)$ свою лямбду и найди фср:
+  $$ A - \lambda_1 E = A - E =
+  \begin{bmatrix}-\f{1}{3}&-\f{1}{3} &\f{2}{3}\\\f{2}{3}&-\f{1}{3}&-\f{1}{3}\\-\f{1}{3}&\f{2}{3}&-\f{1}{3}\end{bmatrix} \to
+  \begin{bmatrix}1&0&-1\\0&1&-1\\0&0&0\end{bmatrix} \implies
+  v = \fbox{$\begin{bmatrix}1\\1\\1\end{bmatrix}$}
+  $$
+
+  \subsection{Проверка}
+  есть формула для матрицы поворота в 3d вокруг оси $\l(u_x,\, u_y,\, u_z\r)$ на угол $\theta$:
+  $$ R = \begin{bmatrix}
+    \cos \theta +u_x^2 \left(1-\cos \theta\right) & u_x u_y \left(1-\cos \theta\right) - u_z \sin \theta & u_x u_z \left(1-\cos \theta\right) + u_y \sin \theta \\
+    u_y u_x \left(1-\cos \theta\right) + u_z \sin \theta & \cos \theta + u_y^2\left(1-\cos \theta\right) & u_y u_z \left(1-\cos \theta\right) - u_x \sin \theta \\
+    u_z u_x \left(1-\cos \theta\right) - u_y \sin \theta & u_z u_y \left(1-\cos \theta\right) + u_x \sin \theta & \cos \theta + u_z^2\left(1-\cos \theta\right)
+  \end{bmatrix} $$
+
+  \noindent
+  если мы сюда подставим $\ds \theta = \f{\pi}{3}$ и $\ds u_x = u_y = u_z = \f{1}{\sqrt{3}}$ (это мы нормализовали нашу ось), то у нас будет:
+  $$ R = \left[\begin{matrix}\frac{2 \cos{\left(\theta \right)}}{3} + \frac{1}{3} & - \frac{\sqrt{3} \sin{\left(\theta \right)}}{3} - \frac{\cos{\left(\theta \right)}}{3} + \frac{1}{3} & \frac{\sqrt{3} \sin{\left(\theta \right)}}{3} - \frac{\cos{\left(\theta \right)}}{3} + \frac{1}{3}\\\frac{\sqrt{3} \sin{\left(\theta \right)}}{3} - \frac{\cos{\left(\theta \right)}}{3} + \frac{1}{3} & \frac{2 \cos{\left(\theta \right)}}{3} + \frac{1}{3} & - \frac{\sqrt{3} \sin{\left(\theta \right)}}{3} - \frac{\cos{\left(\theta \right)}}{3} + \frac{1}{3}\\- \frac{\sqrt{3} \sin{\left(\theta \right)}}{3} - \frac{\cos{\left(\theta \right)}}{3} + \frac{1}{3} & \frac{\sqrt{3} \sin{\left(\theta \right)}}{3} - \frac{\cos{\left(\theta \right)}}{3} + \frac{1}{3} & \frac{2 \cos{\left(\theta \right)}}{3} + \frac{1}{3}\end{matrix}\right] =
+  \left[\begin{matrix}\frac{2}{3} & - \frac{1}{3} & \frac{2}{3}\\\frac{2}{3} & \frac{2}{3} & - \frac{1}{3}\\- \frac{1}{3} & \frac{2}{3} & \frac{2}{3}\end{matrix}\right] = A
+  $$
+
+  \noindent
+  тоесть та матрица, которую нам дали в условие, это оказывается какраз и есть матрица поворота в 3d
+
+  \subsection{Найдите канонический вид}
+  тут мы можем взять любую 3d матрицу поворота, у которой ось это базисный вектор и угол поворота $\ds\theta=\f{\pi}{3}$
+  $$ B = \begin{bmatrix}1&0&0\\0&\cos\theta&-\sin\theta\\0&\sin\theta&\cos\theta\end{bmatrix} = \begin{bmatrix}1&0&0\\0&\f{1}{2}&-\f{\sqrt{3}}{2}\\0&\f{\sqrt{3}}{2}&\f{1}{2}\end{bmatrix}$$
+
+  \section{Можно ли матрицу оператора, заданного матрицей А в некотором ортонормированном базисе, привести ортогональным преобразованием к диагональному виду? Если да, то указать преобразование и диагональный вид}
+  $$ A = \begin{bmatrix}\f{1}{9}&-\f{14}{9}&\f{28}{9}\\-\f{14}{9}&-\f{20}{9}&-\f{14}{9}\\\f{28}{9}&-\f{14}{9}&\f{1}{9}\end{bmatrix} $$
+
+  \noindent
+  сначала нам надо найти собственные значения, потомучто линейный оператор диагонализируем только тогда,
+  когда для любых его собственных значений алгебраическая и геометрическая кратности равны:
+  $$ \det(A-\lambda E) = -\lambda^3 - 2\lambda^2 + 15\lambda + 36 = - \left(\lambda + 3\right)^{2} \left(\lambda - 4\right)  \qquad
+  \lambda_1 = -3 \qquad \lambda_2 = 4 $$
+
+  \noindent
+  алгебраические кратности у нас получились $2$ и $1$,
+  а чтобы найти геометрические нам надо воспользоватся формулой $ \rank(E) - \rank(A-\lambda E) $:
+  $$ \rank(E) - \rank(A-\lambda_1 E) = 3 - \rank\l(\left[\begin{matrix}\frac{28}{9} & - \frac{14}{9} & \frac{28}{9}\\- \frac{14}{9} & \frac{7}{9} & - \frac{14}{9}\\\frac{28}{9} & - \frac{14}{9} & \frac{28}{9}\end{matrix}\right]\r) = 3-1 = 2 $$
+  $$ \rank(E) - \rank(A-\lambda_2 E) = 3 - \rank\l(\left[\begin{matrix}- \frac{35}{9} & - \frac{14}{9} & \frac{28}{9}\\- \frac{14}{9} & - \frac{56}{9} & - \frac{14}{9}\\\frac{28}{9} & - \frac{14}{9} & - \frac{35}{9}\end{matrix}\right]\r) = 3-2 = 1 $$
+
+  \noindent
+  получается что все кратности совпадают и поэтому наша матрица диагонализируема
+
+  \subsection{Диагонализация}
+  тут мы можем использовать ФСР матриц, ранг которых мы искали в первой части этого задания.
+  ФСР этих матриц это собственные векторы и их потом надо нормализовать и склеить в матрицу и это будет наша матрица перехода.
+  $$ v_1 = \left[\begin{matrix}\frac{1}{2}\\1\\0\end{matrix}\right] \quad
+  v_2 = \left[\begin{matrix}-1\\0\\1\end{matrix}\right] \quad
+  v_3 = \left[\begin{matrix}1\\- \frac{1}{2}\\1\end{matrix}\right] \quad
+  u_1 = \f{v_1}{\sqrt{v_1 \cdot v_1}} = \left[\begin{matrix}\frac{\sqrt{5}}{5}\\\frac{2 \sqrt{5}}{5}\\0\end{matrix}\right] \quad
+  u_2 = \f{v_2}{\sqrt{v_2 \cdot v_2}} = \left[\begin{matrix}- \frac{\sqrt{2}}{2}\\0\\\frac{\sqrt{2}}{2}\end{matrix}\right] \quad
+  u_3 = \f{v_3}{\sqrt{v_3 \cdot v_3}} = \left[\begin{matrix}\frac{2}{3}\\- \frac{1}{3}\\\frac{2}{3}\end{matrix}\right]
+  $$
+
+  \noindent
+  теперь мы можем найти диагональною матрицу по формуле $D = S^{-1}AS$
+  $$ S = \left[\begin{matrix}\frac{\sqrt{5}}{5} & - \frac{\sqrt{2}}{2} & \frac{2}{3}\\\frac{2 \sqrt{5}}{5} & 0 & - \frac{1}{3}\\0 & \frac{\sqrt{2}}{2} & \frac{2}{3}\end{matrix}\right] \qquad
+  D = S^{-1}AS = \left[\begin{matrix}-3 & 0 & 0\\0 & -3 & 0\\0 & 0 & 4\end{matrix}\right] $$
+
+  \section{Найти сингулярное разложение матрицы А. Проверить результат перемножением матриц}
+  $$ A = \left[\begin{matrix}3 & 2\\2 & 3\\3 & 3\end{matrix}\right] \qquad A = V \Sigma U^T $$
+
+  \subsection{Найдем $\Sigma$}
+  $\Sigma$ диагональная матрица с невозрастающими по порядку модулями элементов, составленная из
+  корней собственных чисел матрицы $A^TA$. найдем собственные значения.
+  $$ A^TA = \left[\begin{matrix}22 & 21\\21 & 22\end{matrix}\right] \qquad
+  \det(A^TA - \lambda E) = \lambda^{2} - 44 \lambda + 43 = \left(\lambda - 43\right) \left(\lambda - 1\right) \qquad
+  \lambda_1 = 43 \qquad \lambda_2 = 1 \qquad
+  \Sigma = \left[\begin{matrix}\sqrt{43} & 0\\0 & 1\\0 & 0\end{matrix}\right]
+  $$
+
+  \subsection{Найдем $U$}
+  матрица $U$ состоит из собственных нормированных векторов $A^TA$
+  $$v_1 = \left[\begin{matrix}1\\1\end{matrix}\right] \qquad
+  v_2 = \left[\begin{matrix}-1\\1\end{matrix}\right] \qquad
+  u_1 = \left[\begin{matrix}\frac{\sqrt{2}}{2}\\\frac{\sqrt{2}}{2}\end{matrix}\right] \qquad
+  u_2 = \left[\begin{matrix}- \frac{\sqrt{2}}{2}\\\frac{\sqrt{2}}{2}\end{matrix}\right] \qquad
+  U = \left[\begin{matrix}\frac{\sqrt{2}}{2} & - \frac{\sqrt{2}}{2}\\\frac{\sqrt{2}}{2} & \frac{\sqrt{2}}{2}\end{matrix}\right]
+  $$
+
+  \subsection{Найдем $V$}
+  матрица $V$ состоит из собственных нормированных векторов $AA^T$ (тут мы поменяли порядок умножения)
+  $$ AA^T = \left[\begin{matrix}13 & 12 & 15\\12 & 13 & 15\\15 & 15 & 18\end{matrix}\right] \qquad
+  \det(AA^T - \lambda E) = - \lambda^{3} + 44 \lambda^{2} - 43 \lambda = - \lambda \left(\lambda - 43\right) \left(\lambda - 1\right) \qquad
+  \lambda_1 = 43 \qquad
+  \lambda_2 = 1 \qquad
+  \lambda_3 = 0
+  $$
+
+  $$
+  v_1 = \left[\begin{matrix}\frac{5}{6}\\\frac{5}{6}\\1\end{matrix}\right] \quad
+  v_2 = \left[\begin{matrix}-1\\1\\0\end{matrix}\right] \quad
+  v_3 = \left[\begin{matrix}- \frac{3}{5}\\- \frac{3}{5}\\1\end{matrix}\right] \quad
+  u_1 = \left[\begin{matrix}\frac{5 \sqrt{86}}{86}\\\frac{5 \sqrt{86}}{86}\\\frac{3 \sqrt{86}}{43}\end{matrix}\right] \quad
+  u_2 = \left[\begin{matrix}- \frac{\sqrt{2}}{2}\\\frac{\sqrt{2}}{2}\\0\end{matrix}\right] \quad
+  u_3 = \left[\begin{matrix}- \frac{3 \sqrt{43}}{43}\\- \frac{3 \sqrt{43}}{43}\\\frac{5 \sqrt{43}}{43}\end{matrix}\right] \quad
+  V = \left[\begin{matrix}\frac{5 \sqrt{86}}{86} & - \frac{\sqrt{2}}{2} & - \frac{3 \sqrt{43}}{43}\\\frac{5 \sqrt{86}}{86} & \frac{\sqrt{2}}{2} & - \frac{3 \sqrt{43}}{43}\\\frac{3 \sqrt{86}}{43} & 0 & \frac{5 \sqrt{43}}{43}\end{matrix}\right]
+  $$
+
+  \subsection{Проверка}
+  $$ V \Sigma U^T = \left[\begin{matrix}\frac{5 \sqrt{86}}{86} & - \frac{\sqrt{2}}{2} & - \frac{3 \sqrt{43}}{43}\\\frac{5 \sqrt{86}}{86} & \frac{\sqrt{2}}{2} & - \frac{3 \sqrt{43}}{43}\\\frac{3 \sqrt{86}}{43} & 0 & \frac{5 \sqrt{43}}{43}\end{matrix}\right] \left[\begin{matrix}\sqrt{43} & 0\\0 & 1\\0 & 0\end{matrix}\right] \left[\begin{matrix}\frac{\sqrt{2}}{2} & \frac{\sqrt{2}}{2}\\- \frac{\sqrt{2}}{2} & \frac{\sqrt{2}}{2}\end{matrix}\right] = \left[\begin{matrix}3 & 2\\2 & 3\\3 & 3\end{matrix}\right] $$
+
+  \subsection{Какая матрица получится, если в разложении оставить только первое сингулярное число, а остальные сингулярные числа заменить нулями?}
+  сингулярные числа у нас влияют только на матрицу $\Sigma$, тоесть нам просто надо из неё убрать одну единичку
+  $$ \Sigma = \left[\begin{matrix}\sqrt{43} & 0\\0 & 1\\0 & 0\end{matrix}\right] \qquad \check{\Sigma} = \left[\begin{matrix}\sqrt{43} & 0\\0 & 0\\0 & 0\end{matrix}\right] \qquad
+  V \check{\Sigma} U^T = \left[\begin{matrix}\frac{5 \sqrt{86}}{86} & - \frac{\sqrt{2}}{2} & - \frac{3 \sqrt{43}}{43}\\\frac{5 \sqrt{86}}{86} & \frac{\sqrt{2}}{2} & - \frac{3 \sqrt{43}}{43}\\\frac{3 \sqrt{86}}{43} & 0 & \frac{5 \sqrt{43}}{43}\end{matrix}\right] \left[\begin{matrix}\sqrt{43} & 0\\0 & 0\\0 & 0\end{matrix}\right] \left[\begin{matrix}\frac{\sqrt{2}}{2} & \frac{\sqrt{2}}{2}\\- \frac{\sqrt{2}}{2} & \frac{\sqrt{2}}{2}\end{matrix}\right] = \left[\begin{matrix}\frac{5}{2} & \frac{5}{2}\\\frac{5}{2} & \frac{5}{2}\\3 & 3\end{matrix}\right] $$
+
+  \noindent
+  если сравнить полученную матрицу с $A$ то у нас получаемся что первые два столбца стали средним значением их:
+  было $3$ и $2$, а стало $\f{5}{2} = \f{3+2}{2}$
+
+\end{document}
