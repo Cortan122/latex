@@ -1,0 +1,147 @@
+\documentclass[a4paper]{article}
+\usepackage[hidelinks,bookmarks=false]{hyperref}
+\usepackage{122}
+
+\renewcommand{\figureautorefname}{рисунок}
+\addto\captionsrussian{\renewcommand{\figurename}{Рисунок}}
+\addto\extrasrussian{\renewcommand{\figureautorefname}{рисунок}}
+
+\usepackage{graphicx}
+\usepackage{etoolbox} % for \patchcmd
+\usepackage{verbatim}
+\usepackage{fancyvrb}
+
+\setlength{\parindent}{15pt}
+\usepackage{indentfirst}
+
+\usepackage{tocloft}
+\renewcommand{\cftsecleader}{\cftdotfill{\cftdotsep}}
+
+\usepackage{newunicodechar}
+\newunicodechar{│}{|}
+\newunicodechar{∞}{\ensuremath{\infty}}
+
+\newcommand{\titlePage}{
+  \begin{center}
+    \Large
+    \textbf{
+      ПРАВИТЕЛЬСТВО РОССИЙСКОЙ ФЕДЕРАЦИИ \\
+      НАЦИОНАЛЬНЫЙ ИССЛЕДОВАТЕЛЬСКИЙ УНИВЕРСИТЕТ \\
+      <<ВЫСШАЯ ШКОЛА ЭКОНОМИКИ>> \\
+    }
+    \par\vspace{5mm}
+    Факультет компьютерных наук \\
+    Департамент программной инженерии \\
+  \end{center}
+  \vspace*{\fill}
+  \begin{center}
+    \Large\bf
+    КОНСОЛЬНОЕ ПРИЛОЖЕНИЕ ДЛЯ НАХОЖДЕНИЯ ЗНАЧЕНИЯ ФУНКЦИИ ГИПЕРБОЛИЧЕСКОГО КОСИНУСА
+    \par
+    Пояснительная записка
+  \end{center}
+  \vspace*{\fill}
+  \begin{flushright}
+		Исполнитель: \\ студент группы AAAAAA \\
+		\underline{\hspace{4cm}} AA AA AAAAAAA \\
+		<<\underline{\hspace{1cm}}>> \underline{\hspace{4cm}} 2020 г. \\
+  \end{flushright}
+  \vspace*{\fill}
+  \begin{center}Москва 2020\end{center}
+}
+
+\newcommand{\frameCode}[1]{
+  \begin{center}
+    \begin{minipage}{0.5\textwidth}
+      \VerbatimInput[frame=single]{#1}
+    \end{minipage}
+  \end{center}
+}
+
+\usepackage[export]{adjustbox}
+\newcommand{\CRTfigure}[2]{%
+  \begin{figure}[h!]
+    \centering
+    \includegraphics[max width=\textwidth]{#1}
+    \caption{#2}
+    \label{fig:#1}
+  \end{figure}%
+}
+
+\newcommand{\CRTfigref}[2]{(см. \autoref{fig:#1})\CRTfigure{#1}{#2}}
+
+\graphicspath{ {../asm/screenshots/} }
+
+\begin{document}
+  \titlePage
+  \newpage
+  \tableofcontents
+  \newpage
+
+  \section{Текст задания}
+  Разработать программу, вычисляющую с помощью степенного ряда с точностью не хуже $0.1\%$ значение функции
+  гиперболического косинуса $\ds\cosh\l(x\r) = \f{e^x+e-x}{2}$ для конкретного параметра $x$ (использовать FPU) \cite{task}
+
+  \newpage
+  \section{Применяемые расчетные методы}
+  \subsection{Алгоритм вычисления}
+  Гиперболический косинус раскладывается в такой степенной ряд \cite{cosh}:
+  $$ \cosh\l(x\r) = 1 + \f{x^2}{2!} + \f{x^4}{4!} + \f{x^6}{6!} + \cdots = \sum_{n=0}^\infty \f{x^{2n}}{(2n)!} $$
+  Чтобы не вычислять каждый раз факториалы и степени заново мы можем хранить их во временных переменных. \\
+  В идеале у нас был бы примерно такой код:
+  \frameCode{../asm/mp01/algo.c}
+  Но из-за ограничений ассемблера мне пришлось видоизменить алгоритм, чтобы код на ассемблере был более понятным:
+  \frameCode{../asm/mp01/impl.c}
+  Тут, для увеличения производительности, \texttt{i} каждый раз увеличивается на $2$ и во временных переменных хранится не вся дробь,
+  а отдельно числитель в \texttt{tmpPow} и отдельно знаменатель в \texttt{tmpFactorial}.
+  Таким образом у нас становится в два раза меньше операций деления, а деление чисел с плавающей точкой очень медленное \cite{fdiv}.
+  Но, из-за нехватки точности, \texttt{tmpFactorial} и \texttt{tmpPow} быстро уходят в $\infty$,
+  и поэтому посчитать гиперболический косинус от $\l|x\r| > 100$ получается плохо.
+
+  \subsection{Считывание числа $x$}
+  Число $x$ считывается с командной строки, или из первого аргумента \texttt{argv}.
+  Чтобы функция \texttt{scanf} работала с 64-битными числами с плавающей точкой,
+  используется \texttt{"\%lf"} вместо \texttt{"\%f"}.
+
+  % \newpage
+  \subsection{Вывод результата в консоль}
+  Для вывода используется функция \texttt{printf} и \texttt{"\%23.20g"} вместо \texttt{"\%f"},
+  потому что \texttt{"\%f"} для больших чисел выводит очень много лишних нулей.
+  Также в \texttt{printf} числа с плавающей точкой всегда передаются 64-битные \cite{promo},
+  а в \texttt{x86-32} инструкция \texttt{push} может работать только с 32-битными числами \cite{x86}.
+
+  \subsection{Вывод промежуточных результатов}
+  Если передать \texttt{debug} как второй аргумент, программа будет выводить промежуточный результат после каждой итерации
+  (см. \autoref{fig:ch_debug.png}).
+  Тут используется U+2502 (Box Drawings Light Vertical) вместо U+007C (Vertical Line) для того, чтобы не было пропусков в левой линии.
+  \CRTfigure{ch_debug.png}{Вывод промежуточных результатов}
+
+  \newpage
+  \section{Тестовые примеры}
+  Программа корректно работает на правильных данных \CRTfigref{ch_test_normal.png}{Правильные данные}.
+
+  И выводит сообщения об ошибке при неправильных \CRTfigref{ch_test_err.png}{Неправильные данные}.
+
+  Также программа запрашивает ввод данных, если не был предоставлен командный аргумент \CRTfigref{ch_test_stdin.png}{Запрос данных}.
+
+  \newpage
+  \section{Список использованной литературы}
+  \patchcmd{\thebibliography}{\section*{\refname}}{}{}{} % убираем двойной заголовок
+  \begin{thebibliography}{3}
+    \bibitem{task} Инструкция по составлению пояснительной записки [Электронный ресурс].
+      //URL: \url{http://softcraft.ru/edu/comparch/tasks/mp01/} (Дата обращения: 10.10.2020, режим доступа: свободный)
+    \bibitem{x86} x86 Instruction Set Reference [Электронный ресурс].
+      //URL: \url{https://c9x.me/x86/} (Дата обращения: 10.10.2020, режим доступа: свободный)
+    \bibitem{cosh} Статья <<Hyperbolic functions>> Wikipedia.org
+      //URL: \url{https://en.wikipedia.org/wiki/Hyperbolic_functions} (Дата обращения: 10.10.2020, режим доступа: свободный)
+    \bibitem{fdiv} Why is float division slow? [Электронный ресурс].
+      //URL: \url{https://stackoverflow.com/a/506345} (Дата обращения: 29.10.2020, режим доступа: свободный)
+    \bibitem{promo} Default argument promotions [Электронный ресурс].
+      //URL: \url{https://en.cppreference.com/w/c/language/conversion#Default_argument_promotions} (Дата обращения: 29.10.2020, режим доступа: свободный)
+  \end{thebibliography}
+
+  \newpage
+  \section{Текст программы}
+  \verbatiminput{../asm/mp01/ch.asm}
+
+\end{document}
