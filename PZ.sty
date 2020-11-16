@@ -1,0 +1,57 @@
+\usepackage[hidelinks,bookmarks=false]{hyperref}
+\usepackage{122}
+
+\renewcommand{\figureautorefname}{рисунок}
+\addto\captionsrussian{\renewcommand{\figurename}{Рисунок}}
+\addto\extrasrussian{\renewcommand{\figureautorefname}{рисунок}}
+
+\usepackage{etoolbox} % for \patchcmd
+\patchcmd{\thebibliography}{\section*{\refname}}{}{}{} % убираем двойной заголовок
+
+\setlength{\parindent}{15pt}
+\usepackage{indentfirst}
+
+\usepackage{tocloft}
+\renewcommand{\cftsecleader}{\cftdotfill{\cftdotsep}}
+
+\newcommand{\titlePage}[1]{
+  \begin{center}
+    \Large
+    \textbf{
+      ПРАВИТЕЛЬСТВО РОССИЙСКОЙ ФЕДЕРАЦИИ \\
+      НАЦИОНАЛЬНЫЙ ИССЛЕДОВАТЕЛЬСКИЙ УНИВЕРСИТЕТ \\
+      <<ВЫСШАЯ ШКОЛА ЭКОНОМИКИ>> \\
+    }
+    \par\vspace{5mm}
+    Факультет компьютерных наук \\
+    Департамент программной инженерии \\
+  \end{center}
+  \vspace*{\fill}
+  \begin{center}
+    \Large\bf
+    #1
+    \par
+    Пояснительная записка
+  \end{center}
+  \vspace*{\fill}
+  \begin{flushright}
+    Исполнитель: \\ студент группы AAAAAA \\
+    \underline{\hspace{4cm}} AA AA AAAAAAA \\
+    <<\underline{\hspace{1cm}}>> \underline{\hspace{4cm}} \the\year{} г. \\
+  \end{flushright}
+  \vspace*{\fill}
+  \begin{center}Москва \the\year{}\end{center}
+}
+
+\usepackage{float}
+\usepackage[export]{adjustbox}
+\newcommand{\CRTfigure}[2]{%
+  \begin{figure}[H]
+    \centering
+    \includegraphics[max width=\textwidth]{#1}
+    \caption{#2}
+    \label{fig:#1}
+  \end{figure}%
+}
+
+\newcommand{\CRTfigref}[2]{(см. \autoref{fig:#1})\CRTfigure{#1}{#2}}

@@ -1,54 +1,13 @@
 \documentclass[a4paper]{article}
-\usepackage[hidelinks,bookmarks=false]{hyperref}
-\usepackage{122}
-
-\renewcommand{\figureautorefname}{рисунок}
-\addto\captionsrussian{\renewcommand{\figurename}{Рисунок}}
-\addto\extrasrussian{\renewcommand{\figureautorefname}{рисунок}}
+\usepackage{PZ}
 
 \usepackage{graphicx}
-\usepackage{etoolbox} % for \patchcmd
 \usepackage{verbatim}
 \usepackage{fancyvrb}
-
-\setlength{\parindent}{15pt}
-\usepackage{indentfirst}
-
-\usepackage{tocloft}
-\renewcommand{\cftsecleader}{\cftdotfill{\cftdotsep}}
 
 \usepackage{newunicodechar}
 \newunicodechar{│}{|}
 \newunicodechar{∞}{\ensuremath{\infty}}
-
-\newcommand{\titlePage}{
-  \begin{center}
-    \Large
-    \textbf{
-      ПРАВИТЕЛЬСТВО РОССИЙСКОЙ ФЕДЕРАЦИИ \\
-      НАЦИОНАЛЬНЫЙ ИССЛЕДОВАТЕЛЬСКИЙ УНИВЕРСИТЕТ \\
-      <<ВЫСШАЯ ШКОЛА ЭКОНОМИКИ>> \\
-    }
-    \par\vspace{5mm}
-    Факультет компьютерных наук \\
-    Департамент программной инженерии \\
-  \end{center}
-  \vspace*{\fill}
-  \begin{center}
-    \Large\bf
-    КОНСОЛЬНОЕ ПРИЛОЖЕНИЕ ДЛЯ НАХОЖДЕНИЯ ЗНАЧЕНИЯ ФУНКЦИИ ГИПЕРБОЛИЧЕСКОГО КОСИНУСА
-    \par
-    Пояснительная записка
-  \end{center}
-  \vspace*{\fill}
-  \begin{flushright}
-		Исполнитель: \\ студент группы AAAAAA \\
-		\underline{\hspace{4cm}} AA AA AAAAAAA \\
-		<<\underline{\hspace{1cm}}>> \underline{\hspace{4cm}} 2020 г. \\
-  \end{flushright}
-  \vspace*{\fill}
-  \begin{center}Москва 2020\end{center}
-}
 
 \newcommand{\frameCode}[1]{
   \begin{center}
@@ -58,22 +17,10 @@
   \end{center}
 }
 
-\usepackage[export]{adjustbox}
-\newcommand{\CRTfigure}[2]{%
-  \begin{figure}[h!]
-    \centering
-    \includegraphics[max width=\textwidth]{#1}
-    \caption{#2}
-    \label{fig:#1}
-  \end{figure}%
-}
-
-\newcommand{\CRTfigref}[2]{(см. \autoref{fig:#1})\CRTfigure{#1}{#2}}
-
 \graphicspath{ {../asm/screenshots/} }
 
 \begin{document}
-  \titlePage
+  \titlePage{КОНСОЛЬНОЕ ПРИЛОЖЕНИЕ ДЛЯ НАХОЖДЕНИЯ ЗНАЧЕНИЯ ФУНКЦИИ ГИПЕРБОЛИЧЕСКОГО КОСИНУСА}
   \newpage
   \tableofcontents
   \newpage
@@ -118,15 +65,14 @@
 
   \newpage
   \section{Тестовые примеры}
-  Программа корректно работает на правильных данных \CRTfigref{ch_test_normal.png}{Правильные данные}.
+  Программа корректно работает на правильных данных. \CRTfigref{ch_test_normal.png}{Правильные данные}
 
-  И выводит сообщения об ошибке при неправильных \CRTfigref{ch_test_err.png}{Неправильные данные}.
+  И выводит сообщения об ошибке при неправильных. \CRTfigref{ch_test_err.png}{Неправильные данные}
 
-  Также программа запрашивает ввод данных, если не был предоставлен командный аргумент \CRTfigref{ch_test_stdin.png}{Запрос данных}.
+  Также программа запрашивает ввод данных, если не был предоставлен командный аргумент. \CRTfigref{ch_test_stdin.png}{Запрос данных}
 
   \newpage
   \section{Список использованной литературы}
-  \patchcmd{\thebibliography}{\section*{\refname}}{}{}{} % убираем двойной заголовок
   \begin{thebibliography}{3}
     \bibitem{task} Инструкция по составлению пояснительной записки [Электронный ресурс].
       //URL: \url{http://softcraft.ru/edu/comparch/tasks/mp01/} (Дата обращения: 10.10.2020, режим доступа: свободный)
