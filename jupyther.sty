@@ -5,13 +5,14 @@
 \urlstyle{same} % disable monospaced font for URLs
 \usepackage{color}
 \usepackage{fancyvrb}
+\usepackage{fvextra}
 \newcommand{\VerbBar}{|}
 \newcommand{\VERB}{\Verb[commandchars=\\\{\}]}
-\DefineVerbatimEnvironment{Highlighting}{Verbatim}{commandchars=\\\{\}}
+\DefineVerbatimEnvironment{Highlighting}{Verbatim}{commandchars=\\\{\}, breaklines=true, breakanywhere=true}
 % Add ',fontsize=\small' for more characters per line
-\usepackage{framed}
+\usepackage{tcolorbox}
 \definecolor{shadecolor}{gray}{0.9}
-\newenvironment{Shaded}{\begin{shaded}}{\end{shaded}}
+\newenvironment{Shaded}{\begin{tcolorbox}[colback=shadecolor]}{\end{tcolorbox}}
 \newcommand{\AlertTok}[1]{\textcolor[rgb]{1.00,0.00,0.00}{\textbf{#1}}}
 \newcommand{\AnnotationTok}[1]{\textcolor[rgb]{0.38,0.63,0.69}{\textbf{\textit{#1}}}}
 \newcommand{\AttributeTok}[1]{\textcolor[rgb]{0.49,0.56,0.16}{#1}}
@@ -29,7 +30,7 @@
 \newcommand{\ExtensionTok}[1]{#1}
 \newcommand{\FloatTok}[1]{\textcolor[rgb]{0.25,0.63,0.44}{#1}}
 \newcommand{\FunctionTok}[1]{\textcolor[rgb]{0.02,0.16,0.49}{#1}}
-\newcommand{\ImportTok}[1]{#1}
+\newcommand{\ImportTok}[1]{\textcolor[rgb]{0.68,0.00,0.85}{#1}}
 \newcommand{\InformationTok}[1]{\textcolor[rgb]{0.38,0.63,0.69}{\textbf{\textit{#1}}}}
 \newcommand{\KeywordTok}[1]{\textcolor[rgb]{0.00,0.44,0.13}{\textbf{#1}}}
 \newcommand{\NormalTok}[1]{#1}
