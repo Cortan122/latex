@@ -1,0 +1,427 @@
+\documentclass{article}
+\usepackage[colorlinks=true]{hyperref}
+\usepackage{122}
+
+\usepackage{framed}
+\newcommand{\block}[1]{\vspace{-1em}\begin{framed}#1\end{framed}\vspace{-\lastskip}\vspace{-.1cm}\hfill}
+\newcommand{\red}[1]{{\color{red}{#1}}}
+\newcommand{\TODO}{\texttt{\red{TODO}}}
+
+\usepackage[many]{tcolorbox}
+\newtcolorbox{cross}{blank,breakable,parbox=false,
+  overlay={\draw[red,line width=5pt] (interior.south west)--(interior.north east);
+    \draw[red,line width=5pt] (interior.north west)--(interior.south east);}}
+
+\title{HSE 2021: Mathematical Methods for Data Analysis. Assignment 6: optional}
+\author{AAAAA AAAAAAA \\ БПИ197}
+
+\begin{document}
+\maketitle
+
+\section*{Disclaimer}
+\begin{itemize}
+    \item This is an optional homework, which contains of \textbf{6} theoretical problems, 2 points each.
+    \item You may choose any 5 to get 10 points. Getting more that 10 points is not possible.
+    \item We encourage you to use \LaTeX to write the solution. \href{https://www.overleaf.com/}{Overleaf} is a nice online editor, if you don't want to install it locally. Hand-written solutions will be also accepted, but only if you provide high quality \textbf{scans} in the form of a single pdf file. Please, make sure that TAs can read what you've submitted, otherwise, the submission will not be graded.
+    \item Please, give as much details in your derivation as possible.
+\end{itemize}
+
+\newpage
+\section*{Problem 1. Boosting. [2 points]}
+
+In this task you will be working with gradient boosting algorithm. Let's firstly recap the notation and the algorithm itself.
+
+\begin{align}
+    & b_m(x) := \text{the best base model from the family of the algorithms $\mathcal{A}$} \\
+    & \gamma_m(x) := \text{scale or weight of the new model} \\
+    & a_M(x) = \sum_{m=0}^M \gamma_m b_m(x) := \text{the final composite model}
+\end{align}
+
+
+Consider a loss function $L(y, z)$ for the target $y$ and prediction $z$, and let
+$\{x_n, y_n\}_{n=1}^N$ be the train dataset with $N$ observations for a regression task. Then gradient boosting algorithm is the following:
+
+
+\begin{enumerate}
+    \item Initialize $a_0(x) = \hat{z}$ with the constant prediction
+$   \hat{z} = \arg\min\limits_{z \in \mathbb{R}} \sum_{n=1}^N L(y_n, z)$
+
+    \item For $m$ from \texttt{1} to \texttt{M} do:
+
+
+Solve the current subproblem
+    $G_m(b, \gamma) = \sum_{n=1}^N L\bigl(y_n, a_{m-1}(x_n) + \gamma b(x_n)\bigr) \to \min\limits_{b, \gamma}$
+, using the following method:
+\begin{itemize}
+    \item Compute the residuals
+    \begin{equation}
+        s_n = - \frac{\partial}{\partial z} L(y_n, z) \Big\vert_{z=a_{m-1}(x_n)}, n = 1,\dots, N.
+    \end{equation}
+
+    \item Train the next base algorithm
+    \begin{equation}
+        b_m(x) = \arg\min\limits_{b\in\mathcal{A}}\sum_{n=1}^N \bigl(b(x_n) - s_n\bigr)^2.
+    \end{equation}
+
+    \item Find its weight
+    \begin{equation}
+         \gamma_m = \arg\min_\gamma G_m(b_m, \gamma).
+    \end{equation}
+
+    \item Update the mixture
+    \begin{equation}
+        a_m(x) = a_{m-1}(x) + \gamma_m b_m(x).
+    \end{equation}
+\end{itemize}
+
+    \item Return  $a_M(x) = a_0(x) + \sum_{m=1}^M \gamma_m b_m(x)$.
+
+\end{enumerate}
+
+\subsubsection*{Finally, the task}
+Consider Poisson loss, namely $L(y, z) = - yz + \exp{z}$.
+
+\begin{itemize}
+    \item Derive formula for the residuals at a step $m$
+    \item Derive first-order conditions for $\gamma$ at a step $m$
+\end{itemize}
+
+\subsubsection*{Solution}
+\block{
+  \begin{enumerate}
+    \item \textbf{Derive formula for the residuals at a step $m$} \\
+      $\ds s_n = -\f{\partial}{\partial z} L(y_n, z)$ \vspace{0.5em} \\
+      $\ds s_n = -\f{\partial}{\partial z} \l( - y_n z + \exp{z} \r) = \f{\partial}{\partial z} \l(y_n z - \exp{z}\r)$ \vspace{0.5em} \\
+      $\ds s_n = y_n - \exp{z}$ \vspace{0.5em} \\
+      $\ds s_n = y_n - \exp{\l(a_{m-1}(x_n)\r)}$
+
+    \item \textbf{Derive first-order conditions for $\gamma$ at a step $m$} \\
+      $\ds G_m(b_m, \gamma) \to \min\limits_{\gamma}$ \vspace{0.5em} \\
+      $G$ это большая сумма всех разных $L$ для каждого значения $n$.
+      Сначала рассмотрим случай для одного конкретного $n$: \vspace{0.5em} \\
+        $\ds L\bigl(y_n, a_{m-1}(x_n) + \gamma b(x_n)\bigr) \to \min\limits_{\gamma}$ \vspace{0.5em} \\
+        $\ds \f{\partial}{\partial z} L(y_n, z) = 0 \Big\vert_{z=a_{m-1}(x_n) + \gamma b(x_n)}$ \vspace{0.5em} \\
+        $\ds y_n = \exp{\bigl(a_{m-1}(x_n) + \gamma b(x_n)\bigr)}$ \vspace{0.5em} \\
+        $\ds \ln{y_n} = a_{m-1}(x_n) + \gamma b(x_n)$ \vspace{0.5em} \\
+        $\ds \gamma_m = \f{\ln{y_n} - a_{m-1}(x_n)}{ b(x_n)}$ \vspace{0.5em} \\
+      Получилась полная чушь!
+      У нас не может быть отдельное значение для $\gamma_m$ в зависимости от $n$: нам нужно одно, а тут их много.
+      Придётся всё переделывать. \vspace{0.5em} \\
+      $\ds \sum_{n=1}^N\l(\f{\partial}{\partial z} L(y_n, z) \Big\vert_{z=a_{m-1}(x_n) + \gamma b(x_n)}\r) = 0$  \vspace{0.5em} \\
+      $\ds \sum_{n=1}^N y_n = \sum_{n=1}^N \exp{\bigl(a_{m-1}(x_n) + \gamma b(x_n)\bigr)}$  \vspace{0.5em} \\
+      \TODO
+  \end{enumerate}
+}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section*{Problem 2. Bayesian ML. [2 points]}
+
+Consider a univariate Gaussian likelihood:
+
+\begin{equation}
+    p(x | \mu, \tau)
+        = \mathcal{N}(x| \mu, \tau^{-1})
+        = \left(\frac{\tau}{2\pi}\right)^{\frac12} \text{exp}\left(-\frac12 (x - \mu)^2\tau \right)
+        \,.
+\end{equation}
+
+Let's define the following prior for the parameters $(\mu, \tau)$:
+
+\begin{align}
+    p(\mu, \tau)
+        &= \mathcal{N}(\mu | \mu_0, (\beta \tau)^{-1})\cdot \text{Gamma}(\tau; a, b) \\
+        &=  \left(\frac{\beta \tau}{2\pi}\right)^{\frac{1}{2}} \text{exp}\left(-\frac12 (\mu - \mu_0)^2\beta\tau \right) \cdot \frac{b^a \tau^{a-1}\exp(-b\tau)}{\Gamma(a)}
+        \,.
+\end{align}
+
+\subsubsection*{The task}
+Find the posterior distribution of $(\mu, \tau)$ after observing $N$ i.i.d. samples $X = (x_1, \dots, x_N)$ from the $p(x|\mu, \tau)$.
+\begin{enumerate}
+    \item Use Bayes formula to express $p(\mu, \tau|\{x_1, \cdots, x_N\})$ using prior and likelihood.
+    \item The hardest part in your equation above is to compute normalization constant (denominator). We will avoid that. Write down the formula for the logarithm of the numerator and get rid of all the terms that do not depend on $\mu$ or $\tau$. This is logarithm of our posterior up to normalization constant.
+    \item Write down logarithm of the prior $p(\mu, \tau)$ and get rid of all of the terms that do not depend on $\mu$ and $\tau$.
+    \item Compare equations in 2 and 3 and conclude what is the family of the posterior distribution, write down its parameters.
+    \item Calculate the normalization constant of the posterior distribution
+\end{enumerate}
+
+\subsubsection*{Solution}
+\block{
+  \begin{enumerate}
+    \item \textbf{Use Bayes formula to express $p(\mu, \tau|\{x_1, \cdots, x_N\})$ using prior and likelihood} \\
+      $\ds P(A|B) = \f{P(B|A)P(A)}{P(B)}$ \vspace{0.5em} \\
+      $\ds p(\mu, \tau|x) = \f{p(x|\mu, \tau)p(\mu, \tau)}{p(x)}$ \vspace{0.5em} \\
+      $\ds p(\mu, \tau|x) = \f{\mathcal{N}(x| \mu, \tau^{-1}) \cdot \mathcal{N}(\mu | \mu_0, (\beta \tau)^{-1})\cdot \text{Gamma}(\tau; a, b)}{p(x)}$ \vspace{0.5em} \\
+      $\ds p(\mu, \tau|x) = \l(\f{\tau}{2\pi}\r)^{\f{N}{2}} \exp\l(-\f\tau2 \sum_{i=1}^N (x_i - \mu)^2 \r) \cdot \l(\f{\beta \tau}{2\pi}\r)^{\f12} \exp\l(-\f12 (\mu - \mu_0)^2\beta\tau \r) \cdot \f{b^a \tau^{a-1}\exp(-b\tau)}{\Gamma(a)} \cdot \f{1}{p(x)}$
+
+    \item \textbf{Write down the formula for the logarithm of the numerator and get rid of all the terms that do not depend on $\mu$ or $\tau$} \\
+      $\ds \ln \bigl(p(x|\mu, \tau) \cdot p(\mu, \tau)\bigr) = \f{N}{2}\ln\l(\f{\tau}{2\pi}\r) + \f12\ln\l(\f{\beta \tau}{2\pi}\r) - \f\tau2 \sum_{i=1}^N (x_i - \mu)^2 - \f{(\mu - \mu_0)^2\beta\tau}2 + \ln\bigl(b^a \tau^{a-1}\exp(-b\tau)\bigr) - \ln\bigl(\Gamma(a)\bigr) $ \vspace{0.5em} \\
+      $\ds \f{N\ln(\tau)}2 - \red{\f{N\ln(2\pi)}2} + \f{\ln(\tau)}2 + \red{\f{\ln(\beta)}2} - \red{\f{\ln(2\pi)}2} -
+      \f\tau2 \sum_{i=1}^N (x_i - \mu)^2 - \f12 (\mu - \mu_0)^2\beta\tau +
+      \red{a\ln(b)} + (a-1)\ln(\tau) - b\tau - \red{\ln\bigl(\Gamma(a)\bigr)}
+      $ \vspace{0.5em} \\
+      $\ds \f{N+1}2\ln(\tau) - \f\tau2 \sum_{i=1}^N (x_i - \mu)^2 - \f12 (\mu - \mu_0)^2\beta\tau + (a-1)\ln(\tau) - b\tau $ \vspace{0.5em} \\
+      $\ds \f{N-1+2a}2\ln(\tau) - \f\tau2 \sum_{i=1}^N (x_i - \mu)^2 - \f12 (\mu - \mu_0)^2\beta\tau - b\tau $
+
+    \item \textbf{Write down logarithm of the prior $p(\mu, \tau)$ and get rid of all of the terms that do not depend on $\mu$ and $\tau$} \\
+      $\ds \ln \bigl(p(\mu, \tau)\bigr) = \f12\ln\l(\f{\beta \tau}{2\pi}\r) - \f12 (\mu - \mu_0)^2\beta\tau + \ln\bigl(b^a \tau^{a-1}\exp(-b\tau)\bigr) - \ln\bigl(\Gamma(a)\bigr) $ \vspace{0.5em} \\
+      $\ds \f12\ln(\tau) + \red{\f12\ln(\beta)} - \red{\f12\ln(2\pi)} - \f12 (\mu - \mu_0)^2\beta\tau +
+      \red{a\ln(b)} + (a-1)\ln(\tau) - b\tau - \red{\ln\bigl(\Gamma(a)\bigr)}$ \vspace{0.5em} \\
+      $\ds \f12\ln(\tau) - \f12 (\mu - \mu_0)^2\beta\tau + (a-1)\ln(\tau) - b\tau$ \vspace{0.5em} \\
+      $\ds \l(a-\f12\r)\ln(\tau) - \f12 (\mu - \mu_0)^2\beta\tau - b\tau$
+
+    \item \textbf{Compare equations in 2 and 3 and conclude what is the family of the posterior distribution, write down its parameters} \\
+      Уравнения очень похожи.
+      Они отличаются только коэффициентом перед $\ln(\tau)$, который константа и очевидно на семейство не влияет,
+      и в первом уравнение также есть $\sum_{i=1}^N (x_i - \mu)^2$.
+      Нам надо понять как коэффициент перед $\f\tau2$ можно превратить из $(\mu - \mu_0)^2\beta + \sum_{i=1}^N (x_i - \mu)^2$
+      в $(\mu - \mu_0)^2\beta$.
+      На самом деле это проще чем могло казаться: надо просто заметить что здесь всё константы, кроме $\mu$,
+      и что оба этих коэффициента можно представить как $f(\mu)$, где $f$ это некий многочлен второй степени,
+      потому что сумма многочленов одинакового порядка будет тоже многочленом того же порядка.
+
+    \item \textbf{Calculate the normalization constant of the posterior distribution} \\
+      Нормализационная константа -- это константа, на которую нужно умножить функцию, чтобы интеграл был равен $1$.
+      То есть нам придётся считать интеграл всего этого ужаса.... Благо это просто многочлен. \vspace{0.5em} \\
+      $\ds \int \l(\l(a - \f12\r) \ln(\tau) - \f12 (\mu - \mu_0)^2 \beta \tau - b \tau\r) d\mu =
+      a \mu \ln(\tau) - b \tau \mu - \f16 \beta \tau \mu^3 + \f12 \beta \tau \mu^2 \mu_0 - \f12 \beta \tau \mu \mu_0^2 - \f12 \mu \ln(\tau) + \text{const}$ \vspace{0.5em} \\
+      $\ds \text{normalization constant} = \f{1 - \text{const}}{a \mu \ln(\tau) - b \tau \mu - \f16 \beta \tau \mu^3 + \f12 \beta \tau \mu^2 \mu_0 - \f12 \beta \tau \mu \mu_0^2 - \f12 \mu \ln(\tau)}$
+  \end{enumerate}
+}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section*{Problem 3. Gaussian Processes. [2 points]}
+
+Assume, that the function $y(x)$, $x \in \mathbb{R}^d$, is a realization of a Gaussian
+Process with the kernel $K(a, b) = \exp({- \gamma \|a - b\|_2^2}))$:
+\begin{equation}
+y(x) \sim GP\bigl(0; K(x, x)\bigr).
+\end{equation}
+
+Namely, for a given $x$, $y$ has a Gaussian distribution $\mathcal{N}(y|0, K(x, x))$
+
+
+Suppose two datasets were observed: \textbf{noiseless} and \textbf{noisy}:
+\begin{align}
+    & D_0 = \{ x_n, y(x_n) \}_{n=1}^{N} \,, \\
+    & D_1 = \{x'_m, y(x'_m) + \varepsilon_m \}_{m=1}^{M} \,,
+\end{align}
+
+where $\varepsilon_m$ are i.i.d. Gaussian:  $\varepsilon_m \sim \mathcal{N}(\varepsilon_m | 0, \sigma^2)$.
+
+\subsubsection*{The task}
+Derive the conditional distribution for a new point $y^* = y(x^*)$, given observed data: $p(y^* \big\vert {D_0, D_1})$.
+
+\subsubsection*{Hint} You can find useful properties of the Gaussian distribution for this task in the \href{http://www.math.uwaterloo.ca/~hwolkowi//matrixcookbook.pdf}{Matrix Cookbook}
+
+\subsubsection*{Solution}
+\texttt{YOUR SOLUTION HERE}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section*{Problem 4. MLP. [2 points]}
+Consider a multiclass classification task. Dataset consists of feature vectors $x \in \mathbb{R}^d$ and target variables $y \in \{1, 2, \dots, K\}$.
+
+Assume you are using a neural network with 1 linear layer and a softmax activation to predict a class of a given object. For a single object, forward pass through this network will look like this:
+\begin{align}
+    h &= W^Tx \\
+    t_i &= \frac{\exp{h_i}}{\sum_{j=1}^K \exp{h_j}}
+\end{align}
+where $W \in \mathbb{R}^{d \times K}$ is an unknown weight matrix, $h \in \mathbb{R}^{K}$ is a hidden state vector, $t_i \in [0, 1]$ is a predicted probability for an object to be from class $i$.
+
+To train a neural network, cross-entropy loss will be used. For a single object it looks like this:
+\begin{align}
+    l = -\log t_{y}
+\end{align}
+where $t_y$ is an output of the network with input $y$ (index of the correct class).
+
+
+\subsubsection*{The task}
+
+\begin{enumerate}
+    \item Work out derivative $\frac{\partial l}{\partial t_i} \quad \forall i$.
+    \item Work out derivative $\frac{\partial t_i}{\partial h_j} \quad \forall i, j$.\\
+    \textbf{Hint:} note that $t_i$ depends on all of the $h_j$, not only on the $h_i$.
+    It might be convenient to consider $\frac{\partial t_i}{\partial h_i}$ and $\frac{\partial t_i}{\partial h_j}$ (when $i \neq j$) separately.
+    \item Use results from q1-2 to obtain $\frac{\partial l}{\partial h_i}$.
+    \item Explain how $\frac{\partial l}{\partial h_i}$ will be used in a backward pass of a neural network.
+\end{enumerate}
+
+\subsubsection*{Solution}
+\block{
+  \begin{enumerate}
+    \item \textbf{Work out derivative $\f{\partial l}{\partial t_i}$} \\
+      $\ds \f{\partial l}{\partial t_i} = -\f{\partial}{\partial t_i} \ln(t_y)
+      = - \f{\partial t_y}{\partial t_i} \cdot \f{1}{t_i} = \begin{cases}
+        -\dfrac{1}{t_i} & \text{if } i = y \\
+        0 & \text{else}\\
+      \end{cases}$
+
+    \item \textbf{Work out derivative $\frac{\partial t_i}{\partial h_j}$}
+    \begin{enumerate}[label=2.\arabic*.]
+      \item \textbf{Case $\frac{\partial t_i}{\partial h_i}$} \\
+        $\ds \f{\partial t_i}{\partial h_i} = \f{ \bigl(\sum_{j=1}^K \exp{h_j}\bigr)  \cdot \exp{h_i} - \bigl(\sum_{j=1}^K \exp{h_j}\bigr)' \cdot \exp{h_i}}{\bigl(\sum_{j=1}^K \exp{h_j}\bigr)^2}$ \vspace{0.5em} \\
+        $\l(\sum_{j=1}^K \exp{h_j}\r)' = \sum_{j=1}^K (\exp{h_j})'$ \vspace{0.5em} \\
+        $\ds (\exp{h_j})' = \begin{cases}
+          \exp{h_i} & \text{if } i = j \\
+          0 & \text{else}\\
+        \end{cases}$ \vspace{0.5em} \\
+        $\l(\sum_{j=1}^K \exp{h_j}\r)' = \exp{h_i}$ \vspace{0.5em} \\
+        $\ds \f{\partial t_i}{\partial h_i} = \exp{h_i} \cdot \f{ \bigl(\sum_{j=1}^K \exp{h_j}\bigr) - \exp{h_i}}{\bigl(\sum_{j=1}^K \exp{h_j}\bigr)^2}$
+
+      \item \textbf{Case $\frac{\partial t_i}{\partial h_k}$ (when $i \neq k$)} \\
+        PS: я тут переименовал индекс $j$ из условие в $k$, чтобы не было конфликтов с индексом $j$ в суммах. \vspace{0.5em} \\
+        $\ds \f{\partial t_i}{\partial h_k} = -\f{\bigl(\sum_{j=1}^K \exp{h_j}\bigr)' \cdot \exp{h_i}}{\bigl(\sum_{j=1}^K \exp{h_j}\bigr)^2}$ \vspace{0.5em} \\
+        $\l(\sum_{j=1}^K \exp{h_j}\r)' = \exp{h_k}$ \vspace{0.5em} \\
+        $\ds \f{\partial t_i}{\partial h_k} = -\f{\exp{(h_k + h_i)}}{\bigl(\sum_{j=1}^K \exp{h_j}\bigr)^2}$
+    \end{enumerate}
+
+    \item \textbf{Use results from q1-2 to obtain $\frac{\partial l}{\partial h_i}$} \\
+      Мы можем получить эту производную умножив две предыдущие.
+      $$ \f{\partial l}{\partial h_i} = \f{\partial l}{\partial t_k} \cdot \f{\partial t_k}{\partial h_i}$$
+      При этом нам надо осторожно подобрать внутренний индекс $k$, чтобы не было умножений и делений на ноль.
+      Поэтому нам придётся взять $k=y$. \vspace{0.5em} \\
+      $\ds \f{\partial l}{\partial h_i} = \f{1}{t_y} \cdot \f{\exp{h_y}}{\bigl(\sum_{j=1}^K \exp{h_j}\bigr)^2} \cdot \begin{cases}
+        \bigl(\sum_{j=1}^K \exp{h_j}\bigr) - \exp{h_i} & \text{if } i = y \\
+        -\exp{h_i} & \text{else}\\
+      \end{cases}$ \vspace{0.5em} \\
+      $\ds \f{\partial l}{\partial h_i} = \f{\sum_{j=1}^K \exp{h_j}}{\exp{h_y}} \cdot \f{\exp{h_y}}{\bigl(\sum_{j=1}^K \exp{h_j}\bigr)^2} \cdot \begin{cases}
+        \bigl(\sum_{j=1}^K \exp{h_j}\bigr) - \exp{h_i} & \text{if } i = y \\
+        -\exp{h_i} & \text{else}\\
+      \end{cases}$ \vspace{0.5em} \\
+      $\ds \f{\partial l}{\partial h_i} = \f{1}{\sum_{j=1}^K \exp{h_j}} \cdot \begin{cases}
+        \bigl(\sum_{j=1}^K \exp{h_j}\bigr) - \exp{h_i} & \text{if } i = y \\
+        -\exp{h_i} & \text{else}\\
+      \end{cases}$ \vspace{0.5em} \\
+      $\ds \f{\partial l}{\partial h_i} = -\exp{h_i} + \begin{cases}
+        1 & \text{if } i = y \\
+        0 & \text{else}\\
+      \end{cases}$
+
+    \item \textbf{Explain how $\frac{\partial l}{\partial h_i}$ will be used in a backward pass of a neural network} \\
+      Во время обратного прохода по нейронной сети, эти вычисляются для определения того,
+      как loss функция меняется в зависимости от весов нашей нейронной сети.
+      Они используются оптимизатором для того, чтобы сделать шаг в правильную сторону,
+      то есть такой шаг, который минимизирует значение loss функции и идёт по градиенту вниз.
+      На самом деле вектор этого шага это просто вектор наших производных домноженный на константу \texttt{learning\_rate}.
+  \end{enumerate}
+}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\newpage
+\section*{Problem 5. Generative Model. [2 points]}
+We observe a dataset $\{x_1, \dots, x_N\}$, in other words, we consider an empirical distribution over $x$: $p_e(x)=\frac{1}{N}\sum_{n=1}^{N}\delta_{x_n}(x)$. We want to infer a latent representation $z$ for a point $x$ from the dataset. Thus, we consider the following generative model with parameters $\theta$:
+\begin{equation}
+    \begin{aligned}
+    & z \sim p(z),
+    & x \sim p_{\theta}(x|z).
+    \end{aligned}
+\end{equation}
+We choose our generative model to be a linear and assume the presence of the normal noise:
+\begin{align}
+p_{\theta}(x|z)&=\mathcal{N}(x|W_pz+\mu_{p},\Lambda_{p}^{-1}),\theta:=\{W_p, \mu_p, \Lambda_{p}^{-1}\},\\
+p(z)&=\mathcal{N}(z|0, I).
+\end{align}
+We want to infer parameters from data as an MLE solution:
+\begin{equation}
+\theta^{*} = \arg\max_{\theta}\mathbb{E}_{x}\log \int p_{\theta}(x|z)p(z)dz.
+\end{equation}
+Also, we would like to have the ability to find the latent representation $z$ for a new datapoint $x$. Thus, we will use variational approach to solve the optimization problem:
+\begin{equation}
+    \begin{aligned}
+    &\max_{\theta}\mathbb{E}_{x}\log \int p_{\theta}(x|z)p(z)dz \geq \max_{\theta,\phi}\mathbb{E}_{x}\int q_{\phi}(z|x) \log \frac{p_{\theta}(x|z)p(z)}{q_{\phi}(z|x)}dz.
+    \end{aligned}
+\end{equation}
+Since generative process is linear, we would like to use similar structure for the inference:
+\begin{equation}
+q_{\phi}(z|x)=\mathcal{N}(z|W_{q}x+\mu_{q},\Lambda_{q}^{-1}),\phi:=\{W_q, \mu_q, \Lambda_{q}^{-1}\}.
+\end{equation}
+
+Finally, note that taking expectations w.r.t empirical distribution is the same as averaging, which gives us the following objective:
+\begin{equation}\label{eq:vae}
+\mathcal{L} = \mathbb{E}_{x}\int q_{\phi}(z|x) \log \frac{p_{\theta}(x|z)p(z)}{q_{\phi}(z|x)}dz = \frac1N \sum_{n=1}^N \int q_{\phi}(z|x_n) \log \frac{p_{\theta}(x_n|z)p(z)}{q_{\phi}(z|x_n)}dz.
+\end{equation}
+
+\subsubsection*{Finally, the task}
+\begin{itemize}
+    \item Use first-order conditions (FOC) to find: $W_p, \mu_p$, given $W_q, \mu_q$, $\Lambda_{q}$ using objective \eqref{eq:vae}. Note that in the final formula $W_p$ may depend on $\mu_p$ and vice versa.
+    \item Is it  enough to check the FOC for $\mu_p$? Check the convexity over $\mu_p$.
+\end{itemize}
+\subsubsection*{Solution}
+\texttt{YOUR SOLUTION HERE}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\newpage
+\section*{Problem 6. Linear Model for Recommendation. [2 points]}
+
+In this task we will use a linear model, to build a simple recommendation system. Assume that you have $N$ products and $M$ users. Each product is represented by a feature vector $u_{i} \in \mathbb{R}^k$ and each user is represented by a feature vector $v_{j} \in \mathbb{R}^k$. These vector are not given to use, we will learn them from the data.
+
+For some pairs of users and products you observe values $r_{i,j} \in [0, 1]$ - how much user $i$ likes product $j$ (we will call it rating).
+
+We will use the following model to predict rating for a given pair product-user:
+\begin{equation}
+    r_{i, j} = \text{Softmax}(u_i^T v_j) = \frac{\exp(u_i^T v_j)}{\sum_{q} \exp(u_i^T v_q)},
+\end{equation}
+
+\begin{equation}
+ \log r_{i, j} = u_i^T v_j - \log \sum_{q} \exp(u_i^T v_q).
+\end{equation}
+
+Since $r_{i, j} \in [0, 1]$ we will interpret it as a probablity and use maximum likelihood to find users and products representations.
+\begin{equation}\label{eq:objective}
+ \sum_{(i, j)} \log r_{i, j} \rightarrow \max_{U, V} ,
+\end{equation}
+
+where $U \in \mathbb{R}^{M \times k}$, $V \in \mathbb{R}^{N \times k}$.
+
+\subsubsection*{The task}
+\begin{itemize}
+    \item Find the gradient of \eqref{eq:objective} with respect to $u_i$.
+    \item Find the gradient of \eqref{eq:objective} with respect to $v_i$.
+    \item Let's add regularization (with hyperparameters $\lambda_1, \lambda_2$ to the model:
+    \begin{equation}\label{eq:reg}
+        \sum_{(i, j)} \log r_{i, j} + \lambda_1\|V^TV - I\|_2^2 + \lambda_2\|U^TU - I\|_2^2 \rightarrow \max_{U, V}.
+    \end{equation}
+
+    Find the gradient of a regularized objective \eqref{eq:reg} w.r.t. $U$ and $V$.
+
+    \item Explain how you will used computed gradient to train the model
+    \item Assume that you found the solution $U^*$ and $V^*$ of the optimization problem \eqref{eq:reg}. Which product will you recommend to the user with the index $m$ based on the train model?
+\end{itemize}
+
+
+\subsubsection*{Solution}
+\block{
+  \begin{enumerate}
+    \item \textbf{Find the gradient of \eqref{eq:objective} with respect to $u_i$} \\
+      $\ds \nabla_{u_i}  = \sum_j \nabla_{u_i} \ln r_{i, j}
+      = \sum_j \nabla_{u_i} \l(u_i^Tv_j - \ln\sum_q\exp\l(u_i^T v_q\r)\r)$ \vspace{0.5em} \\
+      Найдём дифференциал: \vspace{0.5em} \\
+      $\ds \sum_j d \l(u_i^Tv_j - \ln\sum_q\exp\l(u_i^T v_q\r)\r) = \sum_j\l(
+      d u_i^Tv_j - \f{\sum_qd\exp\l(u_i^T v_q\r)}{\ln\sum_q\exp\l(u_i^T v_q\r)} \r) = \sum_j\l(
+      v_j^Tdu_i - \f{\sum_q\l(\exp\l(u_i^T v_q\r) \cdot v_q^Tdu_i\r)}{\ln\sum_q\exp\l(u_i^T v_q\r)} \r) $ \vspace{0.5em} \\
+      .... \vspace{0.5em} \\
+      $\ds \sum_j\l(v_j^T - \f{\sum_q\l(\exp{(u_i^Tv_q)}\cdot v_q\r)}{\sum_q\exp{(u_i^Tv_q)}}\r) du_i$ \vspace{0.5em} \\
+      Следовательно градиент будет равен транспонированному вектору при дифференциале, который мы только что нашли: \vspace{0.5em} \\
+      $\ds \nabla_{u_i} \sum_j \ln r_{i, j} = \sum_j\l(v_j^T - \f{\sum_q\l(\exp{(u_i^Tv_q)}\cdot v_q\r)}{\sum_q\exp{(u_i^Tv_q)}}\r)^T$
+
+    \item \textbf{Find the gradient of \eqref{eq:objective} with respect to $v_i$} \\
+      Тут аналогичные вычисления, просто меняем местами $u$ и $v$: \vspace{0.5em} \\
+      $\ds \nabla_{v_i} \sum_j \ln r_{i, j} = \sum_j\l(u_j^T - \f{\sum_q\l(\exp{(v_i^Tu_q)}\cdot u_q\r)}{\sum_q\exp{(v_i^Tu_q)}}\r)^T$
+
+    \item \textbf{Find the gradient of a regularized objective \eqref{eq:reg} w.r.t. $U$ and $V$} \\
+      \TODO
+
+    \item \textbf{Explain how you will used computed gradient to train the model} \\
+      В ситуации когда у нас две матрицы и два градиента, мы можем сначала фиксировать $u$ и делать шаг по $v$,
+      а потом наоборот фиксировать $v$ и делать шаг по $u$.
+      Таким образом мы можем оптимизировать сразу по двум градиентам, чередуя их.
+
+    \item \textbf{Which product will you recommend to the user with the index $m$ based on the train model?} \\
+      Нам нужно перемножить матрицы $UV^T$ и достать оттуда вектор нашего юзера с индексом $m$.
+      В этом векторе будут вероятности того что нашему юзеру понравится какой-то продукт.
+      Чтобы сделать рекомендацию мы просто берём продукт с максимальной вероятностью. \\
+      PS: это не совсем вероятности, тк они могут не суммироваться в $1$. Правильнее их называть скорами или пробами.
+  \end{enumerate}
+}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\end{document}
