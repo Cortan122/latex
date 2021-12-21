@@ -4,3 +4,4 @@
 !*.sty
 !*.gitignore
 !makefile
+*.ipynb.tex
