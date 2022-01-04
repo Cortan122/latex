@@ -15,7 +15,7 @@
   \maketitle
 
   \section{Бактерия \href{https://en.wikipedia.org/wiki/Clostridium_botulinum}{Clostridium botulinum}}
-  \includegraphics[width=\textwidth]{../bio/hw1/bacteria.png}
+  \includegraphics[width=\textwidth]{./bio/hw1/bacteria.png}
 
   \begin{enumerate}
     \item Какова длина генома (файл .fna) \\
@@ -38,27 +38,27 @@
 
   \section{Ген \href{https://en.wikipedia.org/wiki/SEP15}{SEP15} (или SELENOF)}
   \subsection{В геномном браузере \href{https://genome-euro.ucsc.edu/cgi-bin/hgTracks?db=hg38&position=chr1\%3A86862445\%2D86914365}{UCSC} отобразить все изоформы гена, а также SNPs (common and clinically relevant), участки консервативности среди позвоночных и транспозоны}
-  \includegraphics[width=\textwidth]{../bio/hw1/gene_common.png}
+  \includegraphics[width=\textwidth]{./bio/hw1/gene_common.png}
 
   \subsection{Отобрать в табличном виде и сохранить в текстовый файл все изоформы генов, попавших в заданный участок}
-  \includegraphics[width=\textwidth]{../bio/hw1/textfile.png}
+  \includegraphics[width=\textwidth]{./bio/hw1/textfile.png}
   он получился какойто слишком маленький (всего 2 килобайта)
-  \textattachfile{../bio/hw1/table.txt}{\textcolor{blue}{файл вложенный в pdf (может у когото сработает)}}
+  \textattachfile{./bio/hw1/table.txt}{\textcolor{blue}{файл вложенный в pdf (может у когото сработает)}}
 
   \subsection{Отобрать координаты только экзонов и только интронов для заданного участка}
-  \includegraphics[width=\textwidth]{../bio/hw1/exon.png}
+  \includegraphics[width=\textwidth]{./bio/hw1/exon.png}
   тут в табличке из второго пункта прописаны координаты экзонов, но они относительно начала хромосомы \\
   мы можем вычесть координату начала гена и получить внутренние координаты (хотя зачем) \\
   получится чтото типа \texttt{0-1161 5608-5658 18217-18281 40836-41004 51583-51682}
 
 
   \subsection{Ответить письменно, в какие участки гена попадают clinically relevant SNPs}
-  \includegraphics[width=\textwidth]{../bio/hw1/snip.png}
+  \includegraphics[width=\textwidth]{./bio/hw1/snip.png}
   clinically relevant snip у нас тут только один (rs207460279) попадает на интрон \\
   также если они попадают в экзон то они отмечаются красным
 
   \subsection{Ответить письменно, в какие участки гена попадают транспозоны}
-  \includegraphics[width=\textwidth]{../bio/hw1/copy.png}
+  \includegraphics[width=\textwidth]{./bio/hw1/copy.png}
   транспозоны не попадают на экзоны (даже если мы сделаем зум и посмотрим внимательно) \\
   тоесть получилось что они у нас все транспозоны лежат в интронах
 
