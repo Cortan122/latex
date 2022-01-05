@@ -7,4 +7,6 @@
 !make.sh
 !bio
 !bio/**
+!books
+!books/**
 *.ipynb.tex
