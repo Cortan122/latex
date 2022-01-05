@@ -9,4 +9,6 @@
 !bio/**
 !books
 !books/**
+!asm
+!asm/**
 *.ipynb.tex

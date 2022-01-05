@@ -34,7 +34,7 @@ for i in *.tex; do
   grep 'Rerun to get cross-references right.' "$f.log" && "$cmd" "$i"
 
   cp "$f.pdf" ../latex_pdfs/"$f.pdf"
-  touch -d "$(git log -1 --format="%as" -- "$i")" ../latex_pdfs/"$f.pdf"
+  touch -d "$(git log --format="%ai" -- "$i" | tail -n -1)" ../latex_pdfs/"$f.pdf"
 done
 
 exit 0
