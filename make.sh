@@ -1,6 +1,6 @@
 #!/bin/sh
 
-# pm i texlive-xetex texlive-lang-cyrillic fonts-cmu
+# pm i texlive-xetex texlive-lang-cyrillic fonts-cmu texlive-bibtex-extra
 # git clone https://github.com/Cortan122/fasm.git asm
 # scp -r ~/dz2020/bio scp://cortan122.tk/~/
 # rm !(**/*.png|**/*.fasta)
@@ -34,7 +34,7 @@ for i in *.tex; do
   grep -Fq 'Rerun to get cross-references right.' "$f.log" && "$cmd" "$i"
 
   if grep -Fq 'There were undefined references.' "$f.log"; then
-    bibtex "$i" || exit 1
+    bibtex "$f" || exit 1
     "$cmd" "$i" || exit 1
     "$cmd" "$i" || exit 1
   fi
