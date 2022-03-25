@@ -16,10 +16,10 @@ mkdir -p ../latex_pdfs/
 for i in *.tex; do
   f="$(basename "$i" .tex)"
   [ "$i" -ot "$f.pdf" ] && continue
-  grep -F '\begin{document}' "$i" >/dev/null || continue
+  grep -Fq '\begin{document}' "$i" || continue
 
   if [ -f "$f.ipynb" ]; then
-    if pandoc --list-input-formats | grep ipynb >/dev/null; then
+    if pandoc --list-input-formats | grep -Fq ipynb; then
       [ "$f.ipynb" -ot "$f.ipynb.tex" ] || pandoc "$f.ipynb" -o "$f.ipynb.tex" --extract-media=pandoc_media
     else
       jupyter nbconvert --to pdf "$f.ipynb"
@@ -28,10 +28,16 @@ for i in *.tex; do
   fi
 
   cmd="xelatex"
-  grep -F '\usepackage[english,russian]{babel}' "$i" >/dev/null && cmd="pdflatex"
+  grep -Fq '\usepackage[english,russian]{babel}' "$i" && cmd="pdflatex"
 
   "$cmd" "$i" || exit 1
-  grep 'Rerun to get cross-references right.' "$f.log" && "$cmd" "$i"
+  grep -Fq 'Rerun to get cross-references right.' "$f.log" && "$cmd" "$i"
+
+  if grep -Fq 'There were undefined references.' "$f.log"; then
+    bibtex "$i" || exit 1
+    "$cmd" "$i" || exit 1
+    "$cmd" "$i" || exit 1
+  fi
 
   cp "$f.pdf" ../latex_pdfs/"$f.pdf"
   touch -d "$(git log --format="%ai" -- "$i" | tail -n -1)" ../latex_pdfs/"$f.pdf"

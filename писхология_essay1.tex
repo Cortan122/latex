@@ -1,0 +1,190 @@
+\documentclass[a4paper,11pt]{article}
+% LaTeX template for the essays for Cognitive Psychology at AI at the RUG.
+% Initially made by Ren\'e Mellema and Jacob Schoemaker.
+% V1.1 (05/03/2019) Fixed some small errors in spacing and added more
+% explanation as to how spacing around floats works
+% V1 (04/03/2019) Initial version
+% Set the margins
+\usepackage[margin=2.54cm, rmargin=4.9cm]{geometry}
+\usepackage{graphicx}
+% For setting the page number
+\usepackage{fancyhdr}
+\usepackage{helvet}
+% For setting the line spacing
+\usepackage{setspace}
+% For changing the headers
+\usepackage{titlesec}
+% For changing the figure environment
+\usepackage[position=below, % Captions go below
+            skip=0pt, % Controls the space between figures and captions
+            labelsep=period, % Use a . as the seperator
+            labelfont=bf, % Put the label in bold
+            font={small,stretch=1.2}, % Change fontsize and line spacing
+            ]{caption}
+% For getting rid of the hypenation
+\usepackage[none]{hyphenat}
+% Use the APA style
+\usepackage[hidelinks,bookmarks=false]{hyperref}
+\usepackage{apacite}
+% If you want to use hyperref, include it before APAcite
+
+% Set the font to Helvetica
+\renewcommand\familydefault{\sfdefault}
+\usepackage[T1]{fontenc}
+\usepackage[document]{ragged2e}
+
+\pagestyle{fancy}
+% Clear the header and footer
+\fancyhead{}
+\renewcommand{\headrulewidth}{0pt}
+\fancyfoot{}
+% Set the right side of the footer to be the page number
+\fancyfoot[R]{\thepage}
+\fancyfootoffset[R]{3cm}
+
+% Set up the paragraphs correctly.
+\setlength\parindent{0pt} % Turn of indenting
+\setlength\parskip{6pt}   % Change the space between paragraphs
+% Set the line spacing
+\setstretch{1.5}
+% Turns off numbering for sections.
+\setcounter{secnumdepth}{0}
+
+% Changing the section headers
+\titlespacing*{\section}{0pt}{6pt}{0pt}
+% Less space around floats
+\setlength{\textfloatsep}{6pt plus 1pt minus 1pt}
+% space between float on top of page and text
+\setlength\floatsep{6pt plus 1pt minus 1pt}
+% space between two floats
+\setlength\intextsep{6pt plus 1pt minus 6pt}
+% space between a float and surrounding text (using h)
+
+\begin{document}
+  \begin{singlespace}
+    \large
+    {\bf AAAAAAAAAA AAAAAAA AAAAAAAA} \\[12pt]
+    {\huge\bf ADHD in the 21st century: the role of the environment in ADHD} \\[6pt]
+    \textbf{Chapter:} 5 \\
+    \textbf{Date:} March 2022
+  \end{singlespace}
+  \vspace{-\parskip}
+
+  \section{Introduction}
+  ADHD, which stands for ``attention-deficit/hyperactivity disorder'',
+  is a neurological developmental disability \cite{adolescents},
+  that effects about 5\% of the world's population \cite{underdiagnosis}.
+  The disorder is expressed differently in adults and in children:
+  during childhood the hyperactivity related symptoms are more pronounced,
+  while in adulthood problems related to inattention become more noticeable \cite{underdiagnosis}.
+
+  ADHD can vary wildly in severity, and, especially in children, be misused as a catch-all label for active kids.
+  In particularly severe cases it can be treated with Ritalin, a powerful stimulant,
+  which may be unintuitive, considering ADHD is characterized by hyperactivity.
+  One possible explanation is that Ritalin stimulates the neural pathways responsible for
+  inhibiting our reactions to distracting stimuli \cite{thebook}.
+
+  From the patient's perspective, getting an official ADHD diagnosis can be difficult \cite{diagnosisdifficulty}.
+  As a result, many adolescents, as well as parents of children, suspecting they might have ADHD,
+  seek out information online \cite{informationseeking}.
+  There is no scientific consensus on whether ADHD is overdiagnosed or underdiagnosed,
+  but most agree that it is often misdiagnosed \cite{overorunderdiagnosed}.
+
+  The prevalence of mild cases and potential overdiagnosis can make Ritalin an unappealing treatment option.
+  Prescribing such a powerful drug can often do more harm then good \cite{thebook}.
+  Despite the drug's track record of relative long term safety, proven by 70 years of research,
+  it remains widely controversial \cite{controversy}.
+  Since 90\% of ADHD patients currently treated with stimulants,
+  would instead benefit more form physiological therapy,
+  the current use of Ritalin as a first-line treatment is expectedly met with objections \cite{controversy}.
+
+  % With official recommendations recommending Ritalin as a first-line treatment,
+  % it is no wonder that there are objections, % fixme
+  % as up to 90\% of ADHD patients currently treated with stimulants,
+  % would instead benefit more form physiological therapy \cite{controversy}.
+
+  \section{Findings}
+  Many people effected by ADHD describe their disorder as an
+  ``interaction between themselves and their environment''.
+  Whether certain symptomatic behaviors are considered dysfunctional
+  is highly dependent on the expectations placed upon the subject by their environment and culture \cite{adhdcontext}.
+  For example, distractibility diminishes significantly when tasks are altered to make them more stimulating \cite{delisle2011context}.
+
+  This gives credence to an alternative model of ADHD.
+  Rather then an inherent ``attention deficit'' in all situations,
+  it emphasizes a lack of long term motivation, refereed to as ``motivational salience'',
+  becoming bored easily when performing uninteresting or underwhelming tasks \cite{adhdcontext}.
+  Thus, in contexts providing frequent motivational feedback and requiring no long term planning,
+  subjects were no longer impaired by ADHD \cite{delisle2011context}.
+
+  In the 21st century such highly motivational environments are provided by video games and social media apps.
+  As our society becomes more integrated with technology,
+  life without a smartphone becomes increasingly difficult.
+  We are forced to carry a constant source of distractions everywhere we go.
+  This disproportionately effects ADHD patients,
+  and, as a result, they are more likely to develop video game addiction \cite{gameaddiction}.
+
+  The cost-optimized American education system,
+  to increase classroom size to 40 children per class,
+  places heavy expectations on the behavior of its students,
+  which patients with ADHD have a hard time meeting.
+  The classroom curriculum is also designed to match the learning ability of the weakest students,
+  which creates a severely under-stimulating environment \cite{controversy}.
+  In children with ADHD, this leeds to a cascade effect:
+  due to poor academic performance they are 4 times more likely to get held back,
+  causing their environment to become even less stimulating \cite{heldback}.
+
+  Compared to adults, children have very little control over their environment \cite{adhdcontext}.
+  Even simple alterations to a child's physical surroundings,
+  like, for example, replacing distractions with helpful reminders,
+  seem to be helpful \cite{thebook}.
+  Waiving arbitrary classroom rules, providing alternative means of accomplishing different kinds of homework tasks,
+  and, most importantly, providing more attention to each individual student
+  can significantly reduce the effect of ADHD on academic performance \cite{ervin1998classroom}.
+
+  Insuring a welcoming home environment is very important, as children spend most of their time at home.
+  Addressing poor parenting practices, which may arise as
+  low academic performance leads parents to mischaracterize their child as ``lazy'' or ``stupid'',
+  is possible with behavioral parent training (BPT).
+  BPT involves a sequence of weakly therapy sections visited by the parents and optionally their child,
+  over the course of which the therapist teaches a series of different parenting techniques appropriate for children with ADHD.
+  Examples of such techniques may include
+  ignoring minor rule violations,
+  explicitly declaring unwritten rules, and
+  setting up a point-based system to track good and bad behavior \cite{parenttraining}.
+
+  Another non-pharmaceutical treatment option is cognitive behavioral therapy (CBT).
+  CBT has been demonstrated as an effective treatment not only for ADHD but also for many of its comorbidities.
+  It can help patients establish coping strategies to deal with changes in their environment.
+  Group CBT can also create a sense of shared identity, through the sharing of personal experiences with other people hwo have ADHD
+  \cite{bramham2009evaluation}.
+
+  In some contexts ADHD symptoms can ``become strengths rather than liabilities'' \cite{adhdcontext}.
+  This, along with its abnormally high frequency, suggests that the ``disorder''
+  may be evolutionarily advantageous \cite{jensen1997evolution}.
+
+  \section{Discussion \& Conclusion}
+  The environment plays a major role in how patients with ADHD experience their symptoms.
+  As a result, it can be an enticing target for possible treatment.
+  Unlike medication, treatments that effect the environment and how it is perceived by the patient, can have long lasting effects.
+  ADHD is an incurable chronic condition; condemning a patient to take pills for the rest of their life seem cruel.
+
+  The treatment landscape of ADHD has improved considerably over the corse of the 21st century,
+  but there is still a lot of room for improvement.
+  Further research is required into the efficacy of combined medical and psychological therapy,
+  and America needs to stop using stimulants with harmful side effects as a first-line treatment option.
+  The situation is complicated by the fact that the exact cause of ADHD remains unknown.
+
+  % In this section you state the implications of the findings for what was
+  % described in the book. This should take about 250 words (but there is \textbf{no
+  % word limit nor minimum number of words} for this section).
+
+  % For this course, you are required to use APA style. Using hanging
+  % indentation (1 cm), as shown below. The references do not add to the word
+  % count.
+
+  \nocite{ref2}
+  \bibliographystyle{apacite}
+  \bibliography{references}
+
+\end{document}

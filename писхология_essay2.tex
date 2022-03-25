@@ -1,0 +1,179 @@
+\documentclass[a4paper,11pt]{article}
+% LaTeX template for the essays for Cognitive Psychology at AI at the RUG.
+% Initially made by Ren\'e Mellema and Jacob Schoemaker.
+% V1.1 (05/03/2019) Fixed some small errors in spacing and added more
+% explanation as to how spacing around floats works
+% V1 (04/03/2019) Initial version
+% Set the margins
+\usepackage[margin=2.54cm, rmargin=4.9cm]{geometry}
+\usepackage{graphicx}
+% For setting the page number
+\usepackage{fancyhdr}
+\usepackage{helvet}
+% For setting the line spacing
+\usepackage{setspace}
+% For changing the headers
+\usepackage{titlesec}
+% For changing the figure environment
+\usepackage[position=below, % Captions go below
+            skip=0pt, % Controls the space between figures and captions
+            labelsep=period, % Use a . as the seperator
+            labelfont=bf, % Put the label in bold
+            font={small,stretch=1.2}, % Change fontsize and line spacing
+            ]{caption}
+% For getting rid of the hypenation
+\usepackage[none]{hyphenat}
+% Use the APA style
+\usepackage[hidelinks,bookmarks=false]{hyperref}
+\usepackage{apacite}
+% If you want to use hyperref, include it before APAcite
+
+% Set the font to Helvetica
+\renewcommand\familydefault{\sfdefault}
+\usepackage[T1]{fontenc}
+\usepackage[document]{ragged2e}
+
+\pagestyle{fancy}
+% Clear the header and footer
+\fancyhead{}
+\renewcommand{\headrulewidth}{0pt}
+\fancyfoot{}
+% Set the right side of the footer to be the page number
+\fancyfoot[R]{\thepage}
+\fancyfootoffset[R]{3cm}
+
+% Set up the paragraphs correctly.
+\setlength\parindent{0pt} % Turn of indenting
+\setlength\parskip{6pt}   % Change the space between paragraphs
+% Set the line spacing
+\setstretch{1.5}
+% Turns off numbering for sections.
+\setcounter{secnumdepth}{0}
+
+% Changing the section headers
+\titlespacing*{\section}{0pt}{6pt}{0pt}
+% Less space around floats
+\setlength{\textfloatsep}{6pt plus 1pt minus 1pt}
+% space between float on top of page and text
+\setlength\floatsep{6pt plus 1pt minus 1pt}
+% space between two floats
+\setlength\intextsep{6pt plus 1pt minus 6pt}
+% space between a float and surrounding text (using h)
+
+% \hfuzz=10pt
+% \overfullrule=10pt
+
+\begin{document}
+  \begin{singlespace}
+    \large
+    {\bf AAAAAAAAAA AAAAAAA AAAAAAAA} \\[12pt]
+    {\huge\bf Animal Language} \\[6pt]
+    \textbf{Chapter:} 10 \\
+    \textbf{Date:} March 2022
+  \end{singlespace}
+  \vspace{-\parskip}
+
+  \section{Introduction}
+  It is widely hypothesized that humans have an innate propensity for spoken language,
+  however this hypothesis is controversial.
+  Many researchers claim that the ``FOXP2'' gene,
+  which in vertebrates plays a crucial role in complex sound processing,
+  like song mimicry in birds and echolocation in bats \cite{campbell2009conservation},
+  is responsible for our unique capacity for language learning,
+  as mutations in this gene cause a severe speech disorder \cite{thebook2}.
+  But recent research suggests that this gene experienced no recent evolutionary pressure,
+  so it can't possibly be the only gene necessary for language development \cite{atkinson2018no}.
+
+  Many non-human animals have sophisticated communication systems,
+  but they are not general and flexible enough to be considered ``languages'' \cite{thebook2}.
+  For the most part, they are limited to a small vocabulary of fitness-relevant messages,
+  like alarm calls, which are produced as a direct response to external stimuli \cite{fitch2020animalcognition}.
+  These systems also lack syntax and grammar,
+  or some other way of combining multiple messages into more complex ones \cite{thebook2}.
+  In contrast, human languages are inherently recursive:
+  phonemes are combined to form words, words are combined to form sentences,
+  and sentences are combined to form narratives \cite{bowling2015animal}.
+
+  %fixme
+  You might also think that human language is unique in its diversity and the fact that it needs to be learned.
+  There are over 7151 distinct human languages discovered so far, and this number keeps growing each year \cite{ethnologue}.
+  But a recent study in vervet monkeys shows that this is not the case:
+  their alarm calls for different predictors are non-innate and have to be learned through experience \cite{liska1993bee}.
+
+  Over the years, many researchers tried to teach human language to non-human animals,
+  but those experiments are widely regarded as controversial \cite{thebook2}.
+  Can this really be considered ``language''?
+  And which experiment achieved the best results?
+
+  \section{Findings}
+  Many human dog owners swear that their dog understands them,
+  as the dogs respond to their names, or words like ``walk'' or ``outside'' \cite{jordania2006asked}.
+  But, just because dogs can learn to recognize certain words or commands, does not necessarily mean they can understand them.
+  These words are learned in the exact same way as commands: through operant conditioning \cite{mckinley2003efficacy}.
+  Dogs learn that if they react to the word ``outside'', the owner is more likely to actually take them outside. %fixme
+  A dog, who knows the command ``sit'', can definitely associate hearing the word ``sit'' with the action of sitting,
+  but whether or not it ``thinks'' of the word when it sits of its own accord is impossible to know.
+
+  In humans language is closely connected to cognition:
+  we use it, not only to communicate, but also to combine and manipulate concepts
+  in a phenomenon known as inner speech \cite{fitch2020animalcognition}.
+  In fact most of our thoughts are associated with either words or images,
+  and for some people having a wordless thought is impossible \cite{vicente2016unsymbolized}.
+  Thus it makes sense to think about animal language not just as animal communication systems, which are very limited,
+  but more as an equal combination of cognition and communication.
+  We know for a fact that animals have a significantly higher amount of concepts then what they are able to communicate \cite{fitch2020animalcognition}.
+
+  When evaluating the success of ``language training'' experiments we have to consider whether or not the animals
+  understand what they are saying,
+  register those human-to-animal interactions as communication,
+  and are able to connect words with their internal conceptual representation of the world. %\cite{myass}
+  Language training experiments are most often attempted on apes, as they are closely related to humans \cite{thebook2}.
+  Researchers can reliably train apes to mimic around 100 signs of the American Sign Language (ASL),
+  but the animals are unable to form coherent sentences \cite{hungape}.
+  Some particularly prominent critics claim that,
+  due to over-interpretation and confirmation bias on the side of the trainers, who did not speak ASL,
+  the apes did not learn to mimic specific signs,
+  but learned how to flail in a way that resembles ASL in general \cite{wynne2007aping}.
+
+  Another promising example is the case of Alex, the African Grey Parrot.
+  Unlike the aforementioned ape experiments with ASL, Alex was taught English words \cite{wilson2021clever}.
+  This reduced the effects of over-interpretation and confirmation bias,
+  as humans are very good at auditorily distinguishing words from non-words \cite{connine1990word}.
+  Other measures were taken to further reduce bias:
+  different people were used for testing and training,
+  which reduced the prevalence of the Clever Hans effect,
+  an effect where instead of solving a problem on its own,
+  the animal might be picking up on unintentional clues from its trainers \cite{cleverhanseffect}.
+  Additionally only intrinsic motivators were used
+  to avoid confusing the targeted concepts with a food reward \cite{wilson2021clever}.
+
+  Alex's accomplishments include being able to count to six, recognize seven colors, and distinguish 50 different objects.
+  Alex is also the first and only non-human animal to have ever asked a question \cite{jordania2006asked}.
+  He made requests spontaneously, not only in response to external stimuli,
+  and showed frustration when his requests were followed incorrectly,
+  suggesting a thorough understanding of their content.
+  Despite all these seemingly remarkable achievements,
+  Pepperberg, the researcher responsible for these experiments,
+  never claimed that Alex has learned language, instead referring to it as a ``two-way communication'' system \cite{wilson2021clever}.
+
+  \section{Discussion \& Conclusion}
+  In his book, \textit{Cognition: Exploring the Science of the Mind}, Reisberg \citeyear{thebook2}
+  claims that the success of language training studies greatly correlates with brain size, and genetic similarity to humans.
+  But a more critical view of the experiments suggests otherwise.
+  It is true that the closer an animal is related to humans, the stronger its cognitive abilities,
+  sometimes exceeding humans in specific tasks \cite{fitch2020animalcognition}.
+  However, in language training experiments, Alex showed accomplishments, comparable to those of apes,
+  despite his significantly smaller brain size.
+  Terrace \citeyear{terrace1983apes}, the head of the Nim Chimpsky experiment,
+  argued that the same ``linguistic'' skills can be taught to a pigeon through simple operant conditioning.
+
+  We can conclude that animal communication systems,
+  whether natural or imposed by humans in language training experiments,
+  can not be considered language, as they lack close integration with cognitive processes,
+  which is a crucial characteristic of human language \cite{fitch2020animalcognition}.
+
+  \nocite{ref2}
+  \bibliographystyle{apacite}
+  \bibliography{references}
+
+\end{document}
