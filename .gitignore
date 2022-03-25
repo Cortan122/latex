@@ -3,6 +3,7 @@
 !*.ipynb
 !*.sty
 !*.gitignore
+!references.bib
 !makefile
 !make.sh
 !bio
