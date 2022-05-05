@@ -1,0 +1,737 @@
+\documentclass[12pt,a4paper]{article}
+\usepackage{sasstyle}
+\usepackage{jupyther_sas}
+
+\graphicspath{ {./sas/hw3/} }
+
+\setlength{\emergencystretch}{3em}
+% \usepackage{showframe}
+% \sloppy \fussy
+
+\begin{document}
+  \titlePage{3}{Logistic Regression}
+
+  \section{Задание 1}
+  \subsection{Постановка задачи}
+  Перед началом работы полезно <<познакомиться>> с данными.
+  Построить базовые статистики для интервальных переменных и гистограммы для категориальных,
+  посмотреть наличие пропущенных значений, а также посмотреть сколько <<1>> встречается в значениях категориальных переменных.
+
+  \subsection{Описание работы программы}
+  Программа подгружает данные из таблицы <<develop.csv>> (см. \autoref{fig:image20220328141854.png}),
+  определяет какие переменные категориальные, а какие интервальные, и строит гистограммы отдельно для каждой категории переменных.
+  На гистограммах интервальных переменных среднее значение отмечено оранжевой линией
+  (см. \autoref{fig:cb81a7d38b91779150a717a6168c49f590b5400b.png}).
+  Также находятся переменные, в которых есть пропущенные значения, и считает их количество (см. \autoref{fig:image20220328142640.png}).
+  Ещё находится количество и доля значений <<1>>, то есть истинных значений, для булевых переменных
+  (см. \autoref{fig:image20220328142652.png} и \autoref{fig:95d2749d6a0bd6addeecfafe0226b75e7213c54f.png}).
+
+  \subsection{Результат выполнения программы}
+  \CRTfigure{image20220328141854.png}{Импортированные данные}
+  \CRTfigure{95d2749d6a0bd6addeecfafe0226b75e7213c54f.png}{Статистика булевых переменных}
+  \CRTfigure{b8ffd8a968485f4ebdd478116be5eb8136b4a5e6.png}{Гистограммы категориальных переменных}
+  \CRTfigure{cb81a7d38b91779150a717a6168c49f590b5400b.png}{Гистограммы интервальных переменных}
+  \CRTfigure{image20220328142640.png}{Количество пропущенных значений}
+  \CRTfigure{image20220328142652.png}{Количество <<1>> в категориальных переменных}
+
+  \subsection{Исходный код}
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# Part 1: load the data}
+\NormalTok{data }\OperatorTok{=}\NormalTok{ pd.read\_csv(}\StringTok{"develop.csv"}\NormalTok{)}
+\NormalTok{data}
+\end{Highlighting}
+\end{Shaded}
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# Part 2: boolean variables}
+
+\NormalTok{boolean\_variable\_names }\OperatorTok{=}\NormalTok{ []}
+\NormalTok{true\_value\_percentages }\OperatorTok{=}\NormalTok{ []}
+\NormalTok{false\_value\_percentages }\OperatorTok{=}\NormalTok{ []}
+\NormalTok{nan\_value\_percentages }\OperatorTok{=}\NormalTok{ []}
+\ControlFlowTok{for}\NormalTok{ k }\KeywordTok{in}\NormalTok{ data.columns:}
+\NormalTok{  arr }\OperatorTok{=}\NormalTok{ data[k].unique()}
+  \ControlFlowTok{if}\NormalTok{ arr.dtype }\OperatorTok{==} \BuiltInTok{object}\NormalTok{:}
+    \ControlFlowTok{continue}
+\NormalTok{  arr }\OperatorTok{=}\NormalTok{ np.sort(arr[np.isfinite(arr)]).astype(}\StringTok{"int64"}\NormalTok{)}
+  \ControlFlowTok{if}\NormalTok{ np.array\_equal(arr, [}\DecValTok{0}\NormalTok{,}\DecValTok{1}\NormalTok{]):}
+\NormalTok{    counts }\OperatorTok{=}\NormalTok{ data[k].value\_counts(dropna}\OperatorTok{=}\VariableTok{False}\NormalTok{)}
+\NormalTok{    boolean\_variable\_names.append(k)}
+\NormalTok{    true\_value\_percentages.append(counts[}\DecValTok{1}\NormalTok{])}
+\NormalTok{    false\_value\_percentages.append(counts[}\DecValTok{0}\NormalTok{])}
+\NormalTok{    nan\_value\_percentages.append(counts.get(np.nan, }\DecValTok{0}\NormalTok{))}
+
+\NormalTok{tmp }\OperatorTok{=}\NormalTok{ np.array(true\_value\_percentages) }\OperatorTok{+}\NormalTok{ np.array(nan\_value\_percentages)}
+\NormalTok{plt.title(}\StringTok{"Percentage plot of boolean variables"}\NormalTok{)}
+\NormalTok{plt.ylabel(}\StringTok{"Variable name"}\NormalTok{)}
+\NormalTok{plt.xlabel(}\StringTok{"Number of occurrences"}\NormalTok{)}
+\NormalTok{plt.barh(boolean\_variable\_names, true\_value\_percentages, label}\OperatorTok{=}\StringTok{\textquotesingle{}True\textquotesingle{}}\NormalTok{)}
+\NormalTok{plt.barh(boolean\_variable\_names, false\_value\_percentages, left}\OperatorTok{=}\NormalTok{tmp, label}\OperatorTok{=}\StringTok{\textquotesingle{}False\textquotesingle{}}\NormalTok{)}
+\NormalTok{plt.barh(boolean\_variable\_names, nan\_value\_percentages, left}\OperatorTok{=}\NormalTok{true\_value\_percentages, label}\OperatorTok{=}\StringTok{\textquotesingle{}NaN\textquotesingle{}}\NormalTok{)}
+\NormalTok{plt.legend()}
+\NormalTok{plt.show()}
+\end{Highlighting}
+\end{Shaded}
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# Part 3: categorical variables}
+
+\NormalTok{categorical\_variable\_names }\OperatorTok{=}\NormalTok{ []}
+\ControlFlowTok{for}\NormalTok{ k }\KeywordTok{in}\NormalTok{ data.columns:}
+  \ControlFlowTok{if}\NormalTok{ k }\KeywordTok{in}\NormalTok{ boolean\_variable\_names:}
+    \ControlFlowTok{continue}
+\NormalTok{  arr }\OperatorTok{=}\NormalTok{ data[k].unique()}
+  \ControlFlowTok{if}\NormalTok{ arr.dtype }\OperatorTok{==} \BuiltInTok{object}\NormalTok{:}
+\NormalTok{    categorical\_variable\_names.append(k)}
+
+\NormalTok{fig, axs }\OperatorTok{=}\NormalTok{ plt.subplots(}\DecValTok{1}\NormalTok{, }\BuiltInTok{len}\NormalTok{(categorical\_variable\_names), figsize}\OperatorTok{=}\NormalTok{(}\DecValTok{10}\NormalTok{,}\DecValTok{5}\NormalTok{))}
+\ControlFlowTok{for}\NormalTok{ ax, k }\KeywordTok{in} \BuiltInTok{zip}\NormalTok{(axs, categorical\_variable\_names):}
+\NormalTok{  counts }\OperatorTok{=}\NormalTok{ data[k].value\_counts().sort\_index()}
+\NormalTok{  X }\OperatorTok{=}\NormalTok{ np.arange(}\BuiltInTok{len}\NormalTok{(counts))}
+\NormalTok{  ax.set\_title(k)}
+\NormalTok{  ax.bar(X, counts, align}\OperatorTok{=}\StringTok{\textquotesingle{}center\textquotesingle{}}\NormalTok{)}
+\NormalTok{  ax.set\_xticks(X)}
+\NormalTok{  ax.set\_xticklabels(counts.index, rotation}\OperatorTok{=}\DecValTok{90} \ControlFlowTok{if} \BuiltInTok{len}\NormalTok{(X) }\OperatorTok{\textgreater{}} \DecValTok{10} \ControlFlowTok{else} \DecValTok{0}\NormalTok{)}
+\NormalTok{  ax.set\_ylabel(}\StringTok{"Number of occurrences"}\NormalTok{)}
+\NormalTok{  ax.set\_xlabel(}\StringTok{"Value"}\NormalTok{)}
+\NormalTok{fig.tight\_layout()}
+\end{Highlighting}
+\end{Shaded}
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# Part 4: interval variables}
+
+\NormalTok{interval\_variable\_names }\OperatorTok{=} \BuiltInTok{list}\NormalTok{(}\BuiltInTok{set}\NormalTok{(data.columns) }\OperatorTok{{-}} \BuiltInTok{set}\NormalTok{(boolean\_variable\_names) }\OperatorTok{{-}} \BuiltInTok{set}\NormalTok{(categorical\_variable\_names))}
+\NormalTok{fig, axs }\OperatorTok{=}\NormalTok{ plt.subplots(}\DecValTok{5}\NormalTok{, }\DecValTok{6}\NormalTok{, figsize}\OperatorTok{=}\NormalTok{(}\DecValTok{10}\NormalTok{,}\DecValTok{5}\NormalTok{))}
+
+\ControlFlowTok{for}\NormalTok{ ax }\KeywordTok{in}\NormalTok{ axs.flatten():}
+\NormalTok{  ax.ticklabel\_format(style}\OperatorTok{=}\StringTok{\textquotesingle{}plain\textquotesingle{}}\NormalTok{)}
+\NormalTok{  ax.tick\_params(which}\OperatorTok{=}\StringTok{\textquotesingle{}both\textquotesingle{}}\NormalTok{, bottom}\OperatorTok{=}\VariableTok{False}\NormalTok{, top}\OperatorTok{=}\VariableTok{False}\NormalTok{, left}\OperatorTok{=}\VariableTok{False}\NormalTok{, labelbottom}\OperatorTok{=}\VariableTok{False}\NormalTok{, labelleft}\OperatorTok{=}\VariableTok{False}\NormalTok{,)}
+
+\ControlFlowTok{for}\NormalTok{ ax, k }\KeywordTok{in} \BuiltInTok{zip}\NormalTok{(axs.flatten(), interval\_variable\_names):}
+\NormalTok{  ax.set\_title(k, y}\OperatorTok{=}\FloatTok{1.0}\NormalTok{, pad}\OperatorTok{={-}}\DecValTok{14}\NormalTok{)}
+\NormalTok{  arr }\OperatorTok{=}\NormalTok{ data[k]}
+\NormalTok{  arr }\OperatorTok{=}\NormalTok{ arr[np.isfinite(arr)]}
+\NormalTok{  ax.hist(arr)}
+\NormalTok{  ax.plot([arr.mean(), arr.mean()], [}\DecValTok{0}\NormalTok{, ax.set\_ylim()[}\DecValTok{1}\NormalTok{]])}
+\NormalTok{fig.suptitle(}\StringTok{"Histograms of interval variables"}\NormalTok{, y}\OperatorTok{=}\FloatTok{1.02}\NormalTok{)}
+\NormalTok{fig.tight\_layout()}
+\end{Highlighting}
+\end{Shaded}
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# Part 5: missing values}
+\NormalTok{nansum }\OperatorTok{=}\NormalTok{ data.isna().}\BuiltInTok{sum}\NormalTok{()}
+\NormalTok{nansum[nansum }\OperatorTok{!=} \DecValTok{0}\NormalTok{]}
+\end{Highlighting}
+\end{Shaded}
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# Part 6: \textless{}\textless{}1\textgreater{}\textgreater{} values}
+\NormalTok{(data[boolean\_variable\_names] }\OperatorTok{==} \DecValTok{1}\NormalTok{).}\BuiltInTok{sum}\NormalTok{()}
+\end{Highlighting}
+\end{Shaded}
+
+  \subsection{Ответы на вопросы}
+  Как можно заметить на рисунке \ref{fig:cb81a7d38b91779150a717a6168c49f590b5400b.png},
+  некоторые интервальные переменные распределены нормально, а у некоторых большинство значений близки к нулю.
+
+  \newpage
+  \section{Задание 2}
+  \subsection{Постановка задачи}
+  Для «честной» проверки качества моделей и их обобщающей способности
+  разделить данные на два набора: TRAIN -- 70\% наблюдений и VALIDATE --
+  30\% наблюдений. Все преобразования нужно проводить
+  над двумя наборами, чтобы они были «идентичны» и, в конечном итоге,
+  модель, построенную на первом, можно было бы применить ко второму
+  (проскорить (score) его), а потом сравнить качество. При этом расчет
+  всех параметров производится на тренировочной выборке, а к валидационной
+  применяется преобразование с уже рассчитываемым параметром -- он не
+  рассчитывается на валидационной выборке. Например, если мы заменяем
+  пропущенное значение переменной на медиану, то мы считаем медиану только
+  по данным в тренировочной выборке. Полученное значение ставим вместо
+  пропущенных значений и в тренировочной выборке и в валидационной.
+  Подход, когда вы сначала провели все преобразования, а потом разбили
+  выборку на две части -- в корне неправильный.
+
+
+  \subsection{Описание работы программы}
+  Программа отделяет целевую переменную <<Ins>> от всех остальных,
+  и разбивает получившийся датасет функцией <<train\_test\_split>>
+  в соотношение $70:30$.
+
+  На русинке \ref{fig:image20220328154253.png} видно, что у таблице стало на одну меньше колонок,
+  и на 30\% меньше строки, которые теперь в случайном порядке.
+
+  \subsection{Результат выполнения программы}
+  \CRTfigure{image20220328154253.png}{Таблица X\_train}
+
+  \subsection{Исходный код}
+\begin{Shaded}
+\begin{Highlighting}[]
+\ImportTok{from}\NormalTok{ sklearn.model\_selection }\ImportTok{import}\NormalTok{ train\_test\_split}
+
+\NormalTok{y }\OperatorTok{=}\NormalTok{ data[}\StringTok{"Ins"}\NormalTok{]}
+\NormalTok{X }\OperatorTok{=}\NormalTok{ data.drop(}\StringTok{"Ins"}\NormalTok{, axis}\OperatorTok{=}\DecValTok{1}\NormalTok{)}
+\NormalTok{X\_train, X\_test, y\_train, y\_test }\OperatorTok{=}\NormalTok{ train\_test\_split(X, y, test\_size}\OperatorTok{=}\FloatTok{0.30}\NormalTok{, random\_state}\OperatorTok{=}\DecValTok{42}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+  \newpage
+  \section{Задание 3}
+  \subsection{Постановка задачи}
+  Некоторые переменные имеют пропущенные значения -- нужно их заменить.
+
+  \begin{enumerate}
+  \item
+    Например, на медиану/среднее, не забыв создать индикаторы пропущенных
+    значений.
+  \item
+    На практике пропущенные значения заменяют наиболее вероятным, т.е.
+    строят модель, предсказывающую, что должно стоять на месте
+    пропущенного значения, используя остальные переменные. Попробуйте
+    проделать это для одной из переменных с пропущенными значениями. Не
+    требуйте многого от этой модели -- она может быть простая, особо не
+    гонитесь за точностью.
+  \item
+    Разбить наблюдения на группы («кластеризовать»), при наличии
+    пропущенного значения поставить среднее по группе, куда попало
+    наблюдение.
+  \end{enumerate}
+
+  \subsection{Описание работы программы}
+  Программа представляет собой класс <<Imputer>>, реализующий стандартный интерфейс трансформеров библиотеки <<sklearn>>.
+  Этот класс заполняет пропущенные значения одним из четырёх способов, в зависимости от параметра <<strategy=>>,
+  и добавляет индикаторы пропущенных значений для всех колонок, в которых они есть.
+  Имеются следующие четыре стратегии:
+  \begin{enumerate}
+    \item \textbf{strategy=median}: Замена на медиану \\
+      Во время обучения модели, класс находит медиану для каждой колонки,
+      в которой есть пропущенные значения, и сохраняет их в массив <<self.cols>>.
+      Расчёт медиан происходит через функцию <<np.nanmedian>>, которая игнорирует все наны, то есть все пропущенные значения.
+      На этапе трансформации переменных, класс достаёт сохранённые медианы для каждой колонки, и заполняет ими пропущенные значения.
+
+    \item \textbf{strategy=mean}: Замена на среднее \\
+      Во время обучения модели, класс находит среднее для каждой колонки,
+      в которой есть пропущенные значения, и сохраняет их в массив <<self.cols>>.
+      Расчёт средних происходит через функцию <<np.naneman>>, которая игнорирует все наны, то есть все пропущенные значения.
+      На этапе трансформации переменных, класс достаёт сохранённые средние для каждой колонки, и заполняет ими пропущенные значения.
+
+    \item \textbf{strategy=model}: Замена на предсказание простой модели \\
+      Во время обучения модели, класс тренирует простейшую линейную модель LinearRegression() для каждой колонки,
+      в которой есть пропущенные значения, и сохраняет их в массив <<self.cols>>.
+      Перед тем как модели можно будет обучить, нужно проделать некоторые манипуляции над данными.
+      Сначала нужно отделить нужную нам переменную и сделать её целевой для нашей модели.
+      Далее необходимо заполнить пропущенные значения и нормировать все колонки.
+      Для этого я использую встроенные в библиотеку <<sklearn>> классы SimpleImputer() и StandardScaler(),
+      а также функцию make\_pipeline, которая автоматически соединяет все эти этапы.
+      На этапе трансформации переменных, класс использует сохранённые модели и делает предсказания отдельно для каждой колонки,
+      а также заполняет ими пропуски, расставляя индикаторы пропущенных значений, как и все остальные стратегии.
+
+    \item \textbf{strategy=kmeans}: Замена на среднее по кластеру \\
+      Во время обучения модели, класс кластеризует данные используя алгоритм KMeans,
+      и сохраняет обученный кластеризатор в переменную <<self.kmeans>>,
+      а также координаты центров каждого кластера в переменную <<self.centers>>.
+      Кластеризация происходит один раз и использует сразу все колонки.
+      На этапе трансформации переменных, класс предсказывает кластер, в который попадает каждая строка,
+      и заполняет пропущенные значения координатами центра соответствущего кластера.
+
+  \end{enumerate}
+
+  В конце программа тестирует все стратегии полученного класса на колонках <<CC>>, <<Inv>> и <<Dep>>.
+  В итоге пропущенные значения заменяются примерно одинаковыми числами,
+  и в конец таблице добавляются две новые колонки индикаторов (см. \autoref{fig:image20220328160032.png}).
+
+  \subsection{Результат выполнения программы}
+  \CRTfigure{image20220328160032.png}{Результат выполнения программы}
+
+  \subsection{Исходный код}
+\begin{Shaded}
+\begin{Highlighting}[]
+\ImportTok{from}\NormalTok{ sklearn.impute }\ImportTok{import}\NormalTok{ SimpleImputer}
+\ImportTok{from}\NormalTok{ sklearn.base }\ImportTok{import}\NormalTok{ TransformerMixin, BaseEstimator}
+\ImportTok{from}\NormalTok{ sklearn.preprocessing }\ImportTok{import}\NormalTok{ OneHotEncoder, StandardScaler}
+\ImportTok{from}\NormalTok{ sklearn.compose }\ImportTok{import}\NormalTok{ ColumnTransformer}
+\ImportTok{from}\NormalTok{ sklearn.linear\_model }\ImportTok{import}\NormalTok{ LinearRegression, LogisticRegression}
+\ImportTok{from}\NormalTok{ sklearn.pipeline }\ImportTok{import}\NormalTok{ make\_pipeline}
+\ImportTok{from}\NormalTok{ sklearn.cluster }\ImportTok{import}\NormalTok{ KMeans}
+\end{Highlighting}
+\end{Shaded}
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{class}\NormalTok{ Imputer(TransformerMixin, BaseEstimator):}
+  \KeywordTok{def} \FunctionTok{\_\_init\_\_}\NormalTok{(}\VariableTok{self}\NormalTok{, strategy}\OperatorTok{=}\StringTok{"median"}\NormalTok{):}
+    \VariableTok{self}\NormalTok{.strategy }\OperatorTok{=}\NormalTok{ strategy}
+
+  \KeywordTok{def}\NormalTok{ impute(}\VariableTok{self}\NormalTok{, X, colindex):}
+    \ControlFlowTok{if} \VariableTok{self}\NormalTok{.strategy }\OperatorTok{==} \StringTok{"nothing"}\NormalTok{:}
+      \ControlFlowTok{return}\NormalTok{ np.nan}
+    \ControlFlowTok{elif} \VariableTok{self}\NormalTok{.strategy }\OperatorTok{==} \StringTok{"model"}\NormalTok{:}
+      \ControlFlowTok{return} \VariableTok{self}\NormalTok{.cols[colindex].predict(np.delete(X, colindex, axis}\OperatorTok{=}\DecValTok{1}\NormalTok{))}
+    \ControlFlowTok{elif} \VariableTok{self}\NormalTok{.strategy }\OperatorTok{==} \StringTok{"kmeans"}\NormalTok{:}
+      \ControlFlowTok{return} \VariableTok{self}\NormalTok{.centers[}\VariableTok{self}\NormalTok{.kmeans.predict(X),colindex]}
+    \ControlFlowTok{else}\NormalTok{:}
+      \ControlFlowTok{return} \VariableTok{self}\NormalTok{.cols[colindex]}
+
+  \KeywordTok{def}\NormalTok{ transform(}\VariableTok{self}\NormalTok{, X):}
+    \NormalTok{    X }\OperatorTok{=}\NormalTok{ np.array(X, dtype}\OperatorTok{=}\StringTok{"float64"}\NormalTok{)}
+    \NormalTok{    na1 }\OperatorTok{=}\NormalTok{ np.isnan(X)}
+    \NormalTok{    res }\OperatorTok{=}\NormalTok{ np.hstack([X, na1])}
+    \NormalTok{    na2 }\OperatorTok{=}\NormalTok{ na1.}\BuiltInTok{any}\NormalTok{(axis}\OperatorTok{=}\DecValTok{1}\NormalTok{)}
+    \NormalTok{    X2 }\OperatorTok{=}\NormalTok{ X[na2,:]}
+        \ControlFlowTok{for}\NormalTok{ i }\KeywordTok{in} \BuiltInTok{range}\NormalTok{(X.shape[}\DecValTok{1}\NormalTok{]):}
+          \ControlFlowTok{if}\NormalTok{ np.isnan(res[na2,i]).}\BuiltInTok{any}\NormalTok{() }\OperatorTok{==} \VariableTok{False}\NormalTok{:}
+            \ControlFlowTok{continue}
+    \NormalTok{      res[na2,i] }\OperatorTok{=} \VariableTok{self}\NormalTok{.impute(X2, i)}
+        \ControlFlowTok{return}\NormalTok{ np.delete(res, }\VariableTok{self}\NormalTok{.useless\_col, axis}\OperatorTok{=}\DecValTok{1}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+\begin{Shaded}
+\begin{Highlighting}[]
+  \KeywordTok{def}\NormalTok{ collect(}\VariableTok{self}\NormalTok{, X, colindex):}
+\NormalTok{    col }\OperatorTok{=}\NormalTok{ X[:,colindex]}
+    \ControlFlowTok{if}\NormalTok{ np.isnan(col).}\BuiltInTok{any}\NormalTok{() }\OperatorTok{==} \VariableTok{False}\NormalTok{:}
+      \VariableTok{self}\NormalTok{.useless\_col.append(colindex }\OperatorTok{+}\NormalTok{ X.shape[}\DecValTok{1}\NormalTok{])}
+      \ControlFlowTok{return}\NormalTok{ np.nan}
+
+    \CommentTok{\# Part 1: median}
+    \ControlFlowTok{if} \VariableTok{self}\NormalTok{.strategy }\OperatorTok{==} \StringTok{"median"}\NormalTok{:}
+      \ControlFlowTok{return}\NormalTok{ np.nanmedian(col)}
+    \ControlFlowTok{elif} \VariableTok{self}\NormalTok{.strategy }\OperatorTok{==} \StringTok{"mean"}\NormalTok{:}
+      \ControlFlowTok{return}\NormalTok{ np.nanmean(col)}
+    \ControlFlowTok{elif} \VariableTok{self}\NormalTok{.strategy }\OperatorTok{==} \StringTok{"model"}\NormalTok{:}
+      \CommentTok{\# Part 2: model}
+\NormalTok{      X }\OperatorTok{=}\NormalTok{ X[}\OperatorTok{\textasciitilde{}}\NormalTok{np.isnan(col),:]}
+\NormalTok{      X1 }\OperatorTok{=}\NormalTok{ np.delete(X, colindex, axis}\OperatorTok{=}\DecValTok{1}\NormalTok{)}
+\NormalTok{      y }\OperatorTok{=}\NormalTok{ X[:,colindex]}
+      \ControlFlowTok{return}\NormalTok{ make\_pipeline(SimpleImputer(), StandardScaler(), LinearRegression()).fit(X1, y)}
+
+  \KeywordTok{def}\NormalTok{ fit(}\VariableTok{self}\NormalTok{, X, y}\OperatorTok{=}\VariableTok{None}\NormalTok{):}
+\NormalTok{    X }\OperatorTok{=}\NormalTok{ np.array(X, dtype}\OperatorTok{=}\StringTok{"float64"}\NormalTok{)}
+    \VariableTok{self}\NormalTok{.useless\_col }\OperatorTok{=}\NormalTok{ []}
+    \ControlFlowTok{if} \VariableTok{self}\NormalTok{.strategy }\OperatorTok{==} \StringTok{"kmeans"}\NormalTok{:}
+      \CommentTok{\# Part 3: clusterization}
+\NormalTok{      km }\OperatorTok{=}\NormalTok{ KMeans(n\_clusters}\OperatorTok{=}\DecValTok{3}\NormalTok{)}
+      \VariableTok{self}\NormalTok{.kmeans }\OperatorTok{=}\NormalTok{ make\_pipeline(SimpleImputer(), km).fit(X)}
+      \VariableTok{self}\NormalTok{.centers }\OperatorTok{=}\NormalTok{ km.cluster\_centers\_}
+
+    \VariableTok{self}\NormalTok{.cols }\OperatorTok{=}\NormalTok{ [}\VariableTok{self}\NormalTok{.collect(X, i) }\ControlFlowTok{for}\NormalTok{ i }\KeywordTok{in} \BuiltInTok{range}\NormalTok{(X.shape[}\DecValTok{1}\NormalTok{])]}
+    \ControlFlowTok{return} \VariableTok{self}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# Part 4: test everything}
+
+\BuiltInTok{print}\NormalTok{(}\StringTok{"model}\CharTok{\textbackslash{}n}\StringTok{"}\NormalTok{, Imputer(strategy}\OperatorTok{=}\StringTok{"model"}\NormalTok{).fit\_transform(X\_train[[}\StringTok{"CC"}\NormalTok{, }\StringTok{"Inv"}\NormalTok{, }\StringTok{"Dep"}\NormalTok{]])[:}\DecValTok{2}\NormalTok{])}
+\BuiltInTok{print}\NormalTok{(}\StringTok{"median}\CharTok{\textbackslash{}n}\StringTok{"}\NormalTok{, Imputer(strategy}\OperatorTok{=}\StringTok{"median"}\NormalTok{).fit\_transform(X\_train[[}\StringTok{"CC"}\NormalTok{, }\StringTok{"Inv"}\NormalTok{, }\StringTok{"Dep"}\NormalTok{]])[:}\DecValTok{2}\NormalTok{])}
+\BuiltInTok{print}\NormalTok{(}\StringTok{"mean}\CharTok{\textbackslash{}n}\StringTok{"}\NormalTok{, Imputer(strategy}\OperatorTok{=}\StringTok{"mean"}\NormalTok{).fit\_transform(X\_train[[}\StringTok{"CC"}\NormalTok{, }\StringTok{"Inv"}\NormalTok{, }\StringTok{"Dep"}\NormalTok{]])[:}\DecValTok{2}\NormalTok{])}
+\BuiltInTok{print}\NormalTok{(}\StringTok{"kmeans}\CharTok{\textbackslash{}n}\StringTok{"}\NormalTok{, Imputer(strategy}\OperatorTok{=}\StringTok{"kmeans"}\NormalTok{).fit\_transform(X\_train[[}\StringTok{"CC"}\NormalTok{, }\StringTok{"Inv"}\NormalTok{, }\StringTok{"Dep"}\NormalTok{]])[:}\DecValTok{2}\NormalTok{])}
+\end{Highlighting}
+\end{Shaded}
+
+  \newpage
+  \section{Задание 4}
+  \subsection{Постановка задачи}
+  Рассмотреть методы кодирования категориальных переменных в PROC LOGISTIC.
+  Использовать их для нескольких любых переменных, кроме Branch.
+
+  \subsection{Описание работы программы}
+  Программа использует встроенный в библиотеку <<sklearn>> класс OneHotEncoder() для кодирования категориальных переменных,
+  который кодирует каждое уникальное значение категориальной переменной в отдельной колонке.
+  Она создаёт ColumnTransformer(), чтобы кодировались только нужные переменные,
+  и тестирует OneHotEncoder() на колонках <<Res>> и <<CC>>.
+
+  \subsection{Результат выполнения программы}
+  \CRTfigure{image20220328191506.png}{Результат выполнения OneHotEncoder}
+
+  \subsection{Исходный код}
+\begin{Shaded}
+\begin{Highlighting}[]
+\ImportTok{from}\NormalTok{ sklearn.preprocessing }\ImportTok{import}\NormalTok{ OneHotEncoder, StandardScaler}
+\ImportTok{from}\NormalTok{ sklearn.compose }\ImportTok{import}\NormalTok{ ColumnTransformer}
+
+\NormalTok{column\_transformer }\OperatorTok{=}\NormalTok{ ColumnTransformer([}
+\NormalTok{  (}\StringTok{\textquotesingle{}cat\textquotesingle{}}\NormalTok{, OneHotEncoder(), categorical\_variable\_names),}
+\NormalTok{], remainder}\OperatorTok{=}\StringTok{"passthrough"}\NormalTok{)}
+
+\NormalTok{OneHotEncoder().fit\_transform(X\_train[[}\StringTok{"Res"}\NormalTok{, }\StringTok{"CC"}\NormalTok{]]).todense()}
+\end{Highlighting}
+\end{Shaded}
+
+  \subsection{Ответы на вопросы}
+  В результате выполнения программы появляется матрица из 6 колонок (см. \autoref{fig:image20220328191506.png}).
+  Это объясняется тем, что в колонке <<Res>> три уникальных значения: <<R>>, <<S>> и <<U>>,
+  и в колонке <<СС>> их тоже три: <<0.0>>, <<1.0>> и <<nan>>.
+
+  \newpage
+  \section{Задание 5}
+  \subsection{Постановка задачи}
+  Рассмотреть пример кодирования переменной Branch методом, описанным на лекции. Применить его.
+
+  \subsection{Описание работы программы}
+  Для каждого уникального значения переменной Branch программа находит среднее значение целевой переменной Ins,
+  а также всех остальных интервальных переменных, и сохраняет их в массив <<clust\_X>>.
+  Далее используется модель иерархической кластеризации AgglomerativeClustering(), встроенная в библиотеку <<sklearn>>.
+  Она разделяет все возможные значения переменной Branch на 4 кластера,
+  использую построчную ей иерархию на координатах средних из массива <<clust\_X>>.
+
+  Также программа рисует дендрограмму полученных кластеров, где каждый кластер отмечен отдельным цветом (см. \autoref{fig:901ebd12d318fe50b73060ef7d6125307b1b9e22.png}).
+
+  \subsection{Результат выполнения программы}
+  \CRTfigure{901ebd12d318fe50b73060ef7d6125307b1b9e22.png}{Дендрограмма переменной Branch}
+
+  \subsection{Исходный код}
+\begin{Shaded}
+\begin{Highlighting}[]
+\ImportTok{from}\NormalTok{ sklearn.cluster }\ImportTok{import}\NormalTok{ AgglomerativeClustering}
+\ImportTok{from}\NormalTok{ scipy.cluster.hierarchy }\ImportTok{import}\NormalTok{ dendrogram}
+
+\CommentTok{\# Part 1: find the clusters}
+\NormalTok{clust\_X }\OperatorTok{=}\NormalTok{ [] }
+\NormalTok{clust\_labels }\OperatorTok{=}\NormalTok{ []}
+\ControlFlowTok{for}\NormalTok{ i, k }\KeywordTok{in} \BuiltInTok{enumerate}\NormalTok{(X\_train[}\StringTok{\textquotesingle{}Branch\textquotesingle{}}\NormalTok{].unique()):}
+\NormalTok{  mean }\OperatorTok{=}\NormalTok{ y\_train[X\_train[}\StringTok{\textquotesingle{}Branch\textquotesingle{}}\NormalTok{] }\OperatorTok{==}\NormalTok{ k].mean()}
+\NormalTok{  tmp }\OperatorTok{=}\NormalTok{ X\_train[X\_train[}\StringTok{\textquotesingle{}Branch\textquotesingle{}}\NormalTok{] }\OperatorTok{==}\NormalTok{ k][interval\_variable\_names].fillna(}\DecValTok{0}\NormalTok{).mean(axis}\OperatorTok{=}\DecValTok{0}\NormalTok{)}
+\NormalTok{  clust\_X.append(np.hstack((tmp, [mean])))}
+  \CommentTok{\# clust\_X.append([mean])}
+\NormalTok{  clust\_labels.append(k)}
+
+\NormalTok{aggcluster }\OperatorTok{=}\NormalTok{ AgglomerativeClustering(distance\_threshold}\OperatorTok{=}\DecValTok{10}\NormalTok{, n\_clusters}\OperatorTok{=}\VariableTok{None}\NormalTok{)}
+\NormalTok{make\_pipeline(StandardScaler(), aggcluster).fit(clust\_X)}
+\ControlFlowTok{pass}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# Part 2: plot dendrogram }
+\KeywordTok{def}\NormalTok{ plot\_dendrogram(model, }\OperatorTok{**}\NormalTok{kwargs):}
+\NormalTok{  counts }\OperatorTok{=}\NormalTok{ np.zeros(model.children\_.shape[}\DecValTok{0}\NormalTok{])}
+\NormalTok{  n\_samples }\OperatorTok{=} \BuiltInTok{len}\NormalTok{(model.labels\_)}
+  \ControlFlowTok{for}\NormalTok{ i, merge }\KeywordTok{in} \BuiltInTok{enumerate}\NormalTok{(model.children\_):}
+\NormalTok{    current\_count }\OperatorTok{=} \DecValTok{0}
+    \ControlFlowTok{for}\NormalTok{ child\_idx }\KeywordTok{in}\NormalTok{ merge:}
+      \ControlFlowTok{if}\NormalTok{ child\_idx }\OperatorTok{\textless{}}\NormalTok{ n\_samples:}
+\NormalTok{        current\_count }\OperatorTok{+=} \DecValTok{1}
+      \ControlFlowTok{else}\NormalTok{:}
+\NormalTok{        current\_count }\OperatorTok{+=}\NormalTok{ counts[child\_idx }\OperatorTok{{-}}\NormalTok{ n\_samples]}
+\NormalTok{    counts[i] }\OperatorTok{=}\NormalTok{ current\_count}
+
+\NormalTok{  linkage\_matrix }\OperatorTok{=}\NormalTok{ np.column\_stack([model.children\_, model.distances\_, counts]).astype(}\BuiltInTok{float}\NormalTok{)}
+\NormalTok{  dendrogram(linkage\_matrix, }\OperatorTok{**}\NormalTok{kwargs)}
+
+\NormalTok{plt.title(}\StringTok{"Hierarchical Clustering Dendrogram"}\NormalTok{)}
+\NormalTok{plot\_dendrogram(aggcluster, labels}\OperatorTok{=}\NormalTok{clust\_labels, leaf\_rotation}\OperatorTok{=}\DecValTok{90}\NormalTok{)}
+\NormalTok{plt.show()}
+\end{Highlighting}
+\end{Shaded}
+
+  \newpage
+  \section{Задание 6}
+  \subsection{Постановка задачи}
+  Variable screening \& logit plots.
+
+  \begin{enumerate}
+  \item
+    Провести первичный одномерный отбор переменных (screening). (Не будьте очень суровы: одномерный
+    есть одномерный -- переменная может быть незначимой, но в пересечении
+    с какой-то другой окажется очень полезной.)
+  \item
+    Обратить внимание на линейность зависимости между переменными и
+    целевой переменной, используя logit-графики для оригинальных
+    переменных и
+  \item
+    для сгруппированных (binned). Ожидается,
+    что группировка поможет нам побороть нелинейность (заодно повысит
+    устойчивость модели). Если нужно, провести подходящие преобразования
+    переменных.
+  \end{enumerate}
+
+  \subsection{Описание работы программы}
+  \begin{enumerate}
+    \item \textbf{Отбор переменных}: \\
+      Программа использует коэффициент корреляции Спирмена для отбора переменных,
+      выбрасывая четыре худших переменных, то есть тех у кого меньше всего корреляции с целевой переменной.
+      На практике это осуществляется через функцию <<spearmanr>> из библиотеки <<scipy.stats>>
+      и трансформер SelectKBest() из библиотеки <<sklearn>>.
+      Чтобы заставить их работать вместе пришлось написать вспомогательную функцию <<spearmanr\_wrap>>,
+      которая отбирает только корреляцию с целевой переменной.
+    \item \textbf{Binning}: \\
+      Все переменные, для которых имеет смысл проводить дискретизацию,
+      копируются в отдельную таблицу <<X\_train\_binnable>>.
+      Для самой процедуры группирования используется класс KBinsDiscretizer() из библиотеки <<sklearn>>
+      настроенный так, чтобы он разделял каждую переменную на 50 бинов используя стратегию <<kmeans>>
+      и кодировал получившийся результат порядковым номером бина.
+      Полученная таблица сгруппированных значений сохраняется в переменную <<transformed>>.
+      Это необходимо для построения logit-графиков.
+    \item \textbf{Logit-графики}: \\
+      Я написал вспомогательную функцию <<logit\_plot\_prep>>, которая рассчитывает данные,
+      необходимые для построения обоих logit-графиков, используя формулу empirical logit из файла
+      ex5\_logit\_plots.sas.
+      Далее она используется в цикле для построения сначала графиков оригинальных интервальных переменных,
+      а потом сгруппированных, по такой-же схеме что и построение графиков в задание 1.
+  \end{enumerate}
+
+  \subsection{Результат выполнения программы}
+  \CRTfigure{image20220328200409.png}{Результат отбора переменных}
+  \CRTfigure{772c3f5ce6a002f9854f6b01c57eaa2b6998dfe3.png}{Logit-графики для оригинальных переменных}
+  \CRTfigure{5b210dfd4e8e82508e058618dcd500b7c70264ec.png}{Logit-графики для сгруппированных переменных}
+
+  \subsection{Исходный код}
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# Part 1: using spearman for screening}
+
+\ImportTok{from}\NormalTok{ sklearn.feature\_selection }\ImportTok{import}\NormalTok{ SelectKBest}
+\ImportTok{from}\NormalTok{ scipy.stats }\ImportTok{import}\NormalTok{ spearmanr}
+
+\KeywordTok{def}\NormalTok{ spearmanr\_wrap(}\OperatorTok{*}\NormalTok{args):}
+\NormalTok{  correlation, pvalue }\OperatorTok{=}\NormalTok{ spearmanr(}\OperatorTok{*}\NormalTok{args)}
+  \ControlFlowTok{return}\NormalTok{ (np.}\BuiltInTok{abs}\NormalTok{(correlation[}\OperatorTok{{-}}\DecValTok{1}\NormalTok{,:}\OperatorTok{{-}}\DecValTok{1}\NormalTok{]), pvalue[}\OperatorTok{{-}}\DecValTok{1}\NormalTok{,:}\OperatorTok{{-}}\DecValTok{1}\NormalTok{])}
+
+\NormalTok{X\_train\_tmp }\OperatorTok{=}\NormalTok{ X\_train.drop(columns}\OperatorTok{=}\NormalTok{[}\StringTok{\textquotesingle{}Branch\textquotesingle{}}\NormalTok{, }\StringTok{\textquotesingle{}Res\textquotesingle{}}\NormalTok{])}
+\NormalTok{select\_best }\OperatorTok{=}\NormalTok{ SelectKBest(score\_func}\OperatorTok{=}\NormalTok{spearmanr\_wrap, k}\OperatorTok{=}\DecValTok{42}\NormalTok{)}
+\NormalTok{make\_pipeline(SimpleImputer(), select\_best).fit\_transform(X\_train\_tmp, y\_train)}
+\NormalTok{dropped\_columns }\OperatorTok{=} \BuiltInTok{list}\NormalTok{(X\_train\_tmp.columns[}\OperatorTok{\textasciitilde{}}\NormalTok{select\_best.get\_support()])}
+\BuiltInTok{print}\NormalTok{(}\StringTok{"dropped columns: "}\NormalTok{, dropped\_columns)}
+
+\NormalTok{screening\_transformer }\OperatorTok{=}\NormalTok{ ColumnTransformer([}
+\NormalTok{  (}\StringTok{\textquotesingle{}drop\textquotesingle{}}\NormalTok{, }\StringTok{\textquotesingle{}drop\textquotesingle{}}\NormalTok{, dropped\_columns),}
+\NormalTok{  (}\StringTok{\textquotesingle{}cat\textquotesingle{}}\NormalTok{, OneHotEncoder(), categorical\_variable\_names),}
+\NormalTok{], remainder}\OperatorTok{=}\StringTok{\textquotesingle{}passthrough\textquotesingle{}}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# Part 2: logit plots}
+\ImportTok{from}\NormalTok{ sklearn.preprocessing }\ImportTok{import}\NormalTok{ KBinsDiscretizer}
+\ImportTok{import}\NormalTok{ warnings}
+\NormalTok{warnings.simplefilter(}\StringTok{"ignore"}\NormalTok{, }\PreprocessorTok{RuntimeWarning}\NormalTok{)}
+\NormalTok{warnings.simplefilter(}\StringTok{"ignore"}\NormalTok{, }\PreprocessorTok{UserWarning}\NormalTok{)}
+\CommentTok{\# warnings.simplefilter("always")}
+
+\NormalTok{X\_train\_binnable }\OperatorTok{=}\NormalTok{ X\_train[interval\_variable\_names].fillna(}\DecValTok{0}\NormalTok{)}
+
+\NormalTok{binner }\OperatorTok{=}\NormalTok{ KBinsDiscretizer(n\_bins}\OperatorTok{=}\DecValTok{50}\NormalTok{, encode}\OperatorTok{=}\StringTok{\textquotesingle{}ordinal\textquotesingle{}}\NormalTok{, strategy}\OperatorTok{=}\StringTok{\textquotesingle{}kmeans\textquotesingle{}}\NormalTok{)}
+\NormalTok{transforemed }\OperatorTok{=}\NormalTok{ binner.fit\_transform(X\_train\_binnable)}
+\end{Highlighting}
+\end{Shaded}
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{def}\NormalTok{ logit\_plot\_prep(col, realcol):}
+\NormalTok{  X }\OperatorTok{=}\NormalTok{ np.arange(binner.n\_bins) }\CommentTok{\#np.sort(np.unique(col))}
+\NormalTok{  freq }\OperatorTok{=}\NormalTok{ X.copy()}
+\NormalTok{  ins }\OperatorTok{=}\NormalTok{ X.copy()}
+  \ControlFlowTok{for}\NormalTok{ i }\KeywordTok{in} \BuiltInTok{range}\NormalTok{(}\BuiltInTok{len}\NormalTok{(X)):}
+\NormalTok{    freq[i] }\OperatorTok{=}\NormalTok{ (col }\OperatorTok{==}\NormalTok{ X[i]).}\BuiltInTok{sum}\NormalTok{()}
+\NormalTok{    ins[i] }\OperatorTok{=}\NormalTok{ y\_train[col }\OperatorTok{==}\NormalTok{ X[i]].}\BuiltInTok{sum}\NormalTok{()}
+\NormalTok{  elogit }\OperatorTok{=}\NormalTok{ np.log((ins }\OperatorTok{+}\NormalTok{ (np.sqrt(freq)}\OperatorTok{/}\DecValTok{2}\NormalTok{))}\OperatorTok{/}\NormalTok{(freq }\OperatorTok{{-}}\NormalTok{ ins }\OperatorTok{+}\NormalTok{ (np.sqrt(freq)}\OperatorTok{/}\DecValTok{2}\NormalTok{)))}
+\NormalTok{  idx }\OperatorTok{=}\NormalTok{ np.argsort(realcol)}
+\NormalTok{  X2 }\OperatorTok{=}\NormalTok{ np.array(realcol)[idx]}
+\NormalTok{  elogit2 }\OperatorTok{=}\NormalTok{ elogit[col.astype(}\BuiltInTok{int}\NormalTok{)][idx]}
+\NormalTok{  nanidx }\OperatorTok{=} \OperatorTok{\textasciitilde{}}\NormalTok{np.isnan(elogit) }
+\NormalTok{  X }\OperatorTok{=}\NormalTok{ X[nanidx]}
+\NormalTok{  elogit }\OperatorTok{=}\NormalTok{ elogit[nanidx]}
+  \ControlFlowTok{return}\NormalTok{ (X, elogit), (X2, elogit2)}
+\end{Highlighting}
+\end{Shaded}
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{fig, axs }\OperatorTok{=}\NormalTok{ plt.subplots(}\DecValTok{5}\NormalTok{, }\DecValTok{6}\NormalTok{, figsize}\OperatorTok{=}\NormalTok{(}\DecValTok{10}\NormalTok{,}\DecValTok{5}\NormalTok{))}
+\ControlFlowTok{for}\NormalTok{ ax }\KeywordTok{in}\NormalTok{ axs.flatten():}
+\NormalTok{  ax.ticklabel\_format(style}\OperatorTok{=}\StringTok{\textquotesingle{}plain\textquotesingle{}}\NormalTok{)}
+\NormalTok{  ax.tick\_params(which}\OperatorTok{=}\StringTok{\textquotesingle{}both\textquotesingle{}}\NormalTok{, bottom}\OperatorTok{=}\VariableTok{False}\NormalTok{, top}\OperatorTok{=}\VariableTok{False}\NormalTok{, left}\OperatorTok{=}\VariableTok{False}\NormalTok{, labelbottom}\OperatorTok{=}\VariableTok{False}\NormalTok{, labelleft}\OperatorTok{=}\VariableTok{False}\NormalTok{,)}
+
+\NormalTok{plot\_data }\OperatorTok{=}\NormalTok{ []}
+\ControlFlowTok{for}\NormalTok{ icol, (ax, colname) }\KeywordTok{in} \BuiltInTok{enumerate}\NormalTok{(}\BuiltInTok{zip}\NormalTok{(axs.flatten(), interval\_variable\_names)):}
+\NormalTok{  tmp }\OperatorTok{=}\NormalTok{ logit\_plot\_prep(transforemed[:,icol], X\_train\_binnable[colname])}
+\NormalTok{  plot\_data.append(tmp)}
+\NormalTok{  ax.set\_title(colname, y}\OperatorTok{=}\FloatTok{1.0}\NormalTok{, pad}\OperatorTok{={-}}\DecValTok{14}\NormalTok{)}
+\NormalTok{  ax.plot(}\OperatorTok{*}\NormalTok{tmp[}\DecValTok{1}\NormalTok{])}
+\NormalTok{fig.suptitle(}\StringTok{"Logit plots"}\NormalTok{, y}\OperatorTok{=}\FloatTok{1.02}\NormalTok{)}
+\NormalTok{fig.tight\_layout()}
+\end{Highlighting}
+\end{Shaded}
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# Part 3: binned logit plots}
+
+\NormalTok{binner\_transformer }\OperatorTok{=}\NormalTok{ ColumnTransformer([}
+\NormalTok{  (}\StringTok{\textquotesingle{}cat\textquotesingle{}}\NormalTok{, OneHotEncoder(), categorical\_variable\_names),}
+\NormalTok{  (}\StringTok{\textquotesingle{}bin\textquotesingle{}}\NormalTok{, make\_pipeline(Imputer(strategy}\OperatorTok{=}\StringTok{"mean"}\NormalTok{), binner), interval\_variable\_names),}
+\NormalTok{], remainder}\OperatorTok{=}\StringTok{\textquotesingle{}passthrough\textquotesingle{}}\NormalTok{)}
+
+
+\NormalTok{fig, axs }\OperatorTok{=}\NormalTok{ plt.subplots(}\DecValTok{5}\NormalTok{, }\DecValTok{6}\NormalTok{, figsize}\OperatorTok{=}\NormalTok{(}\DecValTok{10}\NormalTok{,}\DecValTok{5}\NormalTok{))}
+\ControlFlowTok{for}\NormalTok{ ax }\KeywordTok{in}\NormalTok{ axs.flatten():}
+\NormalTok{  ax.ticklabel\_format(style}\OperatorTok{=}\StringTok{\textquotesingle{}plain\textquotesingle{}}\NormalTok{)}
+\NormalTok{  ax.tick\_params(which}\OperatorTok{=}\StringTok{\textquotesingle{}both\textquotesingle{}}\NormalTok{, bottom}\OperatorTok{=}\VariableTok{False}\NormalTok{, top}\OperatorTok{=}\VariableTok{False}\NormalTok{, left}\OperatorTok{=}\VariableTok{False}\NormalTok{, labelbottom}\OperatorTok{=}\VariableTok{False}\NormalTok{, labelleft}\OperatorTok{=}\VariableTok{False}\NormalTok{,)}
+
+\ControlFlowTok{for}\NormalTok{ icol, (ax, colname) }\KeywordTok{in} \BuiltInTok{enumerate}\NormalTok{(}\BuiltInTok{zip}\NormalTok{(axs.flatten(), interval\_variable\_names)):}
+\NormalTok{  tmp }\OperatorTok{=}\NormalTok{ plot\_data[icol]}
+\NormalTok{  ax.set\_title(colname, y}\OperatorTok{=}\FloatTok{1.0}\NormalTok{, pad}\OperatorTok{={-}}\DecValTok{14}\NormalTok{)}
+\NormalTok{  ax.plot(}\OperatorTok{*}\NormalTok{tmp[}\DecValTok{0}\NormalTok{])}
+\NormalTok{fig.suptitle(}\StringTok{"Binned logit plots"}\NormalTok{, y}\OperatorTok{=}\FloatTok{1.02}\NormalTok{)}
+\NormalTok{fig.tight\_layout()}
+\end{Highlighting}
+\end{Shaded}
+
+  \subsection{Ответы на вопросы}
+  Отбор переменных избавился от колонок <<MTGBal>>, <<HMOwn>>, <<LORes>> и <<CRScore>> (см. \autoref{fig:image20220328200409.png}).
+
+  При сравнение logit-графиков плохо заметно увеличение линейности от биннинга,
+  потому что большинство из них выгладят очень хаотично,
+  но на некоторых, например <<DepAmt>>, <<DDABal>> и <<ATMAmt>>, линейности явно стало больше.
+
+  \newpage
+  \section{Задание 7}
+  \subsection{Постановка задачи}
+  Выбрать 3 модели-кандидата среди тех, которые вы построили в рамках
+  выполнения предыдущих пунктов этого ДЗ. Для отбора используйте три
+  разных метода оценки качества и набор TRAIN. Приведите агрегированные
+  результаты исследования качества.
+
+  \subsection{Описание работы программы}
+  Программа создаёт список моделей <<models>>,
+  в котором содержатся все модели из предыдущих пунктов этого ДЗ,
+  а также отдельная базовая модель, которая использует только интервальные переменные без пропущенных значений.
+  Этот список содержит все комбинации стратегий заполнения пропущенных значений с дискретизацией и отбором переменных.
+
+  Далее она в цикле тренирует все эти модели и записывает и скоры по метрикам
+  <<roc\_auc\_score>>, <<f1\_score>> и <<accuracy\_score>>
+  в вспомогательную таблицу <<table>>, которая выводится на экран (см. \autoref{fig:image20220328205035.png}).
+
+  Самые лучшие три модели сохраняется в переменную <<best\_models>>.
+
+  \subsection{Результат выполнения программы}
+  \CRTfigure{image20220328205035.png}{Таблица метрик всех обученных моделей}
+
+  \subsection{Исходный код}
+\begin{Shaded}
+\begin{Highlighting}[]
+\ImportTok{from}\NormalTok{ sklearn.metrics }\ImportTok{import}\NormalTok{ f1\_score, roc\_auc\_score, accuracy\_score}
+
+\NormalTok{basic\_transformer }\OperatorTok{=}\NormalTok{ ColumnTransformer([}
+\NormalTok{  (}\StringTok{\textquotesingle{}cats\textquotesingle{}}\NormalTok{, }\StringTok{\textquotesingle{}drop\textquotesingle{}}\NormalTok{, categorical\_variable\_names),}
+\NormalTok{  (}\StringTok{\textquotesingle{}bools\textquotesingle{}}\NormalTok{, }\StringTok{\textquotesingle{}drop\textquotesingle{}}\NormalTok{, }\BuiltInTok{list}\NormalTok{(}\BuiltInTok{set}\NormalTok{(boolean\_variable\_names) }\OperatorTok{{-}} \BuiltInTok{set}\NormalTok{([}\StringTok{\textquotesingle{}Ins\textquotesingle{}}\NormalTok{]))),}
+\NormalTok{  (}\StringTok{\textquotesingle{}nans\textquotesingle{}}\NormalTok{, }\StringTok{\textquotesingle{}drop\textquotesingle{}}\NormalTok{, X\_train.columns[X\_train.isna().}\BuiltInTok{any}\NormalTok{(axis}\OperatorTok{=}\DecValTok{0}\NormalTok{)]),}
+\NormalTok{], remainder}\OperatorTok{=}\StringTok{"passthrough"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+{\tiny\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{models }\OperatorTok{=}\NormalTok{ [}
+\NormalTok{  (}\StringTok{"basic"}\NormalTok{, make\_pipeline(basic\_transformer, StandardScaler(), LogisticRegression())),}
+\NormalTok{  (}\StringTok{"mean"}\NormalTok{, make\_pipeline(column\_transformer, Imputer(strategy}\OperatorTok{=}\StringTok{"mean"}\NormalTok{), StandardScaler(), LogisticRegression())),}
+\NormalTok{  (}\StringTok{"median"}\NormalTok{, make\_pipeline(column\_transformer, Imputer(strategy}\OperatorTok{=}\StringTok{"median"}\NormalTok{), StandardScaler(), LogisticRegression())),}
+\NormalTok{  (}\StringTok{"model"}\NormalTok{, make\_pipeline(column\_transformer, Imputer(strategy}\OperatorTok{=}\StringTok{"model"}\NormalTok{), StandardScaler(), LogisticRegression())),}
+\NormalTok{  (}\StringTok{"kmeans"}\NormalTok{, make\_pipeline(column\_transformer, Imputer(strategy}\OperatorTok{=}\StringTok{"kmeans"}\NormalTok{), StandardScaler(), LogisticRegression())),}
+\NormalTok{  (}\StringTok{"mean screening"}\NormalTok{, make\_pipeline(screening\_transformer, Imputer(strategy}\OperatorTok{=}\StringTok{"mean"}\NormalTok{), StandardScaler(), LogisticRegression())),}
+\NormalTok{  (}\StringTok{"median screening"}\NormalTok{, make\_pipeline(screening\_transformer, Imputer(strategy}\OperatorTok{=}\StringTok{"median"}\NormalTok{), StandardScaler(), LogisticRegression())),}
+\NormalTok{  (}\StringTok{"model screening"}\NormalTok{, make\_pipeline(screening\_transformer, Imputer(strategy}\OperatorTok{=}\StringTok{"model"}\NormalTok{), StandardScaler(), LogisticRegression())),}
+\NormalTok{  (}\StringTok{"kmeans screening"}\NormalTok{, make\_pipeline(screening\_transformer, Imputer(strategy}\OperatorTok{=}\StringTok{"kmeans"}\NormalTok{), StandardScaler(), LogisticRegression())),}
+\NormalTok{  (}\StringTok{"mean binner"}\NormalTok{, make\_pipeline(binner\_transformer, Imputer(strategy}\OperatorTok{=}\StringTok{"mean"}\NormalTok{), StandardScaler(), LogisticRegression())),}
+\NormalTok{  (}\StringTok{"median binner"}\NormalTok{, make\_pipeline(binner\_transformer, Imputer(strategy}\OperatorTok{=}\StringTok{"median"}\NormalTok{), StandardScaler(), LogisticRegression())),}
+\NormalTok{  (}\StringTok{"model binner"}\NormalTok{, make\_pipeline(binner\_transformer, Imputer(strategy}\OperatorTok{=}\StringTok{"model"}\NormalTok{), StandardScaler(), LogisticRegression())),}
+\NormalTok{  (}\StringTok{"kmeans binner"}\NormalTok{, make\_pipeline(binner\_transformer, Imputer(strategy}\OperatorTok{=}\StringTok{"kmeans"}\NormalTok{), StandardScaler(), LogisticRegression())),}
+\NormalTok{]}
+\end{Highlighting}
+\end{Shaded}}
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{table }\OperatorTok{=}\NormalTok{ pd.DataFrame(\{}\StringTok{\textquotesingle{}name\textquotesingle{}}\NormalTok{: [], }\StringTok{\textquotesingle{}roc\_auc\_score\textquotesingle{}}\NormalTok{: [], }\StringTok{\textquotesingle{}f1\_score\textquotesingle{}}\NormalTok{: [], }\StringTok{\textquotesingle{}accuracy\_score\textquotesingle{}}\NormalTok{ : []\})}
+\ControlFlowTok{for}\NormalTok{ name, model }\KeywordTok{in}\NormalTok{ models:}
+\NormalTok{  model.fit(X\_train, y\_train)}
+\NormalTok{  y\_pred }\OperatorTok{=}\NormalTok{ model.predict(X\_train)}
+\NormalTok{  table }\OperatorTok{=}\NormalTok{ table.append(\{}
+    \StringTok{\textquotesingle{}name\textquotesingle{}}\NormalTok{: name,}
+    \StringTok{\textquotesingle{}roc\_auc\_score\textquotesingle{}}\NormalTok{: roc\_auc\_score(y\_train, y\_pred),}
+    \StringTok{\textquotesingle{}f1\_score\textquotesingle{}}\NormalTok{: f1\_score(y\_train, y\_pred),}
+    \StringTok{\textquotesingle{}accuracy\_score\textquotesingle{}}\NormalTok{ : accuracy\_score(y\_train, y\_pred),}
+\NormalTok{  \}, ignore\_index}\OperatorTok{=}\VariableTok{True}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{table}
+\end{Highlighting}
+\end{Shaded}
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{best\_models }\OperatorTok{=}\NormalTok{ np.array(models)[[}\DecValTok{9}\NormalTok{,}\DecValTok{10}\NormalTok{,}\DecValTok{12}\NormalTok{]]}
+\end{Highlighting}
+\end{Shaded}
+
+  \subsection{Ответы на вопросы}
+  Самый лучший результат дают последние 4 модели с дискретизацией переменных (см. \autoref{fig:image20220328205035.png}).
+  Модель <<basic>>, не использующая никаких крутых преобразований даёт самый худший результат.
+  Нам нужно выбрать 3 модели, и это получаются <<mean binner>>, <<median binner>> и <<kmeans binner>>.
+
+  \newpage
+  \section{Задание 8}
+  \subsection{Постановка задачи}
+  Сравнить модели используя KS (PROC NPAR1WAY) и ROC (PROC LOGISTIC) на
+  наборах TRAIN и VALIDATE. Выбрать лучшую. Выбрать наиболее «устойчивую»
+  (значения статистик качества на TRAIN и VALIDATE примерно равны).
+
+  \subsection{Описание работы программы}
+  Для уже обученных моделей программа считает метрики <<ks\_2samp>> и <<roc\_auc\_score>>
+  на тренировочной и на валидационной выборке, а также их разность.
+  Всё сохраняется в таблицу и выводится на экран, также как это было в задание 3.
+
+  \subsection{Результат выполнения программы}
+  \CRTfigure{image20220328211602.png}{Таблица результатов}
+
+  \subsection{Исходный код}
+\begin{Shaded}
+\begin{Highlighting}[]
+\ImportTok{from}\NormalTok{ scipy.stats }\ImportTok{import}\NormalTok{ ks\_2samp}
+
+\NormalTok{table2 }\OperatorTok{=}\NormalTok{ pd.DataFrame(\{}\StringTok{\textquotesingle{}name\textquotesingle{}}\NormalTok{: [], }\StringTok{\textquotesingle{}roc train\textquotesingle{}}\NormalTok{: [], }\StringTok{\textquotesingle{}roc test\textquotesingle{}}\NormalTok{: [], }\StringTok{\textquotesingle{}ks train\textquotesingle{}}\NormalTok{: [], }\StringTok{\textquotesingle{}ks test\textquotesingle{}}\NormalTok{: [],\})}
+\ControlFlowTok{for}\NormalTok{ name, model }\KeywordTok{in}\NormalTok{ best\_models:}
+\NormalTok{  y\_pred\_train }\OperatorTok{=}\NormalTok{ model.predict(X\_train)}
+\NormalTok{  y\_pred\_test }\OperatorTok{=}\NormalTok{ model.predict(X\_test)}
+\NormalTok{  table2 }\OperatorTok{=}\NormalTok{ table2.append(\{}
+    \StringTok{\textquotesingle{}name\textquotesingle{}}\NormalTok{: name,}
+    \StringTok{\textquotesingle{}roc train\textquotesingle{}}\NormalTok{: roc\_auc\_score(y\_train, y\_pred\_train),}
+    \StringTok{\textquotesingle{}roc test\textquotesingle{}}\NormalTok{: roc\_auc\_score(y\_test, y\_pred\_test),}
+    \StringTok{\textquotesingle{}ks train\textquotesingle{}}\NormalTok{ : ks\_2samp(y\_train, y\_pred\_train)[}\DecValTok{0}\NormalTok{],}
+    \StringTok{\textquotesingle{}ks test\textquotesingle{}}\NormalTok{ : ks\_2samp(y\_test, y\_pred\_test)[}\DecValTok{0}\NormalTok{],}
+\NormalTok{  \}, ignore\_index}\OperatorTok{=}\VariableTok{True}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{table2[}\StringTok{\textquotesingle{}roc delta\textquotesingle{}}\NormalTok{] }\OperatorTok{=}\NormalTok{ table2[}\StringTok{\textquotesingle{}roc test\textquotesingle{}}\NormalTok{] }\OperatorTok{{-}}\NormalTok{ table2[}\StringTok{\textquotesingle{}roc train\textquotesingle{}}\NormalTok{] }
+\NormalTok{table2[}\StringTok{\textquotesingle{}ks delta\textquotesingle{}}\NormalTok{] }\OperatorTok{=}\NormalTok{ table2[}\StringTok{\textquotesingle{}ks test\textquotesingle{}}\NormalTok{] }\OperatorTok{{-}}\NormalTok{ table2[}\StringTok{\textquotesingle{}ks train\textquotesingle{}}\NormalTok{] }
+\NormalTok{table2}
+\end{Highlighting}
+\end{Shaded}
+
+  \subsection{Ответы на вопросы}
+  По какой-то причине все модели дали лучший результат на валидационной выборке (см. \autoref{fig:image20220328211602.png}).
+  Это может означать что они недообученные.
+  Самая стабильная модель получилась <<median binner>>, хотя стабильность тут не самая лучшая метрика.
+
+  \newpage
+  \section{Список использованной литературы}
+  \begin{thebibliography}{3}
+    \bibitem{SAS} The LOGISTIC Procedure [Электронный ресурс]. //URL: \url{https://documentation.sas.com/doc/en/pgmsascdc/9.4_3.3/statug/statug_logistic_syntax01.htm} (Дата обращения: 26.03.2022, режим доступа: свободный)
+    \bibitem{SAS} The NPAR1WAY Procedure [Электронный ресурс]. //URL: \url{https://documentation.sas.com/doc/en/pgmsascdc/9.4_3.4/statug/statug_npar1way_overview.htm} (Дата обращения: 26.03.2022, режим доступа: свободный)
+    \bibitem{SCIPY} ks\_2samp [Электронный ресурс]. //URL: \url{https://docs.scipy.org/doc/scipy/reference/generated/scipy.stats.ks_2samp.html} (Дата обращения: 26.03.2022, режим доступа: свободный)
+    \bibitem{SCIPY} spearmanr [Электронный ресурс]. //URL: \url{https://docs.scipy.org/doc/scipy/reference/generated/scipy.stats.spearmanr.html} (Дата обращения: 26.03.2022, режим доступа: свободный)
+    \bibitem{SKLRARN} AgglomerativeClustering [Электронный ресурс]. //URL: \url{https://scikit-learn.org/stable/modules/generated/sklearn.cluster.AgglomerativeClustering.html} (Дата обращения: 26.03.2022, режим доступа: свободный)
+    \bibitem{SKLRARN} f\_regression [Электронный ресурс]. //URL: \url{https://scikit-learn.org/stable/modules/generated/sklearn.feature_selection.f_regression.html} (Дата обращения: 26.03.2022, режим доступа: свободный)
+    % \bibitem{SKLRARN} GaussianMixture [Электронный ресурс]. //URL: \url{https://scikit-learn.org/stable/modules/generated/sklearn.mixture.GaussianMixture.html} (Дата обращения: 26.03.2022, режим доступа: свободный)
+    \bibitem{SKLRARN} KBinsDiscretizer [Электронный ресурс]. //URL: \url{https://scikit-learn.org/stable/modules/generated/sklearn.preprocessing.KBinsDiscretizer.html} (Дата обращения: 26.03.2022, режим доступа: свободный)
+    \bibitem{SKLRARN} LinearRegression [Электронный ресурс]. //URL: \url{https://scikit-learn.org/stable/modules/generated/sklearn.linear_model.LinearRegression.html} (Дата обращения: 26.03.2022, режим доступа: свободный)
+    \bibitem{SKLRARN} LogisticRegression [Электронный ресурс]. //URL: \url{https://scikit-learn.org/stable/modules/generated/sklearn.linear_model.LogisticRegression.html} (Дата обращения: 26.03.2022, режим доступа: свободный)
+    \bibitem{SKLRARN} OneHotEncoder [Электронный ресурс]. //URL: \url{https://scikit-learn.org/stable/modules/generated/sklearn.preprocessing.OneHotEncoder.html} (Дата обращения: 26.03.2022, режим доступа: свободный)
+    \bibitem{SKLRARN} roc\_auc\_score [Электронный ресурс]. //URL: \url{https://scikit-learn.org/stable/modules/generated/sklearn.metrics.roc_auc_score.html} (Дата обращения: 26.03.2022, режим доступа: свободный)
+  \end{thebibliography}
+
+\end{document}

@@ -1,0 +1,79 @@
+\usepackage[hidelinks,bookmarks=false]{hyperref}
+\usepackage{122}
+\usepackage{graphicx}
+\usepackage{icomma}
+
+\geometry{top=20mm}
+\geometry{bottom=20mm}
+\geometry{left=35mm}
+\geometry{right=10mm}
+\geometry{bindingoffset=0cm}
+
+\usepackage{setspace}
+\onehalfspacing
+
+\renewcommand{\figureautorefname}{рисунок}
+\addto\captionsrussian{\renewcommand{\figurename}{Рисунок}}
+\addto\extrasrussian{\renewcommand{\figureautorefname}{рисунок}}
+
+\usepackage{etoolbox} % for \patchcmd
+\patchcmd{\thebibliography}{\section*{\refname}}{}{}{} % убираем двойной заголовок
+
+\setlength{\parindent}{15pt}
+\usepackage{indentfirst}
+
+\usepackage{tocloft}
+\renewcommand{\cftsecleader}{\cftdotfill{\cftdotsep}}
+
+\newcommand{\titlePage}[2]{
+  \thispagestyle{empty}
+  {
+    \centering \bfseries \large
+    Федеральное государственное автономное образовательное \\
+    учреждение высшего профессионального образования \\
+    <<Национальный исследовательский университет --- Высшая школа экономики>> \\
+    ~\\~\\
+    Дисциплина: \textnormal{факультатив <<Анализ данных на платформе SAS>>} \\
+    ~\\~\\
+    {\Large Отчёт о выполнении домашнего задания №#1} \\
+    ~\\
+    <<#2>> \\
+  }
+  \vspace*{\fill}
+  {
+    \raggedleft %\itshape
+    Выполнял студент 3 курса \\
+    группы БПИ197 \\
+    AAAAAAA AAAAAAAAAA AAAAAAAAAA \\
+  }
+  \vspace*{\fill}
+  {
+    \centering \bfseries \large
+    Москва \the\year{} \\
+  }
+  \newpage
+  \tableofcontents
+  \newpage
+}
+
+\usepackage{float}
+\usepackage[export]{adjustbox}
+\newcommand{\CRTfigure}[2]{%
+  \begin{figure}[H]
+    \centering
+    \includegraphics[max width=\textwidth,max height=0.4\textheight]{#1}
+    \caption{#2}
+    \label{fig:#1}
+  \end{figure}%
+}
+
+\newcommand{\CRTfigureLong}[2]{%
+  \begin{figure}[H]
+    \centering
+    \includegraphics[max width=\textwidth,max height=0.9\textheight]{#1}
+    \caption{#2}
+    \label{fig:#1}
+  \end{figure}%
+}
+
+\newcommand{\CRTfigref}[2]{(см. \autoref{fig:#1})\CRTfigure{#1}{#2}}

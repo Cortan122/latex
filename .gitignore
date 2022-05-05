@@ -12,4 +12,6 @@
 !books/**
 !asm
 !asm/**
+!sas
+!sas/**
 *.ipynb.tex
