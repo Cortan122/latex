@@ -1,0 +1,570 @@
+%%% Опции
+\newif\ifstyledoc@report
+\DeclareOption{report}{\styledoc@reporttrue}
+\ProcessOptions
+
+\ifstyledoc@report
+  \newcommand{\CRTdocFormat}{Курсовая работа}
+  \newcommand{\CRTdocnumMID}{КР 01-1}
+  \usepackage[export]{adjustbox}
+  \usepackage{standalone}
+  \newcommand{\CRTconfig}[1]{
+    \def\input@path{ {./} {#1} }
+    \usepackage{CRTconfig}
+    \graphicspath{ {#1/images/} }
+  }
+\fi
+
+%%% Работа с русским языком
+\usepackage{iftex}
+\ifXeTeX
+  \usepackage{fontspec}
+  \usepackage{polyglossia}
+  \setdefaultlanguage{russian}
+  \setotherlanguage{english}
+  \setmainfont[Ligatures=TeX]{Times New Roman}
+  \setmonofont{Consolas}
+\else
+  \usepackage{cmap}
+  \usepackage[english,russian]{babel}
+\fi
+
+\usepackage{subcaption}
+\captionsetup{compatibility=false}
+%%% Дополнительная работа с математикой
+\usepackage{amsmath,amsfonts,amssymb,amsthm,mathtools} % AMS
+\usepackage{icomma} % "Умная" запятая: $0,2$ --- число, $0, 2$ --- перечисление
+
+%% Номера формул
+%\mathtoolsset{showonlyrefs=true} % Показывать номера только у тех формул, на которые есть \eqref{} в тексте.
+%\usepackage{leqno} % Нумерация формул слева
+
+% for tables added 12.11.18
+%\usepackage[format=simple,labelsep=space,tableposition=below]{caption}
+\usepackage{caption}
+\DeclareCaptionLabelSeparator{emdash}{ --- }
+\captionsetup{
+	justification=raggedright,
+	singlelinecheck=false,
+	labelsep=emdash
+}
+\usepackage{listings}
+\renewcommand\labelitemi{--}
+\setcounter{secnumdepth}{4}
+
+% \usepackage[figurename=Рисунок,justification=centering]{caption}
+\newcommand{\programmingLanguage}[1]{
+	\lstset{language=#1}
+}
+
+\usepackage[raggedright]{titlesec}
+\usepackage{hyperref}
+\usepackage{etoolbox}
+\usepackage{lastpage}
+\usepackage{enumitem}
+\usepackage{textcomp, gensymb}
+
+
+
+
+%% Перенос знаков в формулах (по Львовскому)
+\newcommand*{\hm}[1]{#1\nobreak\discretionary{}
+{\hbox{$\mathsurround=0pt #1$}}{}}
+\usepackage{indentfirst} % пакет для первой красной строки по ГОСТам РФ
+%%% Работа с картинками
+\usepackage{graphicx}  % Для вставки рисунков
+\graphicspath{ {.} {images/} {images2/} }  % папки с картинками
+\setlength\fboxsep{3pt} % Отступ рамки \fbox{} от рисунка
+\setlength\fboxrule{1pt} % Толщина линий рамки \fbox{}
+\usepackage{wrapfig} % Обтекание рисунков текстом
+
+%%% Работа с таблицами
+\usepackage{array,tabularx,tabulary,booktabs} % Дополнительная работа с таблицами
+\usepackage{longtable}  % Длинные таблицы
+\usepackage{multirow} % Слияние строк в таблице
+
+%%% Теоремы
+\theoremstyle{plain} % Это стиль по умолчанию, его можно не переопределять.
+\newtheorem{theorem}{Теорема}[section]
+\newtheorem{proposition}[theorem]{Утверждение}
+
+\theoremstyle{definition} % "Определение"
+\newtheorem{corollary}{Следствие}[theorem]
+\newtheorem{problem}{Задача}[section]
+
+\theoremstyle{remark} % "Примечание"
+\newtheorem*{nonum}{Решение}
+\usepackage{array} % aligning text inside the tabular
+
+%%% Программирование
+\usepackage{etoolbox} % логические операторы
+\usepackage{layout}
+%%% Страница
+\usepackage{extsizes} % Возможность сделать 14-й шрифт
+\usepackage{geometry} % Простой способ задавать поля
+	\geometry{top=20mm} % 25mm
+	\geometry{bottom=20mm} % 15mm
+	\geometry{left=30mm} % 20mm
+	\geometry{right=15mm} % 10mm
+	\geometry{bindingoffset=0cm}
+	\geometry{bottom = 1in} % ???
+
+\geometry{left=20mm}
+\geometry{right=10mm}
+
+ %
+\usepackage{fancybox}
+\usepackage{fancyhdr} % Колонтитулы
+ 	\pagestyle{fancy}
+ 	\renewcommand{\headrulewidth}{0mm}  % Толщина линейки, отчеркивающей верхний колонтитул
+ 	%\lfoot{Нижний левый}
+ 	%\rfoot{Нижний правый}
+ 	%\rhead{Верхний правый}
+ 	%\chead{Верхний в центре}
+ 	%\lhead{Верхний левый}
+    \cfoot{Москва \@year{}} % По умолчанию здесь номер страницы
+
+\usepackage{setspace} % Интерлиньяж
+\onehalfspacing % Интерлиньяж 1.5
+%\doublespacing % Интерлиньяж 2
+% \singlespacing % Интерлиньяж 1
+
+\usepackage{lastpage} % Узнать, сколько всего страниц в документе.
+
+\usepackage{soulutf8} % Модификаторы начертания
+
+\usepackage{hyperref}
+\usepackage[usenames,dvipsnames,svgnames,table,rgb]{xcolor}
+\hypersetup{				% Гиперссылки
+    unicode=true,           % русские буквы в раздела PDF
+    pdftitle={\CRTdocFormat},   % Заголовок
+    pdfauthor={Автор},      % Автор
+    pdfsubject={Тема},      % Тема
+    pdfcreator={Создатель}, % Создатель
+    pdfproducer={Производитель}, % Производитель
+    pdfkeywords={keyword1} {key2} {key3}, % Ключевые слова
+    colorlinks=true,       	% false: ссылки в рамках; true: цветные ссылки
+    linkcolor=black,          % внутренние ссылки
+    citecolor=black ,        % на библиографию
+    filecolor=black ,      % на файлы
+    urlcolor=black           % на URL
+}
+
+\newcolumntype{P}{>{\centering\arraybackslash}p}
+
+% define year
+\newcommand{\@year}{2019}
+\newcommand{\Year}[1]{
+	\renewcommand{\@year}{#1}
+}
+
+% define doc number
+\newcommand{\@docNumber}{{\color{red}{TODO}}}
+\newcommand{\docNumber}[1]{
+	\renewcommand{\@docNumber}{#1}
+}
+
+% define doc number
+\newcommand{\@supervPos}{{\color{red}{TODO}}}
+\newcommand{\@supervName}{{\color{red}{TODO}}}
+\newcommand{\supervisor}[2]{
+	\renewcommand{\@supervPos}{#1}
+	\renewcommand{\@supervName}{#2}
+}
+
+
+% define student name and group
+\newcommand{\@student}{{\color{red}{TODO}}}
+\newcommand{\@groupName}{{\color{red}{TODO}}}
+\newcommand{\student}[2]{
+	\renewcommand{\@student}{#2}
+	\renewcommand{\@groupName}{#1}
+}
+
+
+
+
+% define doc project name
+\newcommand{\@project}{{\color{red}{TODO}}}
+\newcommand{\project}[1]{
+	\renewcommand{\@project}{#1}
+}
+
+% define doc format
+\newcommand{\@docFormat}{{\color{red}{FORMAT TODO}}}
+\newcommand{\docFormat}[1]{
+	\renewcommand{\@docFormat}{#1}
+}
+
+%%% for code and listings
+\newcommand{\code}[1]{%
+	\lstinputlisting[frame=single,basicstyle=\footnotesize\ttfamily]{#1}
+}
+
+\renewcommand{\code}[2]{%
+	\lstinputlisting [frame=single, basicstyle=\footnotesize\ttfamily, caption={#2}, captionpos=b,language=TeX,breaklines] {#1}
+}
+
+\newcommand{\CRTendAdditions}{}
+\newcommand{\@startAdditions}{
+	\setcounter{CRTtempSection}{\arabic{section}}
+	\setcounter{section}{0}
+	\renewcommand{\sectionbreak}{}
+  % \titleformat{\section}[block]{\Large\bfseries\filright}{}{0mm}{}
+  \titleformat{\section}{\normalfont\Large\bfseries\filcenter}{}{1em}{}
+  \renewcommand{\@startAdditions}{}
+  \renewcommand{\CRTendAdditions}{\setcounter{section}{\arabic{CRTtempSection}}}
+}
+
+\newcounter{@tempSection}
+\newcounter{CRTtempSection}
+
+\usepackage{totcount}
+\newtotcounter{CRTaddition}
+\newcommand{\CRTarabic}[1]{
+  \ifnum\totvalue{CRTaddition}=1 \else \arabic{#1} \fi
+}
+
+\newcommand{\sectionbreak}{\clearpage}
+
+%%% addition. example: ПРИЛОЖЕНИЕ А
+\newcommand{\addition}[1]{%
+	\clearpage
+	\newpage
+	\@startAdditions
+  \stepcounter{section}
+  \stepcounter{CRTaddition}
+	\begin{flushright}
+		\Large \textbf{\textsc{приложение \CRTarabic{section}}}
+	\end{flushright}
+	\setcounter{@tempSection}{\arabic{section}}
+	\setcounter{secnumdepth}{0}
+	\section[Приложение \CRTarabic{@tempSection}]{#1}
+	\setcounter{secnumdepth}{4}
+}
+
+%% [#1]: ref id
+%% #2: file
+%% #3: caption
+\newcommand{\floatCode}[3][]{
+	\begin{figure}[hbp]
+		\lstinputlisting [frame=single,basicstyle=\footnotesize\ttfamily] {#2}
+		\ifblank{#3}{}{\caption{#3}}
+		\ifblank{#1}{}{\label{#1}}
+	\end{figure}
+}
+
+
+%% Свои команды
+\DeclareMathOperator{\sgn}{\mathop{sgn}}
+\newcommand{\tabForFirstPage}
+{\reversemarginpar\marginpar{\rotatebox{90}{\begin{tabular}{|P{2.5cm}|l|l|l|l|}
+				\hline
+				Инв. № подл & Подп. и дата & Взам. инв. № & Инв. № дубл.&Подп. и дата\\
+				\hline
+				\tiny{\CRTdocnum} &   &   &   &  \\
+				\hline
+\end{tabular}}}}
+\setlength{\oddsidemargin}{0mm}
+\newcommand{\itsHSE}{\begin{center}
+		\scshape \bfseries правительство российской федерации\\
+		национальный исследовательский университет \\
+		«высшая школа экономики»
+		\par\vspace{5mm}
+		\upshape\mdseries
+		\rmfamily\normalsize
+		Факультет компьютерных наук\\
+		Департамент программной инженерии
+	\end{center}}
+
+\newcommand{\academicTeacher}[2]{
+	\begin{table}[h]
+		\begin{center}
+			\begin{tabular}{ >{\centering\arraybackslash}p{0.5\textwidth}  >{\centering\arraybackslash}p{0.45\textwidth} }
+
+				\text{СОГЛАСОВАНО} &  \text{УТВЕРЖДАЮ}\\
+				#1 & Академический руководитель образовательной программы «Программная инженерия»
+				профессор департамента программной инженерии, канд. техн. наук\\
+				& \\
+				\underline{\hspace{4cm}} #2	&  \underline{\hspace{4cm}} В. В. Шилов\\
+				<<\underline{\hspace{1cm}}>> \underline{\hspace{3cm}} \@year{} г.&<<\underline{\hspace{1cm}}>> \underline{\hspace{3cm}} \@year{} г.\\
+			\end{tabular}
+		\end{center}
+	\end{table}
+}
+
+\newcommand{\secondPage}{
+  \pagestyle{fancy}
+  % \chead{\vfill \thepage \vfill  \@docNumber{}}
+  \lhead{УТВЕРЖДЕН \newline \@docNumber{}-ЛУ}
+  % \noindent УТВЕРЖДЕН \newline \@docNumber{}
+
+  \vspace*{9cm}
+
+  \begingroup
+	\centering
+	\projectName{\@project{}}
+	\titleListTwo{\@docFormat{}}
+  \listNumber{\textbf{Листов \pageref{LastPage}}} \\
+  \endgroup
+
+	\vspace{8cm}
+	\tabForFirstPage
+	\vspace*{\fill}
+}
+
+\newcommand{\thirdPage}{
+	\lhead{ }
+	\chead{\BeginAccSupp{ActualText=}\vfill \thepage \vfill  \@docNumber{}\EndAccSupp{}}
+	\rhead{ }
+	\cfoot{ }
+	\cfoot{\tabForTZ}
+	\tableofcontents
+}
+
+\newcommand{\projectName}[1]{
+	\begin{center}
+		\large{\textsc{\textbf{#1}}}
+	\end{center}
+}
+
+%\renewcommand{\familydefault}{\sfdefault} % Начертание шрифта
+
+\newcommand{\titleList}{
+	\begin{center}
+\par\vspace{4mm}
+\textbf{\@docFormat{}}
+\par\vspace{6mm}
+\textbf{
+	ЛИСТ УТВЕРЖДЕНИЯ}
+\par\vspace{6mm}
+\textbf{\@docNumber{}}
+\par\vspace{60mm}
+\end{center}}
+
+\newcommand{\titleListTwo}[2]{
+	\begin{center}
+		\par\vspace{4mm}
+		\textbf{#1}
+		\par\vspace{6mm}
+		\textbf{\@docNumber{}}
+\end{center}}
+
+\newcommand{\firstPage}{
+	\itsHSE
+	\academicTeacher{\@supervPos{}}{\@supervName{}}
+	\projectName{\@project{}}
+	\titleList
+	\nameOfAuthor
+	\tabForFirstPage
+}
+
+\usepackage{expl3}
+\ExplSyntaxOn
+\cs_new_eq:NN \Repeat \prg_replicate:nn
+\ExplSyntaxOff
+
+\newcommand{\nameOfAuthor}{
+	\hfill\begin{tabular}{r}
+		\\
+		Исполнитель: \\ студент группы \@groupName{}
+		\\
+		\underline{\hspace{4cm}} \@student{}
+		\\
+		<<\underline{\hspace{1cm}}>> \underline{\hspace{4cm}} \@year{} г.
+	\end{tabular}
+}
+\newcommand{\listNumber}[1]{\textbf{Листов #1}}
+
+\usepackage{accsupp}
+\newcommand{\tabForTZ}{%
+  \BeginAccSupp{ActualText=}\vspace{-.9cm}%
+  \begin{tabular}{|p{5.5cm}|p{2.475cm}|p{2.64cm}|p{2.64cm}|p{2.475cm}|}
+		\hline
+		Изм. & Лист & № докум. & Подп. & Дата\\
+		\hline
+		\scriptsize{\@docNumber{}}& & & &\\
+		\hline
+		Инв. № подл. & Подп. и дата & Взам. инв. № & Инв. № дубл.& Подп. и дата \\
+		\hline
+	\end{tabular}
+  \EndAccSupp{}
+}
+\usepackage{multicol} % Несколько колонок
+
+\ifstyledoc@report
+  \usepackage{chngcntr}
+  \counterwithout{section}{chapter}
+  \counterwithin*{section}{chapter}
+  \patchcmd{\thebibliography}{\chapter*{\bibname}}{}{}{}
+
+  \fancypagestyle{plain}{
+    \chead{\thepage}
+    \cfoot{\tabForTZ}
+  }
+
+  \usepackage{tikz}
+  \usepackage{xltabular}
+  \usepackage{environ}
+  \keepXColumns
+
+  \NewEnviron{CRTmethodtableC}[2]{
+    \noindent\begin{xltabular}{\textwidth}{|l|l|p{\widthof{#2}}|X|}
+      \caption{Описание полей класса #1}\label{tabmethod#1}
+      \\\hline \multicolumn{4}{|l|}{\textbf{Методы}}
+      \\\hline \textbf{Имя} & \textbf{Тип} & \textbf{Аргументы} & \textbf{Назначение} \\\hline
+      \endfirsthead
+      \caption*{Продолжение таблицы \ref{tabmethod#1}}
+      \\\hline \multicolumn{4}{|l|}{\textbf{Методы}}
+      \\\hline \textbf{Имя} & \textbf{Тип} & \textbf{Аргументы} & \textbf{Назначение}
+      \endhead
+      \BODY
+    \end{xltabular}
+  }
+
+  \NewEnviron{CRTmethodtablePython}[3]{
+    \noindent\begin{xltabular}{\textwidth}{|l|l|p{\widthof{#2}}|X|}
+      \caption{Описание функций файла #1}\label{tabmethod#3}
+      \\\hline \multicolumn{4}{|l|}{\textbf{Методы}}
+      \\\hline \textbf{Имя} & \textbf{Тип} & \textbf{Аргументы} & \textbf{Назначение} \\\hline
+      \endfirsthead
+      \caption*{Продолжение таблицы \ref{tabmethod#3}}
+      \\\hline \multicolumn{4}{|l|}{\textbf{Методы}}
+      \\\hline \textbf{Имя} & \textbf{Тип} & \textbf{Аргументы} & \textbf{Назначение}
+      \endhead
+      \BODY
+    \end{xltabular}
+  }
+
+  \NewEnviron{CRTtable}[2]{
+    \noindent\begin{xltabular}{\textwidth}{#2}
+      \caption{#1}\\
+      \hline
+      \BODY
+    \end{xltabular}
+  }
+
+  \NewEnviron{CRTfieldtableC}[1]{
+    \noindent\begin{xltabular}{\textwidth}{|l|l|X|}
+      \caption{Описание полей класса #1}\label{tabfield#1}
+      \\\hline \multicolumn{3}{|l|}{\textbf{Поля}}
+      \\\hline \textbf{Имя} & \textbf{Тип} & \textbf{Назначение} \\\hline
+      \endfirsthead
+      \caption*{Продолжение таблицы \ref{tabfield#1}}
+      \\\hline \multicolumn{3}{|l|}{\textbf{Поля}}
+      \\\hline \textbf{Имя} & \textbf{Тип} & \textbf{Назначение} \\\hline
+      \endhead
+      \BODY
+    \end{xltabular}
+  }
+
+  \NewEnviron{CRTmethodtable}[2]{
+    \noindent\begin{tabularx}{\textwidth}{|l|p{\widthof{\textbf{Доступа}}}|l|p{\widthof{#2}}|X|}
+      \caption{Описание методов класса #1}\label{tabmethod#1}
+      \\\hline \multicolumn{5}{|l|}{\textbf{Методы}}
+      \\\hline \textbf{Имя} & \textbf{Мод. Доступа} & \textbf{Тип} & \textbf{Аргументы} & \textbf{Назначение} \\\hline
+      \endfirsthead
+      \caption*{Продолжение таблицы \ref{tabmethod#1}}
+      \\\hline \multicolumn{5}{|l|}{\textbf{Методы}}
+      \\\hline \textbf{Имя} & \textbf{Мод. Доступа} & \textbf{Тип} & \textbf{Аргументы} & \textbf{Назначение}
+      \endhead
+      \BODY
+    \end{tabularx}
+  }
+
+  \NewEnviron{CRTmethodtableP}[2]{
+    \noindent\begin{tabularx}{\textwidth}{|l|p{\widthof{\textbf{Доступа}}}|p{\widthof{HistoryToken}}|p{\widthof{#2}}|X|}
+      \caption{Описание методов класса #1}\label{tabmethod#1}
+      \\\hline \multicolumn{5}{|l|}{\textbf{Методы}}
+      \\\hline \textbf{Имя} & \textbf{Мод. Доступа} & \textbf{Тип} & \textbf{Аргументы} & \textbf{Назначение} \\\hline
+      \endfirsthead
+      \caption*{Продолжение таблицы \ref{tabmethod#1}}
+      \\\hline \multicolumn{5}{|l|}{\textbf{Методы}}
+      \\\hline \textbf{Имя} & \textbf{Мод. Доступа} & \textbf{Тип} & \textbf{Аргументы} & \textbf{Назначение}
+      \endhead
+      \BODY
+    \end{tabularx}
+  }
+
+  \NewEnviron{CRTfieldtable}[1]{
+    \noindent\begin{tabularx}{\textwidth}{|l|p{\widthof{\textbf{Доступа}}}|l|X|}
+      \caption{Описание полей класса #1}\label{tabfield#1}
+      \\\hline \multicolumn{4}{|l|}{\textbf{Поля}}
+      \\\hline \textbf{Имя} & \textbf{Мод. Доступа} & \textbf{Тип} & \textbf{Назначение} \\\hline
+      \endfirsthead
+      \caption*{Продолжение таблицы \ref{tabfield#1}}
+      \\\hline \multicolumn{4}{|l|}{\textbf{Поля}}
+      \\\hline \textbf{Имя} & \textbf{Мод. Доступа} & \textbf{Тип} & \textbf{Назначение} \\\hline
+      \endhead
+      \BODY
+    \end{tabularx}
+  }
+
+  \NewEnviron{CRTproptable}[1]{
+    \noindent\begin{tabularx}{\textwidth}{|l|p{\widthof{\textbf{Доступа}}}|l|X|}
+      \caption{Описание свойств класса #1}\label{tabprop#1}
+      \\\hline \multicolumn{4}{|l|}{\textbf{Свойства}}
+      \\\hline \textbf{Имя} & \textbf{Мод. Доступа} & \textbf{Тип} & \textbf{Назначение} \\\hline
+      \endfirsthead
+      \caption*{Продолжение таблицы \ref{tabprop#1}}
+      \\\hline \multicolumn{4}{|l|}{\textbf{Свойства}}
+      \\\hline \textbf{Имя} & \textbf{Мод. Доступа} & \textbf{Тип} & \textbf{Назначение} \\\hline
+      \endhead
+      \BODY
+    \end{tabularx}
+  }
+
+  \newcommand{\singleCRTpreamble}{
+    % \renewcommand{\secondPage}{}
+    \CRTpreamble
+    \providecommand{\CRTsign}{}
+    \renewcommand{\CRTsign}{}
+    \renewcommand{\CRTpreamble}{}
+    \renewcommand{\CRTlistRegistration}{\CRTendAdditions}
+  }
+
+  \newcommand{\CRTincludeTZ}{
+    \renewcommand{\CRTdocFormat}{Техническое задание}
+    \renewcommand{\CRTdocnumMID}{ТЗ 01-1}
+    \chapter{Техническое задание}
+    \input{TZ.tex}
+  }
+
+  \newcommand{\CRTincludePZ}{
+    \renewcommand{\CRTdocFormat}{Пояснительная записка}
+    \renewcommand{\CRTdocnumMID}{ПЗ 01-1}
+    \chapter{Пояснительная записка}
+    \input{PZ.tex}
+  }
+
+  \newcommand{\CRTincludeRP}{
+    \renewcommand{\CRTdocFormat}{Руководство программиста}
+    \renewcommand{\CRTdocnumMID}{РП 01-1}
+    \chapter{Руководство программиста}
+    \input{RP.tex}
+  }
+
+  \newcommand{\CRTincludeRO}{
+    \renewcommand{\CRTdocFormat}{Руководство оператора}
+    \renewcommand{\CRTdocnumMID}{РО 01-1}
+    \chapter{Руководство оператора}
+    \input{RO.tex}
+  }
+
+  % \usepackage{minted}
+  % \newcommand{\CRTfile}[1]{\inputminted[tabsize=2,breaklines,breaksymbolleft=]{text}{../clean_code/#1}}
+  \newcommand{\CRTincludeTP}{
+    \renewcommand{\CRTdocFormat}{Текст программы}
+    \renewcommand{\CRTdocnumMID}{ТП 01-1}
+    \chapter{Текст программы}
+    \input{TP.tex}
+  }
+
+  \newcommand{\CRTincludePMI}{
+    \renewcommand{\CRTdocFormat}{Программа и методика испытаний}
+    \renewcommand{\CRTdocnumMID}{ПМИ 01-1}
+    \chapter{Программа и методика испытаний}
+    \input{PMI.tex}
+  }
+\fi
+

@@ -1,0 +1,147 @@
+\newcommand{\CRTyear}{2020}
+\newcommand{\CRTname}{Приложение для визуализации метода рекурсивного спуска}
+\newcommand{\CRTnameeng}{Application for visualizing recursive descent parsers}
+\newcommand{\CRTdocnum}{RU.17701729.04.13-01 \CRTdocnumMID}
+
+\newcommand{\CRTzip}{Program.zip}
+\newcommand{\CRTexe}{ParserApp.exe}
+
+\Year{\CRTyear}
+\project{\CRTname}
+\docNumber{\CRTdocnum-ЛУ}
+\docFormat{\CRTdocFormat}
+\student{AAA AAA}{AA AA AAAAAAA}
+
+\supervisor{
+  % Руководитель проекта,
+  Доцент факультета компьютерных \vfill наук,
+  заместитель декана по учебно-методической работе, \vfill
+  канд. социол. наук
+}{И. Ю. Самоненко}
+
+\newcommand{\CRTlistRegistration}{
+  % \label{CRTlastpage}
+  \singlespacing
+  \newpage
+  \newgeometry{left=20mm,bottom=15mm,right=10mm,top=20mm}
+  \cfoot{}
+  % \chead{}
+  \titleformat{\section}{\normalfont\Large\bfseries\filcenter}{\thesection}{1em}{}
+  \CRTendAdditions
+  \section{Лист регистрации изменений}
+  \noindent
+  \resizebox{\linewidth}{!}{%
+    \begin{tabular}{|c|P{2.00cm}|P{1.75cm}|l|P{2.00cm}|P{2.50cm}|P{2.00cm}|P{2.75cm}|P{1.75cm}|c|}
+      \hline
+      \multirow{2}{*}{Изм.} &
+      \multicolumn{4}{c|}{Номера листов} &
+      \multirow{2}{2.50cm}{Всего листов в документе} &
+      \multirow{2}{2.00cm}{$\text{№}$ документа} &
+      \multirow{2}{2.75cm}{Входящий $\text{№}$ сопроводит. докум. и дата} &
+      \multirow{2}{1.75cm}{Под\-пись} &
+      \multirow{2}{*}{Дата} \\ \cline{2-5}
+
+      &из\-ме\-нен\-ных&заме\-нен\-ных&но\-вых&аннул\-лиро\-ван\-ных&  &  &  &  & \\[3ex]
+
+      \Repeat{28}{
+        \hline
+        & & & & & & & & & \\[0.5cm]
+      }
+      \hline
+    \end{tabular}%
+  }
+  \restoregeometry
+}
+
+\newcommand{\CRTpreamble}{
+  \firstPage
+  \docNumber{\CRTdocnum}
+  \newpage
+  \pagenumbering{arabic}
+  \secondPage
+  \newpage
+  \thirdPage
+  \newpage
+}
+
+\titleformat{\section}{\normalfont\Large\bfseries\filcenter}{\thesection}{1em}{}
+
+\setlist[enumerate,1]{itemsep=0mm, label={\arabic*)}}
+\setlist[itemize,1]{itemsep=0mm}
+
+\geometry{left=20mm}
+\geometry{right=10mm}
+
+\setlength{\parindent}{1.25cm}
+
+\newenvironment{CRTbibliography}
+  {
+    \newpage
+    % \setcounter{secnumdepth}{0}
+    \section{Список использованной литературы}
+    % \setcounter{secnumdepth}{4}
+    \patchcmd{\thebibliography}{\section*{\refname}}{}{}{} % убираем двойной заголовок
+    \begin{thebibliography}{3}
+      \bibitem{gostTZ} ГОСТ 19.201-78. ЕСПД. Техническое задание. Требования к содержанию и оформлению. --- М.: ИПК Издательство стандартов, 2001.
+      \bibitem{gostPMI} ГОСТ 19.301-79. ЕСПД. Программа и методика испытаний. Требования к содержанию и оформлению. --- М.: ИПК Издательство стандартов, 2001.
+      \bibitem{gostTP} ГОСТ 19.401-78. ЕСПД. Текст программы. Требования к содержанию и оформлению. --- М.: ИПК Издательство стандартов, 2001.
+      \bibitem{gostPZ} ГОСТ 19.404-79. ЕСПД. Пояснительная записка. Требования к содержанию и оформлению. --- М.: ИПК Издательство стандартов, 2001.
+      \bibitem{gostRO} ГОСТ 19.505-79. ЕСПД. Руководство оператора. Требования к содержанию и оформлению. --- М.: ИПК Издательство стандартов, 2001.
+
+      \bibitem{gostclimate}
+      ГОСТ 15150-69 Машины, приборы и другие технические изделия. Исполнения для различных климатических районов. Категории, условия эксплуатации, хранения и транспортирования в части воздействия климатических факторов внешней среды. --- М.: Изд-во стандартов, 1997.
+
+      \bibitem{lms}
+      LMS [Электронный ресурс] //URL: \url{https://lms.hse.ru}
+      (Дата обращения: 27.11.2019, режим доступа: свободный)
+  }{\end{thebibliography}}
+
+\newcommand{\todo}{\textcolor{red}{TODO}}
+
+\usepackage[export]{adjustbox}
+\newcommand{\CRTfigure}[2]{%
+  \begin{figure}[h!]
+    \centering
+    \includegraphics[max width=\textwidth]{#1}
+    \caption{#2}
+    \label{fig:#1}
+  \end{figure}%
+}
+
+\newcommand{\CRTfigref}[2]{(см. \autoref{fig:#1})\CRTfigure{#1}{#2}}
+
+\newcommand{\CRTterminology}{
+  \addition{Терминология}
+  \noindent
+  \begin{tabularx}{\textwidth}{|l|X|}
+    \hline
+    \textbf{Термин} & \textbf{Определение}
+    \\\hline Граф &
+    Множество вершин $V$ и набор неупорядоченных пар вершин $E$.
+    \\\hline Дерево &
+    Граф, в котором между любыми двумя вершинами имеется ровно один путь.
+    \\\hline Формальная грамматика &
+    Способ описания формального языка.
+    Определяется набором символов и правил, состоящих из левой и правой части.
+    Эти символы могут быть терминальными и нетерминальными.
+    Терминальные имеют конкретное, неизменяемое значение (обычно это символы ASCII), а нетерминальные могут стоять в левой части правил.
+    \\\hline Синтаксическое дерево &
+    Дерево, в котором листья сопоставлены терминальным символам формальной грамматики,
+    а все остальные вершины -- нетерминальным.
+    \\\hline Синтаксический анализ &
+    Процесс составления синтаксического дерева.
+    \\\hline Синтаксический анализатор &
+    Программа, выполняющая синтаксический анализ строки символов.
+    \\\hline Метод рекурсивного спуска &
+    Один из самых простых алгоритмов синтаксического анализа, реализуемый путём рекурсивного вызова функций.
+    \\\hline Форма Бэкуса -- Наура (БНФ) &
+    Язык, на котором можно записывать формальную граматику. Обычно используется для описания языков программирования.
+    \\\hline
+  \end{tabularx}
+}
+
+\captionsetup[table]{
+  position=above,
+  justification=raggedright,
+  singlelinecheck=false % <<< raggadright also when the caption is shorter than a single line
+}

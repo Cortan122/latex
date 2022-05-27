@@ -1,0 +1,502 @@
+\documentclass[a4paper,12pt]{article}
+
+\newcommand{\CRTdocFormat}{Пояснительная записка}
+\usepackage{styledoc19}
+
+\newcommand{\CRTdocnumMID}{ПЗ 01-1}
+\usepackage{CRTconfig}
+
+% \usepackage{refcheck}
+
+\usepackage{calc}
+\usepackage{ltablex}
+\usepackage{environ}
+\usepackage{nameref}
+\keepXColumns
+
+\NewEnviron{CRTtable}[2]{
+  \noindent\begin{tabularx}{\textwidth}{#2}
+    \caption{#1}\\
+    \hline
+    \BODY
+  \end{tabularx}
+}
+
+\NewEnviron{CRTmethodtable}[2]{
+  \noindent\begin{tabularx}{\textwidth}{|l|p{\widthof{\textbf{Доступа}}}|l|p{\widthof{#2}}|X|}
+    \caption{Описание методов класса #1}\label{tabmethod#1}
+    \\\hline \multicolumn{5}{|l|}{\textbf{Методы}}
+    \\\hline \textbf{Имя} & \textbf{Мод. Доступа} & \textbf{Тип} & \textbf{Аргументы} & \textbf{Назначение} \\\hline
+    \endfirsthead
+    \caption*{Продолжение таблицы \ref{tabmethod#1}}
+    \\\hline \multicolumn{5}{|l|}{\textbf{Методы}}
+    \\\hline \textbf{Имя} & \textbf{Мод. Доступа} & \textbf{Тип} & \textbf{Аргументы} & \textbf{Назначение}
+    \endhead
+    \BODY
+  \end{tabularx}
+}
+
+\NewEnviron{CRTmethodtableP}[2]{
+  \noindent\begin{tabularx}{\textwidth}{|l|p{\widthof{\textbf{Доступа}}}|p{\widthof{HistoryToken}}|p{\widthof{#2}}|X|}
+    \caption{Описание методов класса #1}\label{tabmethod#1}
+    \\\hline \multicolumn{5}{|l|}{\textbf{Методы}}
+    \\\hline \textbf{Имя} & \textbf{Мод. Доступа} & \textbf{Тип} & \textbf{Аргументы} & \textbf{Назначение} \\\hline
+    \endfirsthead
+    \caption*{Продолжение таблицы \ref{tabmethod#1}}
+    \\\hline \multicolumn{5}{|l|}{\textbf{Методы}}
+    \\\hline \textbf{Имя} & \textbf{Мод. Доступа} & \textbf{Тип} & \textbf{Аргументы} & \textbf{Назначение}
+    \endhead
+    \BODY
+  \end{tabularx}
+}
+
+\NewEnviron{CRTfieldtable}[1]{
+  \noindent\begin{tabularx}{\textwidth}{|l|p{\widthof{\textbf{Доступа}}}|l|X|}
+    \caption{Описание полей класса #1}\label{tabfield#1}
+    \\\hline \multicolumn{4}{|l|}{\textbf{Поля}}
+    \\\hline \textbf{Имя} & \textbf{Мод. Доступа} & \textbf{Тип} & \textbf{Назначение} \\\hline
+    \endfirsthead
+    \caption*{Продолжение таблицы \ref{tabfield#1}}
+    \\\hline \multicolumn{4}{|l|}{\textbf{Поля}}
+    \\\hline \textbf{Имя} & \textbf{Мод. Доступа} & \textbf{Тип} & \textbf{Назначение} \\\hline
+    \endhead
+    \BODY
+  \end{tabularx}
+}
+
+\NewEnviron{CRTproptable}[1]{
+  \noindent\begin{tabularx}{\textwidth}{|l|p{\widthof{\textbf{Доступа}}}|l|X|}
+    \caption{Описание свойств класса #1}\label{tabprop#1}
+    \\\hline \multicolumn{4}{|l|}{\textbf{Свойства}}
+    \\\hline \textbf{Имя} & \textbf{Мод. Доступа} & \textbf{Тип} & \textbf{Назначение} \\\hline
+    \endfirsthead
+    \caption*{Продолжение таблицы \ref{tabprop#1}}
+    \\\hline \multicolumn{4}{|l|}{\textbf{Свойства}}
+    \\\hline \textbf{Имя} & \textbf{Мод. Доступа} & \textbf{Тип} & \textbf{Назначение} \\\hline
+    \endhead
+    \BODY
+  \end{tabularx}
+}
+
+\makeatletter
+\newcommand\subsubsubsection{\@startsection{paragraph}{4}{\z@}%
+            {-2.5ex\@plus -1ex \@minus -.25ex}%
+            {1.25ex \@plus .25ex}%
+            {\normalfont\normalsize\bfseries}}
+\makeatother
+\setcounter{secnumdepth}{4} % how many sectioning levels to assign numbers to
+\setcounter{tocdepth}{4}    % how many sectioning levels to show in ToC
+
+\begin{document} % конец преамбулы, начало документа
+  \CRTpreamble
+
+  \section{Введение}
+  \subsection{Наименование программы}
+  <<\CRTname>>
+
+  \subsection{Документы, на основании которых ведется разработка}
+  Приказ № 2.3-02/2004-04 от 20.04.2020 <<Об изменении тем, руководителей курсовых работ студентов образовательной программы
+  <<Программная инженерия>> факультета компьютерных наук>>.
+
+  \newpage
+  \section{Назначение и область применения}
+  \subsection{Назначение программы}
+  \subsubsection{Функциональное назначение}
+  Разрабатываемое приложение <<\CRTname>> предназначено для визуализации синтаксического анализа методом рекурсивного спуска.
+  \subsubsection{Эксплуатационное назначение}
+  Программа наглядно демонстрирует работу метода рекурсивного спуска и помогает лучше понять процесс его работы,
+  может использоваться как для изучения непосредственно методов синтаксического анализа,
+  так и для симуляции условий в задачах связанных с работой таких методов.
+  \subsection{Область применения}
+  Программа используется в сфере образования для демонстрации работы
+  методов синтаксического анализа, в том числе и метода рекурсивного спуска.
+
+  \newpage
+  \section{Технические характеристики}
+  \subsection{Постановка задачи на разработку программы}
+  Программа разработана в рамках курсовой работы на образовательной программе <<Программная инженерия>> ФКН ВШЭ,
+  тема которой -- <<\CRTname>>, а цель -- написать программу способную визуализировать метод рекурсивного спуска.
+
+  \subsection{Описание алгоритмов и функционирования программы}
+  Программа представляет собой Windows приложение, написанное с использованием технологии WPF,
+  которое визуализирует синтаксический анализ заданной пользователем строки методом рекурсивного спуска.
+  % \subsubsection{Описание алгоритмов программы}
+  \subsubsection{Описание общей схемы работы приложения}
+  \label{sec:mainalgo}
+  \begin{enumerate}
+    \item При запуске программы, из папки parsers подгружается файл simple.rtf,
+    содержащий описание формальной грамматики рассматриваемого синтаксического анализатора.
+    \item Запускается файл simple.exe, содержащий синтаксический анализатор. Ему на вход в stdin подаётся строка, введённая пользователём.
+    \item Строки, которые simple.exe вывёл в stdout, по одной добавляются в экземпляр класса ParserHistory
+    (см. \hyperref[sec:classtable]{приложение 1}).
+    Он использует полученные строки для построения синтаксического дерева и сохраняет каждую промежуточную версию своего дерева
+    (см. \hyperref[sec:tables]{приложение 2}).
+    \item После завершения работы simple.exe пользователь получает полный контроль над тем, какой кадр будет выведен на экран.
+    Он может вручную выбирать показываемый кадр, а может включить автоматическую прокрутку.
+    Он также может поменять входную строку, тогда этот алгоритм будет выполнен заново, начиная с шага 2.
+  \end{enumerate}
+
+  \subsubsection{Описание алгоритма построения синтаксического дерева}
+  \label{sec:treealgo}
+  Это тот алгоритм, который упоминается во втором шаге алгоритма, описанного в разделе \ref{sec:mainalgo}.
+  Сначала создаются пустой стек узлов и пустой список узлов,
+  а потом для каждой полученной строки выполняются следующие шаги:
+  \begin{enumerate}
+    \item Если эта строка сообщает нам о начале правила, то мы создаём новый узел и добавляем его в стек и в список.
+    Предыдущая верхушка стека становится родителем нового узла.
+    \item Если эта строка сообщает нам об удачном конце правила, то мы удаляем верхний элемент из стека.
+    \item Если эта строка сообщает нам о неудачном конце правила, то мы удаляем верхний элемент из стека.
+    Мы также удаляем его и всех его потомков из списка.
+    \item Текущие состояние списка сохраняется в историю версий дерева.
+    Туда также сохраняется код с правильной подсветкой (см. \autoref{sec:rtfalgo}).
+  \end{enumerate}
+
+  \subsubsection{Описание алгоритма <<гравитации>> синтаксического дерева}
+  \label{sec:gravalgo}
+  \begin{itemize}
+    \item Создаётся массив чисел, длинна которого совпадает с длинной строки, и заполняется нулями.
+    \item Список узлов сортируется по их уровню либо по возрастанию, либо по убыванию, в зависимости от направления гравитации.
+    \item Для каждого узла в отсортированном списке:
+    \begin{enumerate}
+      \item Находится сегмент массива, соответствующий этому узлу.
+      \item Визуальному уровню этого узла присваивается максимальное значение из найденного сегмента.
+      \item Все значения в найденном сегменте увеличиваются на один.
+    \end{enumerate}
+  \end{itemize}
+
+  \subsubsection{Описание алгоритма подсветки кода}
+  \label{sec:rtfalgo}
+  \begin{itemize}
+    \item RTF код разбивается на строки.
+    \item Для каждого узла в стеке (см. \autoref{sec:treealgo}):
+    \begin{enumerate}
+      \item Находится строка, начинающаяся с имени родителя этого узла.
+      \item В этой строке находится $n$-ая подстрока вида \texttt{"{}\textbackslash{}\textbackslash{}b\{\}"{}},
+      где $n$ это Index нашего узла (см. \autoref{tabpropParserTreeToken}).
+      \item Найденная подстрока заменяется на \texttt{"{}\textbackslash{}\textbackslash{}b "{}}.
+      В RTF \texttt{"{}\textbackslash{}\textbackslash{}b\{\}"{}} и \texttt{"{}\textbackslash{}\textbackslash{}b "{}}
+      имеют одинаковое значение -- выделение жирным \cite{rtf}.
+      \item Все остальные подстроки вида \texttt{"{}\textbackslash{}\textbackslash{}b\{\}"{}} удаляются.
+    \end{enumerate}
+    \item Во всем документе все \texttt{"{}\{\}"{}} заменяются на \texttt{"{}0"{}}.
+    Это выключает выделение жирным везде, где оно не было включено этим алгоритмом.
+  \end{itemize}
+
+  % \subsubsection{Описание схемы функционирования программы}
+  % \subsubsection{Возможные взаимодействия программы с другими программами}
+  \subsection{Обоснование выбора алгоритма решения задачи}
+  Система с внешними синтаксическими анализаторами, описанная в \autoref{sec:mainalgo}, была выбрана
+  для того, чтобы мою программу можно было использовать для визуализации любого синтаксического анализатора, не меняя её код.
+  Также внешние синтаксические анализаторы вместе с их формальной грамматикой в формате RTF
+  можно автоматически генерировать из формальной грамматики на БНФ, записанной в обычном текстовом формате.
+  Я для этого использовал PEG.js, так как у него самая понятная документация
+  и он может генерировать синтаксические анализаторы, которые выводят свой прогресс \cite{pegjs}.
+
+  Для хранения форматированного текста (формальной грамматики и объяснений алгоритма)
+  был выбран формат RTF, потому что его поддерживают richTextBox-ы в WinForms и в WPF \cite{wpf}.
+  Его также может открывать Microsoft Word, и, поскольку он хранится как обычный текст,
+  его изменения видны в таких системах контроля версий как Git.
+
+  Итеративный алгоритм, описанный в \autoref{sec:gravalgo}, был выбран, потому что, в отличие от рекурсивного,
+  для него не надо хранить полную структуру дерева (нужен только список узлов) и он понятнее рекурсивного.
+
+  \subsection{Описание и обоснование выбора метода организации входных и выходных данных}
+  \subsubsection{Описание метода организации входных и выходных данных}
+  Входные данные представляют собой строку, синтаксический анализ которой визуализироваться.
+  Строка задаётся посредством поля ввода, расположенного непосредственно над синтаксическим деревом.
+
+  Выходные данные, согласно требованиям из технического задания, представляют собой рисунок дерева в формате PNG.
+  Пользователь может сохранить этот файл в удобное ему место, используя диалоговое окно,
+  которое появляется при нажатии на кнопку <<Сохранить>>.
+
+  \subsubsection{Обоснование выбора метода организации входных и выходных данных}
+  Поле ввода строки, синтаксический анализ которой будет визуализироваться, расположено непосредственно над синтаксическим деревом,
+  потому что каждый символ этой строки является листом синтаксического дерева.
+
+  Выходные данные организованы в формате PNG в силу требований технического задания.
+  Также использование любого другого формата растровых изображений было бы не логично,
+  так как JPEG сжимает изображение с потерями и не поддерживает прозрачность, а более сложные форматы могут не поддерживается.
+  В целях экономии места на панели управления процессом визуализации,
+  для экспорта и для сохранения используется одна и та же кнопка.
+
+  \subsection{Описание и обоснование выбора состава технических и программных средств}
+  \subsubsection{Состав технических и программных средств}
+  Состав технических средств, необходимых для работы системы:
+  \begin{enumerate}
+    \item Процессор архитектуры x86 или x64 с частотой не менее 1 ГГц;
+    \item Не менее 2 ГБ ОЗУ;
+    \item Не менее 5 МБ свободного места на жестком диске;
+    \item Графическое устройство DirectX 9 с драйвером WDDM 1.0 или более поздней версии.
+    \item Windows 7 или более пздняя версия операционной системы (32-разрядные или 64-разрядные);
+    \item Установленный .NET Framework версии 4.5 и выше;
+  \end{enumerate}
+  % \subsubsection{Обоснование выбора состава технических средств}
+
+  \newpage
+  \section{Технико-экономические показатели}
+  \subsection{Предполагаемая потребность}
+  Синтаксический анализ имеет много различных областей применения.
+  Его часто надо использовать при написание программного обеспечения.
+  Но большинство алгоритмов синтаксического анализа настолько сложные, что даже те программисты, которые их понимают,
+  не пишут их от руки, а используют так называемые <<компиляторы компиляторов>> \cite{parser},
+  о существование которых почти никто не знает.
+  Поэтому, когда людям надо сделать синтаксический аналий какой-то строки, они вынужденны использовать неоптимальные методы.
+
+  Например, многие, при попытке написать десериализатор CSV,
+  сначала разбивают файл на строки по разделителю \texttt{"{}\textbackslash{}n"{}},
+  а потом разбивают каждую строку по разделителю \texttt{"{},"{}}.
+  Такой код написать очень просто, так как в большинстве языков программирования есть метод String.Split,
+  но это будет неправильный десериализатор CSV, потому что в CSV каждое поле может быть заключено в двойные кавычки \cite{csv}.
+  Чтобы написать десериализатор CSV, который корректно обрабатывает поля в к двойных кавычках,
+  надо будет весь этот код переписывать заново и он станет раз в 10 сложнее.
+
+  Большинство проблем, для решения которых нужен синтаксический анализ,
+  можно плохо решить используя String.Split и регулярные выражения.
+  Поэтому многие программисты так и не узнают о существовании синтаксических анализаторов и об методах их автоматической генерации.
+
+  Моя программа позволяет понять как работает метод рекурсивного спуска, простейший из методов синтаксического анализа,
+  и как формальная грамматика записывается в БНФ.
+  Это поможет им понять как пользоваться генераторами синтаксических анализаторов, так как они использует БНФ \cite{cc}.
+  % \section{Экономические преимущества по сравнению с отечественными и зарубежными аналогами}
+
+  \begin{CRTbibliography}
+    \bibitem{wpf}
+    Документация Microsoft WPF [Электронный ресурс] //URL: \url{https://docs.microsoft.com/ru-ru/dotnet/framework/wpf/}
+    (Дата обращения: 19.05.2020, режим доступа: свободный)
+
+    \bibitem{rtf}
+    Rich Text Format (RTF) Version 1.5 Specification [Электронный ресурс] //URL: \url{http://www.biblioscape.com/rtf15_spec.htm}
+    (Дата обращения: 19.05.2020, режим доступа: свободный)
+
+    \bibitem{pegjs}
+    PEG.js Documentation [Электронный ресурс] //URL: \url{https://pegjs.org/documentation}
+    (Дата обращения: 19.05.2020, режим доступа: свободный)
+
+    \bibitem{parser}
+    Статья <<Recursive descent parser>> Wikipedia.org
+    //URL: \url{https://en.wikipedia.org/wiki/Recursive_descent_parser}
+    (Дата обращения: 19.05.2020, режим доступа: свободный)
+
+    \bibitem{bnf}
+    Статья <<Backus-Naur form>> Wikipedia.org
+    //URL: \url{https://en.wikipedia.org/wiki/Backus%E2%80%93Naur_form}
+    (Дата обращения: 19.05.2020, режим доступа: свободный)
+
+    \bibitem{csv}
+    Статья <<Comma-separated values>> Wikipedia.org
+    //URL: \url{https://en.wikipedia.org/wiki/Comma-separated_values}
+    (Дата обращения: 23.05.2020, режим доступа: свободный)
+
+    \bibitem{cc}
+    Статья <<Компилятор компиляторов>> Wikipedia.org
+    //URL: \url{https://ru.wikipedia.org/wiki/%D0%9A%D0%BE%D0%BC%D0%BF%D0%B8%D0%BB%D1%8F%D1%82%D0%BE%D1%80_%D0%BA%D0%BE%D0%BC%D0%BF%D0%B8%D0%BB%D1%8F%D1%82%D0%BE%D1%80%D0%BE%D0%B2}
+    (Дата обращения: 23.05.2020, режим доступа: свободный)
+
+    % https://pubs.opengroup.org/onlinepubs/9699919799/utilities/yacc.html
+    % https://en.wikipedia.org/wiki/Media_control_symbols
+
+  \end{CRTbibliography}
+
+  \addition{Описание и функциональное назначение классов}
+  \label{sec:classtable}
+  \begin{CRTtable}{Классы проекта}{|l|X|}
+    \textbf{Класс} & \textbf{Назначение}
+    \\\hline MainWindow & Логика интерфейса главного окна
+    \\\hline TreeCanvas & Отрисовка синтаксического дерева и палитры его цветов
+    \\\hline HistoryEntry & Синтаксическое дерево в какой-то момент времени
+    \\\hline HistoryToken & ParserTreeToken но без служебных полей
+    \\\hline Parser & Запуск синтаксического анализатора
+    \\\hline ParserHistory & Строит синтаксическое дерево и хранит каждую его версию
+    \\\hline ParserTreeToken & Узел синтаксического дерева
+    \\\hline RtfBuilder & Подсветка того кода, который сейчас выполняются
+    \\\hline
+  \end{CRTtable}
+
+  \addition{Описание и функциональное назначение методов, полей и свойств}
+  \label{sec:tables}
+  % \newline\vspace{-.5cm}\newline
+  % \begin{varwidth}{\linewidth}\textbf{Мод.\\ Доступа}\end{varwidth}
+  \begin{CRTmethodtable}{MainWindow}{FrameworkElement}
+    InitializeEvents & private & void &  & Инициализирует события элементов интерфейса \\\hline
+    SelectTutorialPage & private & void & int & Подгружает страницу объяснений с данным индексом \\\hline
+    SetRtf & private & void & string & Меняет содержимое richTextBox-а на то, что написано в строке \\\hline
+    DisplayHistoryEntry & private & void &  & Обновляет текущий кадр \\\hline
+    CanvasLegend & private & void & bool & Обновляет цветовую палитру \\\hline
+    RunParser & private & void & string & Запускает синтаксический анализатор \\\hline
+    SetSpeed & private & void & double & Изменяет скорость автоматической прокрутки \\\hline
+    Load & private & void & string & Загружает сохранение \\\hline
+    Save & private & void & string & Сохраняет текущее состояние в файл \\\hline
+    MainSliderChange & private & void & object, EventArgs & Обработчик события, которое вызывается при изменении значения основного бегунка \\\hline
+    SpeedSliderChange & private & void & object, EventArgs & Обработчик события, которое вызывается при изменении значения бегунка скорости \\\hline
+    SpeedBoxChange & private & void & object, EventArgs & Обработчик события, которое вызывается при изменении значения поля ввода скорости \\\hline
+    InputBoxChange & private & void & object, EventArgs & Обработчик события, которое вызывается при изменении значения поля ввода строки \\\hline
+    MainWindowDrop & private & void & object, DragEventArgs & Обработчик события, которое вызывается после перетаскивания файла в это окно \\\hline
+    HyperlinkClick & private & void & object, EventArgs & Обработчик события, которое вызывается при нажатии на гиперссылку \\\hline
+    NextFrame & private & void &  & Показывает следующий кадр \\\hline
+    PrevFrame & private & void &  & Показывает предыдущий кадр \\\hline
+    FirstFrame & private & void &  & Показывает первый кадр \\\hline
+    LastFrame & private & void &  & Показывает последний кадр \\\hline
+    TogglePause & private & void &  & Переключает паузу \\\hline
+    Reverse & private & void &  & Меняет направление автоматической прокрутки \\\hline
+    NextFrameEvent & private & void & object, EventArgs & Обработчик события, которое вызывается при нажатии кнопки или клавиши быстрого вызова для показа следующего кадра \\\hline
+    PrevFrameEvent & private & void & object, EventArgs & Обработчик события, которое вызывается при нажатии кнопки или клавиши быстрого вызова для показа предыдущего кадра \\\hline
+    FirstFrameEvent & private & void & object, EventArgs & Обработчик события, которое вызывается при нажатии кнопки или клавиши быстрого вызова для показа первого кадра \\\hline
+    LastFrameEvent & private & void & object, EventArgs & Обработчик события, которое вызывается при нажатии кнопки или клавиши быстрого вызова для показа последнего кадра \\\hline
+    TogglePauseEvent & private & void & object, EventArgs & Обработчик события, которое вызывается при нажатии кнопки или клавиши быстрого вызова для переключения паузы \\\hline
+    ReverseEvent & private & void & object, EventArgs & Обработчик события, которое вызывается при нажатии кнопки или клавиши быстрого вызова для изменения направления автоматической прокрутки \\\hline
+    SaveEvent & private & void & object, EventArgs & Обработчик события, которое вызывается при нажатии кнопки или клавиши быстрого вызова для сохранения текущего состояния \\\hline
+    LoadEvent & private & void & object, EventArgs & Обработчик события, которое вызывается при нажатии кнопки или клавиши быстрого вызова для загрузки сохранения \\\hline
+    NextTutorialEvent & private & void & object, EventArgs & Обработчик события, которое вызывается при нажатии кнопки или клавиши быстрого вызова для показа следующей страницы объяснений \\\hline
+    PrevTutorialEvent & private & void & object, EventArgs & Обработчик события, которое вызывается при нажатии кнопки или клавиши быстрого вызова для показа предыдущей страницы объяснений \\\hline
+    ExportToPng & private static & void & string, FrameworkElement & Делает снимок данного элемента и сохраняет его в файл с данным именем \\\hline
+  \end{CRTmethodtable}
+
+  \begin{CRTfieldtable}{MainWindow}
+    historyIndex & private & int & Индекс текущего кадра \\\hline
+    isPaused & private & bool & Включена ли пауза \\\hline
+    isReversed & private & bool & Идёт ли прокрутка в обратною сторону \\\hline
+    colors & private & List<Brush> & Список цветов \\\hline
+    tutorialIndex & private & int & Индекс текущей страницы объяснений \\\hline
+    mainTimer & private & DispatcherTimer & Таймер автоматической прокрутки \\\hline
+    speedBoxTimer & private & DispatcherTimer & Таймер для проверки корректности числа, введенного в поле ввода скорости \\\hline
+    parser & private & Parser & Синтаксический анализатор \\\hline
+    theHistory & private & ParserHistory & История \\\hline
+    autosavePath & private & const string & Путь к файлу автосохранения \\\hline
+  \end{CRTfieldtable}
+
+  \begin{CRTproptable}{MainWindow}
+    speed & private & double & Скорость автоматической прокрутки \\\hline
+    treeTrim & private & bool & Надо ли подровнять дерево \\\hline
+    treeOrientation & private & bool & Ориентация дерева \\\hline
+    treeGravity & private & bool & Гравитация дерева \\\hline
+    treeHelp & private & bool & Режим новичка \\\hline
+    inputString & private & string & Строка, синтаксический анализ которой будет визуализироваться \\\hline
+  \end{CRTproptable}
+
+  \begin{CRTmethodtable}{TreeCanvas}{IEnumerable<}
+    WriteString & public & void & string & Рисует строку \\\hline
+    InitLegend & public & void & List<Brush>, IEnumerable<\hspace{0pt}string>, bool & Рисует цветовую палитру \\\hline
+    DrawRect & private & void & HistoryToken, int & Рисует один узел дерева \\\hline
+    DisplayHistoryEntry & public & void & HistoryEntry, bool & Рисует дерево \\\hline
+    DrawConventionalTree & private & void & Dictionary<\hspace{0pt}HistoryToken, HistoryToken\hspace{0pt}> & Рисует ветки дерева \\\hline
+    GetNodeCenterX & private & double & HistoryToken & Считает $x$ координату центра узла дерева \\\hline
+    GetNodeCenterY & private & double & HistoryToken & Считает $y$ координату центра узла дерева \\\hline
+    GetColor & private static & Brush &  & Запрашивает у пользователя собственный цвет, открывая диалоговое окно \\\hline
+  \end{CRTmethodtable}
+
+  \begin{CRTfieldtable}{TreeCanvas}
+    font & private & readonly FontFamily & Шрифт, который везде используется \\\hline
+    colorDict & private & Dictionary<string, Brush> & Ставит в соответствие названия правил и их цвета \\\hline
+    inputBox & private & TextBox & Поле ввода, где пользователь вводит строку, синтаксический анализ которой будет визуализироваться. \\\hline
+    lastHistoryEntry & private & HistoryEntry & Тот кадр, который сейчас нарисован \\\hline
+    lastHelp & private & bool & Нарисовано ли сейчас дерево в режиме новичка \\\hline
+    CharWidth & private & const int & Ширина каждого символа в строке \\\hline
+    TextStart & private & const int & Начальная позиция строки \\\hline
+    FontSize & private & const int & Размер шрифта \\\hline
+    LegendFontSize & private & const int & Размер шрифта подписей к цветам палитры \\\hline
+    TextblockTop & private & const int & Позиция поля ввода \\\hline
+    TreeTop & private & const int & Позиция верхушки дерева \\\hline
+    TreeVSpace & private & const int & Вертикальное расстояние между узлами дерева \\\hline
+    RectHeight & private & const int & Высота каждого узла дерева \\\hline
+  \end{CRTfieldtable}
+
+  \begin{CRTmethodtableP}{HistoryEntry}{\textbf{Аргументы}}
+    SetSettings & public & void & bool, bool, bool & Меняет настройки \\\hline
+    GetEdges & public & Dictionary<\hspace{0pt}HistoryToken, HistoryToken\hspace{0pt}> &  & Находит список всех веток дерева, но возвращает словарь, где ключ это узел, а значение это его родитель \\\hline
+    InvertDisplayLevels & private & void &  & Переворачивает дерево \\\hline
+    CalculateDisplayLevels & private & void & bool & Рассчитывает гравитацию \newline (см \autoref{sec:gravalgo}) \\\hline
+    ToString & public override & string &  & Переопределяет метод класса Object \\\hline
+    GetEnumerator & public & IEnumerator<\hspace{0pt}HistoryToken\hspace{0pt}> &  & Реализует интерфейс IEnumerable<\hspace{0pt}HistoryToken\hspace{0pt}> \\\hline
+    IEnumerable.GetEnumerator & & IEnumerator &  & Реализует интерфейс IEnumerable \\\hline
+  \end{CRTmethodtableP}
+
+  \begin{CRTfieldtable}{HistoryEntry}
+    treeRanges & private & HistoryToken[] & Узлы дерева \\\hline
+    isBroken & internal & bool & Сломано ли это дерево и надо ли его отображать \\\hline
+    isTrimmed & private & bool & Надо ли подравнивать это дерево \\\hline
+    edges & private & Dictionary<HistoryToken, HistoryToken> & Ветки дерева \\\hline
+  \end{CRTfieldtable}
+
+  \begin{CRTproptable}{HistoryEntry}
+    RtfGrammar & public & string & Описание формальной грамматики в формате RTF \\\hline
+    CursorPos & public & int & Индекс последнего анализированного символа \\\hline
+  \end{CRTproptable}
+
+  \begin{CRTmethodtable}{HistoryToken}{\textbf{Аргументы}}
+    ToString & public override & string &  & Переопределяет метод класса Object \\\hline
+  \end{CRTmethodtable}
+
+  \begin{CRTproptable}{HistoryToken}
+    Name & public & string & Название правила, по которому был постоен этот узел \\\hline
+    StartPos & public & int & Индекс первого символа, входящего в этот узел \\\hline
+    EndPos & public & int & Индекс последнего символа, входящего в этот узел \\\hline
+    RecLevel & internal & int & Глубина этого узла в дереве, его уровень \\\hline
+    Trimmable & public & bool & Можно ли этот узел убирать при обрезке дерева \\\hline
+    DisplayLevel & public & int & Визуальный уровень узла \\\hline
+  \end{CRTproptable}
+
+  \begin{CRTmethodtable}{Parser}{\textbf{Аргументы}}
+    Run & public & ParserHistory & string & Запускает синтаксический анализатор \\\hline
+  \end{CRTmethodtable}
+
+  \begin{CRTfieldtable}{Parser}
+    name & private & string & Название синтаксического анализатора \\\hline
+  \end{CRTfieldtable}
+
+  \begin{CRTmethodtableP}{ParserHistory}{\textbf{Аргументы}}
+    CopyState & private & HistoryToken[] &  & Делает копию поля state \\\hline
+    SaveState & private & void &  & Сохраняет текущее состояние в поле history \\\hline
+    Add & public & void & string & Добавляет узел в дерево. Принимает на вход строки от синтаксического анализатора. Здесь происходит основное построение дерева \\\hline
+
+    GetEnumerator & public & IEnumerator<\hspace{0pt}HistoryToken\hspace{0pt}> &  & Реализует интерфейс IEnumerable<\hspace{0pt}HistoryToken\hspace{0pt}> \\\hline
+    IEnumerable.GetEnumerator & & IEnumerator &  & Реализует интерфейс IEnumerable \\\hline
+  \end{CRTmethodtableP}
+
+  \begin{CRTfieldtable}{ParserHistory}
+    stack & private & Stack<ParserTreeToken> & Внутренний стек, используемый для построения дерева \\\hline
+    state & private & List<ParserTreeToken> & Список узлов, которые сейчас есть в дереве \\\hline
+    prevPos & private & int & Предыдущая позиция конца узла \\\hline
+    history & private & List<HistoryEntry> & Список всех старых деревьев \\\hline
+  \end{CRTfieldtable}
+
+  \begin{CRTproptable}{ParserHistory}
+    OriginalRtf & public & string & Оригинальная грамматика, из которой делаются все остальные \\\hline
+    InputString & public & string & Входная строка \\\hline
+    RuleNames & public & IEnumerable<string> & Имена всех правил \\\hline
+    this & public & HistoryEntry & Индексатор \\\hline
+  \end{CRTproptable}
+
+  \begin{CRTmethodtable}{ParserTreeToken}{\textbf{Аргументы}}
+    ToString & public override & string &  & Переопределяет метод класса Object \\\hline
+    Clone & public & HistoryToken &  & Делает копию этого узла, выбрасывая служебные поля \\\hline
+  \end{CRTmethodtable}
+
+  \begin{CRTproptable}{ParserTreeToken}
+    Parent & public & ParserTreeToken & Родитель \\\hline
+    Name & public & string & Название правила, по которому был постоен этот узел \\\hline
+    Index & public & int & Каким по счету ребёнком является этот узел \\\hline
+    StartPos & public & int & Индекс первого символа, входящего в этот узел \\\hline
+    RecLevel & public & int & Глубина этого узла в дереве \\\hline
+    EndPos & public & int & Индекс последнего символа, входящего в этот узел \\\hline
+    ChildCount & public & int & Количество детей \\\hline
+    Dict & public & Dictionary<string, int> & Количество детей каждого типа \\\hline
+  \end{CRTproptable}
+
+  \begin{CRTmethodtable}{RtfBuilder}{ParserTreeToken}
+    HighlightIdentifier & private & void & ParserTreeToken & Выделяет жирным правило, соответствующее данному узлу дерева \\\hline
+    End & private & string &  & Завершить построение грамматики \\\hline
+    Build & public static & string & string, IEnumerable<\hspace{0pt}ParserTreeToken\hspace{0pt}> & Собирает грамматику путём создания экземпляра класса RtfBuilder и вызова его методов HighlightIdentifier и End \\\hline
+    GetNames & public static & IEnumerable<\hspace{0pt}string\hspace{0pt}> & string & Возвращает имена правил, которые присутствуют в грамматике \\\hline
+  \end{CRTmethodtable}
+
+  \begin{CRTfieldtable}{RtfBuilder}
+    lines & private & string[] & Массив строк RTF кода \\\hline
+  \end{CRTfieldtable}
+
+  \addition{Диаграмма классов}
+  \CRTfigure{ClassDiagram}{Диаграмма классов}
+
+  \CRTterminology
+
+  \CRTlistRegistration
+\end{document} % конец документа

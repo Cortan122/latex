@@ -1,0 +1,140 @@
+\newcommand{\CRTyear}{2021}
+\newcommand{\CRTname}{Кроссплатформенное десктоп приложение для редактирования скриншотов}
+\newcommand{\CRTnameeng}{Cross-platform Desktop Apptication for Screenshot Editting}
+\newcommand{\CRTdocnum}{RU.17701729.06.08-01 \CRTdocnumMID}
+
+\Year{\CRTyear}
+\project{\CRTname}
+\docNumber{\CRTdocnum-ЛУ}
+\docFormat{\CRTdocFormat}
+\student{AAA AAA}{AA AA AAAAAAA}
+
+\newcommand{\CRTzip}{demo.zip}
+\newcommand{\CRTexe}{main.exe}
+
+\supervisor{
+  Руководитель проекта, \vfill
+  старший преподаватель факультета
+  компьютерных наук департамента
+  <<Программная инженерия>>
+}{М. Д. Шадрин}
+
+\newcommand{\CRTlistRegistration}{
+  % \label{CRTlastpage}
+  \singlespacing
+  \newpage
+  \newgeometry{left=20mm,bottom=15mm,right=10mm,top=20mm}
+  \cfoot{}
+  % \chead{}
+  \titleformat{\section}{\normalfont\Large\bfseries\filcenter}{\thesection}{1em}{}
+  \CRTendAdditions
+  \section{Лист регистрации изменений}
+  \noindent
+  \resizebox{\linewidth}{!}{%
+    \begin{tabular}{|c|P{2.00cm}|P{1.75cm}|l|P{2.00cm}|P{2.50cm}|P{2.00cm}|P{2.75cm}|P{1.75cm}|c|}
+      \hline
+      \multirow{2}{*}{Изм.} &
+      \multicolumn{4}{c|}{Номера листов} &
+      \multirow{2}{2.50cm}{Всего листов в документе} &
+      \multirow{2}{2.00cm}{$\text{№}$ документа} &
+      \multirow{2}{2.75cm}{Входящий $\text{№}$ сопроводит. докум. и дата} &
+      \multirow{2}{1.75cm}{Под\-пись} &
+      \multirow{2}{*}{Дата} \\ \cline{2-5}
+
+      &из\-ме\-нен\-ных&заме\-нен\-ных&но\-вых&аннул\-лиро\-ван\-ных&  &  &  &  & \\[3ex]
+
+      \Repeat{27}{
+        \hline
+        & & & & & & & & & \\[0.5cm]
+      }
+      \hline
+    \end{tabular}%
+  }
+  \restoregeometry
+}
+
+\newcommand{\CRTpreamble}{
+  \firstPage
+  \docNumber{\CRTdocnum}
+  \newpage
+  \pagenumbering{arabic}
+  \secondPage
+  \newpage
+  \thirdPage
+  \newpage
+}
+
+\titleformat{\section}{\normalfont\Large\bfseries\filcenter}{\thesection}{1em}{}
+
+\setlist[enumerate,1]{itemsep=0mm, label={\arabic*)}}
+\setlist[itemize,1]{itemsep=0mm}
+
+\geometry{left=20mm}
+\geometry{right=10mm}
+
+\setlength{\parindent}{1.25cm}
+
+\newenvironment{CRTbibliography}
+  {
+    \newpage
+    % \setcounter{secnumdepth}{0}
+    \section{Список использованной литературы}
+    % \setcounter{secnumdepth}{4}
+    \patchcmd{\thebibliography}{\section*{\refname}}{}{}{} % убираем двойной заголовок
+    \begin{thebibliography}{3}
+      \bibitem{gostTZ} ГОСТ 19.201-78. ЕСПД. Техническое задание. Требования к содержанию и оформлению. --- М.: ИПК Издательство стандартов, 2001.
+      \bibitem{gostPMI} ГОСТ 19.301-79. ЕСПД. Программа и методика испытаний. Требования к содержанию и оформлению. --- М.: ИПК Издательство стандартов, 2001.
+      \bibitem{gostTP} ГОСТ 19.401-78. ЕСПД. Текст программы. Требования к содержанию и оформлению. --- М.: ИПК Издательство стандартов, 2001.
+      \bibitem{gostPZ} ГОСТ 19.404-79. ЕСПД. Пояснительная записка. Требования к содержанию и оформлению. --- М.: ИПК Издательство стандартов, 2001.
+      \bibitem{gostRO} ГОСТ 19.505-79. ЕСПД. Руководство оператора. Требования к содержанию и оформлению. --- М.: ИПК Издательство стандартов, 2001.
+
+      \bibitem{gostclimate}
+      ГОСТ 15150-69 Машины, приборы и другие технические изделия. Исполнения для различных климатических районов. Категории, условия эксплуатации, хранения и транспортирования в части воздействия климатических факторов внешней среды. --- М.: Изд-во стандартов, 1997.
+
+      \bibitem{lms}
+      LMS [Электронный ресурс] //URL: \url{https://lms.hse.ru}
+      (Дата обращения: 27.11.2019, режим доступа: свободный)
+  }{\end{thebibliography}}
+
+\newcommand{\red}{\textcolor{red}}
+\newcommand{\todo}{\red{TODO}}
+
+\usepackage[export]{adjustbox}
+\newcommand{\CRTfigure}[2]{%
+  \begin{figure}[h!]
+    \centering
+    \includegraphics[max width=\textwidth]{#1}
+    \caption{#2}
+    \label{fig:#1}
+  \end{figure}%
+}
+
+\newcommand{\CRTfigref}[2]{(см. \autoref{fig:#1})\CRTfigure{#1}{#2}}
+
+\newcommand{\CRTterminology}{
+  \addition{Терминология}
+  \noindent
+  \begin{tabularx}{\textwidth}{|l|X|}
+    \hline
+    \textbf{Термин} & \textbf{Определение}
+    \\\hline Скриншот & Снимок экрана %\todo
+    \\\hline Буфер обмена & Буфер, предназначенный для копирования информации между программами %\todo
+    \\\hline Сплайн & Кусочная функция, где каждый сегмент -- многочлен
+    \\\hline Текстура & Растровое изображение которое хранится в оперативной памяти графического процессора
+    \\\hline Кривая Безье & Тип параметрических кривых, которые широко используются в компьютерной графике
+    \\\hline UTF-8 & Распространённая кодировка символов Юникода, совместимая с 8-битными форматами передачи текста
+    \\\hline Лента треугольников & Ряд соединенных треугольников. Поскольку треугольники соединены, приложению не нужно постоянно указывать все три вершины для каждого треугольника
+    \\\hline Среднеквадратическая ошибка & Mean squared error (MSE) -- средний квадрат разницы между оценочными значениями и фактическими значениями
+    \\\hline Хорда & Прямая, соединяющая две точки кривой линии
+    \\\hline Кадровая частота & Частота, с которой процесс обновляет изображение
+    \\\hline
+  \end{tabularx}
+}
+
+\captionsetup[table]{
+  position=above,
+  justification=raggedright,
+  singlelinecheck=false % <<< raggadright also when the caption is shorter than a single line
+}
+\captionsetup[figure]{justification=centering, name={Рисунок}}
+\renewcommand{\figureautorefname}{рис.}

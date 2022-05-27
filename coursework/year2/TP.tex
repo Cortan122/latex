@@ -1,0 +1,51 @@
+\documentclass[a4paper,12pt]{article}
+
+\newcommand{\CRTdocFormat}{Текст программы}
+\usepackage{styledoc19}
+
+\newcommand{\CRTdocnumMID}{ТП 01-1}
+\usepackage{CRTconfig}
+
+\usepackage{minted}
+% \usepackage{verbatim}
+
+\newcommand{\CRTfile}[1]{\inputminted[tabsize=2,breaklines,breaksymbolleft=]{text}{../clean_code/#1}}
+% breakautoindent=false
+
+\begin{document} % конец преамбулы, начало документа
+  \CRTpreamble
+
+  % \section{Текст программы}
+
+  % ls ../ParserApp/*.cs ../ParserLib/*.cs | sed 's|\.\./|  \\CRTfile{|g; s|$|}|g'
+
+  % \verbatiminput{../ParserApp/App.xaml.cs}
+
+  \section{Заголовочные файлы}
+  \subsection{Drawable.h}\CRTfile{Drawable.h}
+  \subsection{Canvas.h}\CRTfile{Canvas.h}
+  \subsection{BezierCurve.h}\CRTfile{BezierCurve.h}
+  \subsection{Screenshot.h}\CRTfile{Screenshot.h}
+  \subsection{resource\_loader.h}\CRTfile{resource_loader.h}
+  \subsection{CropRectangle.h}\CRTfile{CropRectangle.h}
+  \subsection{DrawableLine.h}\CRTfile{DrawableLine.h}
+  \subsection{FloatingImage.h}\CRTfile{FloatingImage.h}
+  \subsection{Textbox.h}\CRTfile{Textbox.h}
+
+  \section{Файлы исходного кода}
+  \subsection{Drawable.c}\CRTfile{Drawable.c}
+  \subsection{Canvas.c}\CRTfile{Canvas.c}
+  \subsection{main.c}\CRTfile{main.c}
+  \subsection{BezierCurve.c}\CRTfile{BezierCurve.c}
+  \subsection{Screenshot.c}\CRTfile{Screenshot.c}
+  \subsection{resource\_loader.c}\CRTfile{resource_loader.c}
+  \subsection{CropRectangle.c}\CRTfile{CropRectangle.c}
+  \subsection{DrawableLine.c}\CRTfile{DrawableLine.c}
+  \subsection{FloatingImage.c}\CRTfile{FloatingImage.c}
+  \subsection{Textbox.c}\CRTfile{Textbox.c}
+
+  \section{Файлы сборки}
+  \subsection{makefile}\CRTfile{makefile}
+
+	\CRTlistRegistration
+\end{document} % конец документа

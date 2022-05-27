@@ -1,0 +1,18 @@
+\documentclass[a4paper,12pt]{report}
+\usepackage[report]{styledoc19}
+\CRTconfig{./coursework/year3/}
+
+\begin{document}
+  \singleCRTpreamble
+
+  \CRTincludeTZ
+  \chapter{Командное техническое задание}
+  \input{TZ_all.tex}
+
+  \CRTincludePZ
+  \CRTincludeRP
+
+  \CRTincludePMI
+  \chapter{Командная программа и методика испытаний}
+  \input{PMI_all.tex}
+\end{document}

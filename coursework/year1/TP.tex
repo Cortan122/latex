@@ -1,0 +1,75 @@
+\documentclass[a4paper,12pt]{article}
+
+\newcommand{\CRTdocFormat}{Текст программы}
+\usepackage{styledoc19}
+
+\newcommand{\CRTdocnumMID}{ТП 01-1}
+\usepackage{CRTconfig}
+
+\newcommand{\CRTunicodeS}[1]{\textbackslash #1}
+\newcommand{\CRTunicodeE}{}
+\usepackage{newunicodechar}
+\newunicodechar{⏩}{\CRTunicodeS{u}23e9\CRTunicodeE}
+\newunicodechar{⏪}{\CRTunicodeS{u}23ea\CRTunicodeE}
+\newunicodechar{⏭}{\CRTunicodeS{u}23ed\CRTunicodeE}
+\newunicodechar{⏮}{\CRTunicodeS{u}23ee\CRTunicodeE}
+\newunicodechar{⏸}{\CRTunicodeS{u}23f8\CRTunicodeE}
+\newunicodechar{▶}{\CRTunicodeS{u}25b6\CRTunicodeE}
+\newunicodechar{◀}{\CRTunicodeS{u}25c0\CRTunicodeE}
+\newunicodechar{☘}{\CRTunicodeS{u}2618\CRTunicodeE}
+\newunicodechar{🌌}{\CRTunicodeS{U}0001f30c\CRTunicodeE}
+\newunicodechar{🌱}{\CRTunicodeS{U}0001f331\CRTunicodeE}
+\newunicodechar{🌲}{\CRTunicodeS{U}0001f332\CRTunicodeE}
+\newunicodechar{🌳}{\CRTunicodeS{U}0001f333\CRTunicodeE}
+\newunicodechar{🌴}{\CRTunicodeS{U}0001f334\CRTunicodeE}
+\newunicodechar{🌵}{\CRTunicodeS{U}0001f335\CRTunicodeE}
+\newunicodechar{🌾}{\CRTunicodeS{U}0001f33e\CRTunicodeE}
+\newunicodechar{🌿}{\CRTunicodeS{U}0001f33f\CRTunicodeE}
+\newunicodechar{🍀}{\CRTunicodeS{U}0001f340\CRTunicodeE}
+\newunicodechar{💾}{\CRTunicodeS{U}0001f4be\CRTunicodeE}
+\newunicodechar{📂}{\CRTunicodeS{U}0001f4c2\CRTunicodeE}
+\newunicodechar{📖}{\CRTunicodeS{U}0001f4d6\CRTunicodeE}
+\newunicodechar{🖫}{\CRTunicodeS{U}0001f5ab\CRTunicodeE}
+
+\usepackage{minted}
+% \usepackage{verbatim}
+
+\newcommand{\CRTfile}[1]{\inputminted[tabsize=4,breaklines,breaksymbolleft=]{text}{../#1}}
+% breakautoindent=false
+
+\begin{document} % конец преамбулы, начало документа
+  \CRTpreamble
+
+  % \section{Текст программы}
+
+  % ls ../ParserApp/*.cs ../ParserLib/*.cs | sed 's|\.\./|  \\CRTfile{|g; s|$|}|g'
+
+  % \verbatiminput{../ParserApp/App.xaml.cs}
+
+  \section{ParserApp}
+  \subsection{ParserApp.csproj}\CRTfile{ParserApp/ParserApp.csproj}
+  \subsection{App.xaml}\CRTfile{ParserApp/App.xaml}
+  \subsection{App.xaml.cs}\CRTfile{ParserApp/App.xaml.cs}
+  \subsection{AssemblyInfo.cs}\CRTfile{ParserApp/AssemblyInfo.cs}
+
+  \renewcommand{\CRTunicodeS}[1]{\&\#x}
+  \renewcommand{\CRTunicodeE}{;}
+  \subsection{MainWindow.xaml}\CRTfile{ParserApp/MainWindow.xaml}
+  \renewcommand{\CRTunicodeS}[1]{\textbackslash #1}
+  \renewcommand{\CRTunicodeE}{}
+
+  \subsection{MainWindow.xaml.cs}\CRTfile{ParserApp/MainWindow.xaml.cs}
+  \subsection{TreeCanvas.cs}\CRTfile{ParserApp/TreeCanvas.cs}
+
+  \section{ParserLib}
+  \subsection{ParserLib.csproj}\CRTfile{ParserLib/ParserLib.csproj}
+  \subsection{HistoryEntry.cs}\CRTfile{ParserLib/HistoryEntry.cs}
+  \subsection{HistoryToken.cs}\CRTfile{ParserLib/HistoryToken.cs}
+  \subsection{Parser.cs}\CRTfile{ParserLib/Parser.cs}
+  \subsection{ParserHistory.cs}\CRTfile{ParserLib/ParserHistory.cs}
+  \subsection{ParserTreeToken.cs}\CRTfile{ParserLib/ParserTreeToken.cs}
+  \subsection{RtfBuilder.cs}\CRTfile{ParserLib/RtfBuilder.cs}
+
+
+	\CRTlistRegistration
+\end{document} % конец документа
