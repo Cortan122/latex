@@ -14,4 +14,6 @@
 !asm/**
 !sas
 !sas/**
+!coursework
+!coursework/**
 *.ipynb.tex
