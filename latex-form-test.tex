@@ -1,0 +1,45 @@
+\documentclass[a4paper]{article}
+
+\usepackage{fontspec}
+\setmainfont[Ligatures=TeX]{Carlito}
+
+\usepackage{xcolor}
+\usepackage[hidelinks]{hyperref}
+\usepackage[margin=5mm]{geometry}
+
+\definecolor{lightred}{RGB}{239,68,68}
+\definecolor{darkred}{RGB}{175,0,0}
+\renewcommand{\huge}{\fontsize{40pt}{40pt}\selectfont}
+\renewcommand{\large}{\fontsize{20pt}{20pt}\selectfont}
+\renewcommand{\small}{\fontsize{16pt}{16pt}\selectfont}
+
+\begin{document}
+  \textcolor{lightred}{\huge Project proposal}
+  \textcolor{lightred}{\large for Master's thesis WMCS901-30}
+  \vspace{2.5mm}
+  {\color{darkred}\hrule height 2mm}
+  \vspace{2.5mm}
+  \small
+
+  \begin{Form}
+  \begin{tabular}{ll}
+    {Name} & \TextField[bordercolor=gray,charsize=16pt,width=7cm,name={Name}]{} \\\\[-4mm]
+    {Company Name} & \TextField[bordercolor=gray,charsize=16pt,width=7cm,name={Company Name}]{} \\\\[-4mm]
+    {Street and House No.} & \TextField[bordercolor=gray,charsize=16pt,width=7cm,name={Street and House No.}]{} \\\\[-4mm]
+    {City and Postal Code} & \TextField[bordercolor=gray,charsize=16pt,width=7cm,name={City and Postal Code}]{} \\\\[-4mm]
+    {Phone Number} & \TextField[bordercolor=gray,charsize=16pt,width=7cm,name={Phone Number}]{} \\\\[-4mm]
+    {Email} & \TextField[bordercolor=gray,charsize=16pt,width=7cm,name={Email}]{} \\\\[-4mm]
+    {Project Name} & \TextField[bordercolor=gray,charsize=16pt,width=7cm,name={Project Name}]{} \\\\[-4mm]
+  \end{tabular}\\
+  \begin{tabular}{l}
+    \textbf{Overview} \\
+    \TextField[bordercolor=gray,width={.95\textwidth},name={Overview},multiline=true,height=15em,charsize=14pt]{} \\\\
+    \textbf{Goals} \\
+    \TextField[bordercolor=gray,width={.95\textwidth},name={Goals},multiline=true,height=4em,charsize=14pt]{} \\\\
+    \textbf{Specifications} \\
+    \TextField[bordercolor=gray,width={.95\textwidth},name={Specifications},multiline=true,height=4em,charsize=14pt]{} \\\\
+    \textbf{Relevant Academics} \\
+    \TextField[bordercolor=gray,width={.95\textwidth},name={Relevant Academics},multiline=true,height=4em,charsize=14pt]{} \\\\
+  \end{tabular}
+  \end{Form}
+\end{document}
