@@ -23,6 +23,7 @@
   \setdefaultlanguage{russian}
   \setotherlanguage{english}
   \setmainfont[Ligatures=TeX]{Times New Roman}
+  \newfontfamily\cyrillicfont{Times New Roman}[Script=Cyrillic]
   \setmonofont{Consolas}
 \else
   \usepackage{cmap}
@@ -459,7 +460,7 @@
   }
 
   \NewEnviron{CRTmethodtable}[2]{
-    \noindent\begin{tabularx}{\textwidth}{|l|p{\widthof{\textbf{Доступа}}}|l|p{\widthof{#2}}|X|}
+    \noindent\begin{xltabular}{\textwidth}{|l|p{\widthof{\textbf{Доступа}}}|l|p{\widthof{#2}}|X|}
       \caption{Описание методов класса #1}\label{tabmethod#1}
       \\\hline \multicolumn{5}{|l|}{\textbf{Методы}}
       \\\hline \textbf{Имя} & \textbf{Мод. Доступа} & \textbf{Тип} & \textbf{Аргументы} & \textbf{Назначение} \\\hline
@@ -469,11 +470,11 @@
       \\\hline \textbf{Имя} & \textbf{Мод. Доступа} & \textbf{Тип} & \textbf{Аргументы} & \textbf{Назначение}
       \endhead
       \BODY
-    \end{tabularx}
+    \end{xltabular}
   }
 
   \NewEnviron{CRTmethodtableP}[2]{
-    \noindent\begin{tabularx}{\textwidth}{|l|p{\widthof{\textbf{Доступа}}}|p{\widthof{HistoryToken}}|p{\widthof{#2}}|X|}
+    \noindent\begin{xltabular}{\textwidth}{|l|p{\widthof{\textbf{Доступа}}}|p{\widthof{HistoryToken}}|p{\widthof{#2}}|X|}
       \caption{Описание методов класса #1}\label{tabmethod#1}
       \\\hline \multicolumn{5}{|l|}{\textbf{Методы}}
       \\\hline \textbf{Имя} & \textbf{Мод. Доступа} & \textbf{Тип} & \textbf{Аргументы} & \textbf{Назначение} \\\hline
@@ -483,11 +484,11 @@
       \\\hline \textbf{Имя} & \textbf{Мод. Доступа} & \textbf{Тип} & \textbf{Аргументы} & \textbf{Назначение}
       \endhead
       \BODY
-    \end{tabularx}
+    \end{xltabular}
   }
 
   \NewEnviron{CRTfieldtable}[1]{
-    \noindent\begin{tabularx}{\textwidth}{|l|p{\widthof{\textbf{Доступа}}}|l|X|}
+    \noindent\begin{xltabular}{\textwidth}{|l|p{\widthof{\textbf{Доступа}}}|l|X|}
       \caption{Описание полей класса #1}\label{tabfield#1}
       \\\hline \multicolumn{4}{|l|}{\textbf{Поля}}
       \\\hline \textbf{Имя} & \textbf{Мод. Доступа} & \textbf{Тип} & \textbf{Назначение} \\\hline
@@ -497,11 +498,11 @@
       \\\hline \textbf{Имя} & \textbf{Мод. Доступа} & \textbf{Тип} & \textbf{Назначение} \\\hline
       \endhead
       \BODY
-    \end{tabularx}
+    \end{xltabular}
   }
 
   \NewEnviron{CRTproptable}[1]{
-    \noindent\begin{tabularx}{\textwidth}{|l|p{\widthof{\textbf{Доступа}}}|l|X|}
+    \noindent\begin{xltabular}{\textwidth}{|l|p{\widthof{\textbf{Доступа}}}|l|X|}
       \caption{Описание свойств класса #1}\label{tabprop#1}
       \\\hline \multicolumn{4}{|l|}{\textbf{Свойства}}
       \\\hline \textbf{Имя} & \textbf{Мод. Доступа} & \textbf{Тип} & \textbf{Назначение} \\\hline
@@ -511,7 +512,7 @@
       \\\hline \textbf{Имя} & \textbf{Мод. Доступа} & \textbf{Тип} & \textbf{Назначение} \\\hline
       \endhead
       \BODY
-    \end{tabularx}
+    \end{xltabular}
   }
 
   \newcommand{\singleCRTpreamble}{
