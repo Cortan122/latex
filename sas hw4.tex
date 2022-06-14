@@ -1,0 +1,640 @@
+\documentclass[12pt,a4paper]{article}
+\usepackage{sasstyle}
+\usepackage{jupyther_sas}
+\usepackage{titlesec}
+\usepackage{booktabs}
+\usepackage{xltabular}
+\setlength\LTcapwidth{\textwidth}
+
+\titleformat{\paragraph}{\normalfont\normalsize\bfseries}{\theparagraph}{1em}{}
+\titlespacing*{\paragraph}{0pt}{3.25ex plus 1ex minus .2ex}{0pt}
+
+\graphicspath{ {./sas/hw4/} }
+
+\setlength{\emergencystretch}{3em}
+\sloppy
+
+\begin{document}
+  \titlePage{4}{Сегментация данных}
+
+  \section{Исследование данных}
+  \subsection{Исследуем распределения по данным}
+  \subsubsection{Рассчитываем кол-во уникальных значений, нулевых и пустых значений + доля в \% от общего кол-ва}
+  \paragraph*{Исходный код}
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# создаём пустую таблицу, которую будем заполнять}
+\NormalTok{res1 }\OperatorTok{=}\NormalTok{ pd.DataFrame(columns}\OperatorTok{=}\NormalTok{[}
+  \StringTok{\textquotesingle{}колонка\textquotesingle{}}\NormalTok{, }\StringTok{\textquotesingle{}описание\textquotesingle{}}\NormalTok{,}
+  \StringTok{\textquotesingle{}кол{-}во уникальных\textquotesingle{}}\NormalTok{, }\StringTok{\textquotesingle{}доля уникальных\textquotesingle{}}\NormalTok{,}
+  \StringTok{\textquotesingle{}кол{-}во нулевых\textquotesingle{}}\NormalTok{, }\StringTok{\textquotesingle{}доля нулевых\textquotesingle{}}\NormalTok{,}
+  \StringTok{\textquotesingle{}кол{-}во пустых\textquotesingle{}}\NormalTok{, }\StringTok{\textquotesingle{}доля пустых\textquotesingle{}}\NormalTok{,}
+\NormalTok{])}
+
+\ControlFlowTok{for}\NormalTok{ i, col }\KeywordTok{in} \BuiltInTok{enumerate}\NormalTok{(data):}
+\NormalTok{  size }\OperatorTok{=}\NormalTok{ data[col].size}
+\NormalTok{  uniq }\OperatorTok{=}\NormalTok{ data[col].unique().size}
+\NormalTok{  zero }\OperatorTok{=} \BuiltInTok{sum}\NormalTok{(data[col] }\OperatorTok{==} \DecValTok{0}\NormalTok{)}
+\NormalTok{  null }\OperatorTok{=} \BuiltInTok{sum}\NormalTok{(data[col].isna())}
+\NormalTok{  res1.loc[i] }\OperatorTok{=}\NormalTok{ [col, cols.loc[i][}\StringTok{\textquotesingle{}Описание\textquotesingle{}}\NormalTok{], uniq, uniq}\OperatorTok{/}\NormalTok{size, zero, zero}\OperatorTok{/}\NormalTok{size, null, null}\OperatorTok{/}\NormalTok{size]}
+
+\NormalTok{res1}
+\end{Highlighting}
+\end{Shaded}
+
+  \paragraph*{Результаты выполнения программы}
+  \begin{longtable}{l|rr|rr|rr}
+    \toprule
+    \textbf{Колонка} & \multicolumn{2}{l|}{\textbf{Уникальных}} & \multicolumn{2}{l|}{\textbf{Нулевых}} & \multicolumn{2}{l}{\textbf{Пустых}} \\
+    \midrule
+    \endfirsthead
+
+    \toprule
+    \textbf{Колонка} & \multicolumn{2}{l|}{\textbf{Уникальных}} & \multicolumn{2}{l|}{\textbf{Нулевых}} & \multicolumn{2}{l}{\textbf{Пустых}} \\
+    \midrule
+    \endhead
+    \midrule
+    \multicolumn{7}{r}{{Continued on next page}} \\
+    \midrule
+    \endfoot
+
+    \bottomrule
+    \caption{Количества уникальных, нулевых и пустых значений}\label{table:nans}
+    \endlastfoot
+    Номер варианта           & 1     &   0\% & 0     &  0\% & 0    & 0\%  \\
+    ID                       & 10243 & 100\% & 0     &  0\% & 0    & 0\%  \\
+    INCOME\_BASE\_TYPE       & 5     &   0\% & 0     &  0\% & 86   & 0\%  \\
+    CREDIT\_PURPOSE          & 10    &   0\% & 0     &  0\% & 0    & 0\%  \\
+    INSURANCE\_FLAG          & 3     &   0\% & 4082  & 39\% & 1    & 0\%  \\
+    DTI                      & 60    &   0\% & 0     &  0\% & 146  & 1\%  \\
+    SEX                      & 2     &   0\% & 0     &  0\% & 0    & 0\%  \\
+    FULL\_AGE\_CHILD\_NUMBER & 6     &   0\% & 6068  & 59\% & 0    & 0\%  \\
+    DEPENDANT\_NUMBER        & 5     &   0\% & 10214 & 99\% & 0    & 0\%  \\
+    EDUCATION                & 9     &   0\% & 0     &  0\% & 0    & 0\%  \\
+    EMPL\_TYPE               & 10    &   0\% & 0     &  0\% & 10   & 0\%  \\
+    EMPL\_SIZE               & 9     &   0\% & 0     &  0\% & 145  & 1\%  \\
+    BANKACCOUNT\_FLAG        & 6     &   0\% & 6229  & 60\% & 2353 & 22\% \\
+    Period\_at\_work         & 356   &   3\% & 0     &  0\% & 2355 & 22\% \\
+    age                      & 41    &   0\% & 0     &  0\% & 2353 & 22\% \\
+    EMPL\_PROPERTY           & 13    &   0\% & 0     &  0\% & 2353 & 22\% \\
+    EMPL\_FORM               & 7     &   0\% & 0     &  0\% & 6290 & 61\% \\
+    FAMILY\_STATUS           & 7     &   0\% & 0     &  0\% & 6290 & 61\% \\
+    max90days                & 20    &   0\% & 1039  & 10\% & 6350 & 61\% \\
+    max60days                & 17    &   0\% & 1522  & 14\% & 6350 & 61\% \\
+    max30days                & 15    &   0\% & 1968  & 19\% & 6350 & 61\% \\
+    max21days                & 15    &   0\% & 2350  & 22\% & 6350 & 61\% \\
+    max14days                & 14    &   0\% & 2529  & 24\% & 6350 & 61\% \\
+    avg\_num\_delay          & 1121  &  10\% & 1560  & 15\% & 6642 & 64\% \\
+    if\_zalog                & 3     &   0\% & 2435  & 23\% & 6627 & 64\% \\
+    num\_AccountActive180    & 7     &   0\% & 2573  & 25\% & 6627 & 64\% \\
+    num\_AccountActive90     & 5     &   0\% & 3138  & 30\% & 6627 & 64\% \\
+    num\_AccountActive60     & 5     &   0\% & 3322  & 32\% & 6627 & 64\% \\
+    Active\_to\_All\_prc     & 94    &   0\% & 470   &  4\% & 6627 & 64\% \\
+    numAccountActiveAll      & 12    &   0\% & 451   &  4\% & 6627 & 64\% \\
+    numAccountClosed         & 24    &   0\% & 425   &  4\% & 6627 & 64\% \\
+    sum\_of\_paym\_months    & 323   &   3\% & 17    &  0\% & 6627 & 64\% \\
+    all\_credits             & 28    &   0\% & 0     &  0\% & 6627 & 64\% \\
+    Active\_not\_cc          & 10    &   0\% & 1229  & 11\% & 6627 & 64\% \\
+    own\_closed              & 9     &   0\% & 2058  & 20\% & 6627 & 64\% \\
+    min\_MnthAfterLoan       & 98    &   0\% & 129   &  1\% & 6627 & 64\% \\
+    max\_MnthAfterLoan       & 136   &   1\% & 7     &  0\% & 6627 & 64\% \\
+    dlq\_exist               & 3     &   0\% & 1575  & 15\% & 6627 & 64\% \\
+    thirty\_in\_a\_year      & 3     &   0\% & 3062  & 29\% & 6627 & 64\% \\
+    sixty\_in\_a\_year       & 3     &   0\% & 3298  & 32\% & 6627 & 64\% \\
+    ninety\_in\_a\_year      & 3     &   0\% & 3377  & 32\% & 6627 & 64\% \\
+    thirty\_vintage          & 3     &   0\% & 3519  & 34\% & 6627 & 64\% \\
+    sixty\_vintage           & 3     &   0\% & 3575  & 34\% & 6627 & 64\% \\
+    ninety\_vintage          & 3     &   0\% & 3577  & 34\% & 6627 & 64\% \\
+  \end{longtable}
+
+  \paragraph*{Комментарии}
+  Начиная с колонки \textsc{bankaccount\_flag} очень много пропущенных данных (см. таблицу \ref{table:nans}),
+  от $20\%$ до $64\%$.
+  Надо будет потом с этим разобраться в пункте \ref{sec:nans}.
+
+  \subsubsection{Среднее значение, медиана, стандартное отклонение, минимум, максимум, тип данных по каждому показателю в предоставленных данных}
+  \paragraph*{Исходный код}
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# создаём список категориальных переменных}
+\NormalTok{cols\_cat }\OperatorTok{=}\NormalTok{ []}
+
+\CommentTok{\# создаём пустую таблицу, которую будем заполнять}
+\NormalTok{res2 }\OperatorTok{=}\NormalTok{ pd.DataFrame(columns}\OperatorTok{=}\NormalTok{[}
+  \StringTok{\textquotesingle{}колонка\textquotesingle{}}\NormalTok{, }\StringTok{\textquotesingle{}описание\textquotesingle{}}\NormalTok{,}
+  \StringTok{\textquotesingle{}среднее\textquotesingle{}}\NormalTok{, }\StringTok{\textquotesingle{}медиана\textquotesingle{}}\NormalTok{, }\StringTok{\textquotesingle{}стандартное отклонение\textquotesingle{}}\NormalTok{,}
+  \StringTok{\textquotesingle{}минимум\textquotesingle{}}\NormalTok{, }\StringTok{\textquotesingle{}максимум\textquotesingle{}}\NormalTok{,}
+  \StringTok{\textquotesingle{}тип данных\textquotesingle{}}\NormalTok{,}
+\NormalTok{])}
+
+\ControlFlowTok{for}\NormalTok{ i, col }\KeywordTok{in} \BuiltInTok{enumerate}\NormalTok{(data):}
+\NormalTok{  arr }\OperatorTok{=}\NormalTok{ data[col]}
+  \ControlFlowTok{if}\NormalTok{ arr.dtype }\OperatorTok{==} \BuiltInTok{object}\NormalTok{:}
+\NormalTok{    cols\_cat.append(col)}
+\NormalTok{    res2.loc[i] }\OperatorTok{=}\NormalTok{ [}
+\NormalTok{      col, cols.loc[i][}\StringTok{\textquotesingle{}Описание\textquotesingle{}}\NormalTok{],}
+\NormalTok{      np.nan, np.nan, np.nan, np.nan, np.nan,}
+\NormalTok{      arr.dtype}
+\NormalTok{    ]}
+  \ControlFlowTok{else}\NormalTok{:}
+\NormalTok{    res2.loc[i] }\OperatorTok{=}\NormalTok{ [}
+\NormalTok{      col, cols.loc[i][}\StringTok{\textquotesingle{}Описание\textquotesingle{}}\NormalTok{],}
+\NormalTok{      arr.mean(), arr.median(), arr.std(),}
+\NormalTok{      arr.}\BuiltInTok{min}\NormalTok{(), arr.}\BuiltInTok{max}\NormalTok{(),}
+\NormalTok{      arr.dtype}
+\NormalTok{    ]}
+
+\NormalTok{res2}
+\end{Highlighting}
+\end{Shaded}
+
+  \setlength\LTleft{-2.5cm}
+  \setlength\LTright{-2.5cm}
+  \paragraph*{Результаты выполнения программы}
+  \begin{longtable}{l|rrrrr|l}
+    \toprule
+    \textbf{Колонка} & \textbf{Среднее} & \textbf{Медиана} & \textbf{Стд. отк.} & \textbf{Мин.} & \textbf{Макс.} & \textbf{Тип} \\
+    \midrule
+    \endfirsthead
+
+    \toprule
+    \textbf{Колонка} & \textbf{Среднее} & \textbf{Медиана} & \textbf{Стд. отк.} & \textbf{Мин.} & \textbf{Макс.} & \textbf{Тип} \\
+    \midrule
+    \endhead
+    \midrule
+    \multicolumn{7}{r}{{Continued on next page}} \\
+    \midrule
+    \endfoot
+
+    \bottomrule
+    \caption{Статистика по каждому показателю в предоставленных данных}\label{table:minmax}
+    \endlastfoot
+    Номер варианта           & 6            & 6.0      & 0.0      & 6.0     & 6.0     & int64   \\
+    ID                       & 1102426      & 1102426  & 59140.87 & 1000006 & 1204846 & int64   \\
+    INCOME\_BASE\_TYPE       &              &          &          &         &         & object  \\
+    CREDIT\_PURPOSE          &              &          &          &         &         & object  \\
+    INSURANCE\_FLAG          & 6.01445e$-$1 & 1.0      & 0.489625 & 0.0     & 1.0     & float64 \\
+    DTI                      &              &          &          &         &         & object  \\
+    SEX                      &              &          &          &         &         & object  \\
+    FULL\_AGE\_CHILD\_NUMBER & 5.62432e$-$1 & 0.0      & 0.771415 & 0.0     & 5.0     & int64   \\
+    DEPENDANT\_NUMBER        & 3.90510e$-$3 & 0.0      & 0.082579 & 0.0     & 4.0     & int64   \\
+    EDUCATION                &              &          &          &         &         & object  \\
+    EMPL\_TYPE               &              &          &          &         &         & object  \\
+    EMPL\_SIZE               &              &          &          &         &         & object  \\
+    BANKACCOUNT\_FLAG        & 3.77566e$-$1 & 0.0      & 0.858637 & 0.0     & 4.0     & float64 \\
+    Period\_at\_work         & 6.58118e$+$1 & 45.0     & 64.98255 & 3.0     & 448.0   & float64 \\
+    age                      & 3.62031e$+$1 & 34.0     & 8.586657 & 23.0    & 63.0    & float64 \\
+    EMPL\_PROPERTY           &              &          &          &         &         & object  \\
+    EMPL\_FORM               &              &          &          &         &         & object  \\
+    FAMILY\_STATUS           &              &          &          &         &         & object  \\
+    max90days                & 1.60698e$+$0 & 1.0      & 1.954959 & 0.0     & 30.0    & float64 \\
+    max60days                & 1.14153e$+$0 & 1.0      & 1.549045 & 0.0     & 22.0    & float64 \\
+    max30days                & 8.39712e$-$1 & 0.0      & 1.273694 & 0.0     & 14.0    & float64 \\
+    max21days                & 6.40123e$-$1 & 0.0      & 1.113868 & 0.0     & 14.0    & float64 \\
+    max14days                & 5.31466e$-$1 & 0.0      & 0.980985 & 0.0     & 14.0    & float64 \\
+    avg\_num\_delay          & 6.29043e$-$2 & 0.012821 & 0.115361 & 0.0     & 1.0     & float64 \\
+    if\_zalog                & 3.26604e$-$1 & 0.0      & 0.469036 & 0.0     & 1.0     & float64 \\
+    num\_AccountActive180    & 3.69469e$-$1 & 0.0      & 0.659097 & 0.0     & 6.0     & float64 \\
+    num\_AccountActive90     & 1.51825e$-$1 & 0.0      & 0.416017 & 0.0     & 3.0     & float64 \\
+    num\_AccountActive60     & 9.20907e$-$2 & 0.0      & 0.328597 & 0.0     & 3.0     & float64 \\
+    Active\_to\_All\_prc     & 4.28161e$-$1 & 0.4      & 0.289589 & 0.0     & 1.0     & float64 \\
+    numAccountActiveAll      & 2.22179e$+$0 & 2.0      & 1.681576 & 0.0     & 10.0    & float64 \\
+    numAccountClosed         & 3.49723e$+$0 & 3.0      & 3.143501 & 0.0     & 22.0    & float64 \\
+    sum\_of\_paym\_months    & 8.06518e$+$1 & 64.0     & 70.01094 & 0.0     & 672.0   & float64 \\
+    all\_credits             & 5.71902e$+$0 & 5.0      & 4.023875 & 1.0     & 29.0    & float64 \\
+    Active\_not\_cc          & 1.08407e$+$0 & 1.0      & 1.075110 & 0.0     & 8.0     & float64 \\
+    own\_closed              & 7.27046e$-$1 & 0.0      & 1.055788 & 0.0     & 11.0    & float64 \\
+    min\_MnthAfterLoan       & 1.41194e$+$1 & 10.0     & 15.24928 & -1.0    & 109.0   & float64 \\
+    max\_MnthAfterLoan       & 6.20326e$+$1 & 68.0     & 37.07029 & -1.0    & 1304.0  & float64 \\
+    dlq\_exist               & 5.64435e$-$1 & 1.0      & 0.495899 & 0.0     & 1.0     & float64 \\
+    thirty\_in\_a\_year      & 1.53208e$-$1 & 0.0      & 0.360238 & 0.0     & 1.0     & float64 \\
+    sixty\_in\_a\_year       & 8.79424e$-$2 & 0.0      & 0.283250 & 0.0     & 1.0     & float64 \\
+    ninety\_in\_a\_year      & 6.60951e$-$2 & 0.0      & 0.248483 & 0.0     & 1.0     & float64 \\
+    thirty\_vintage          & 2.68252e$-$2 & 0.0      & 0.161595 & 0.0     & 1.0     & float64 \\
+    sixty\_vintage           & 1.13385e$-$2 & 0.0      & 0.105892 & 0.0     & 1.0     & float64 \\
+    ninety\_vintage          & 1.07854e$-$2 & 0.0      & 0.103305 & 0.0     & 1.0     & float64 \\
+  \end{longtable}
+
+  \paragraph*{Комментарии}
+  У многих переменных медиана и минимум получились нулевыми (см. таблицу \ref{table:minmax}).
+  Это означает что у них больше половины значений -- нулевые.
+  Но в таблице \ref{table:nans} количества нулей у этих признаков $\sim 30\%$.
+  Это объясняется тем фактом что в первой таблице процент считается от всех значений, включая пропущенные,
+  а при расчёте медианы пропущенные значение не учитываются.
+
+  \subsubsection{Исследуем распределение данных по полу, возрасту и другим категориальным показателям}
+  \paragraph*{Исходный код}
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# строим гистограммы}
+\NormalTok{fig, axs }\OperatorTok{=}\NormalTok{ plt.subplots(}\DecValTok{2}\NormalTok{, }\DecValTok{5}\NormalTok{, figsize}\OperatorTok{=}\NormalTok{(}\DecValTok{20}\NormalTok{, }\DecValTok{10}\NormalTok{))}
+\NormalTok{plt.subplots\_adjust(hspace}\OperatorTok{=}\DecValTok{2}\NormalTok{)}
+\NormalTok{plt.suptitle(}\StringTok{"Гистограммы категориальных переменных"}\NormalTok{)}
+\ControlFlowTok{for}\NormalTok{ ax, col }\KeywordTok{in} \BuiltInTok{zip}\NormalTok{(axs.flatten(), cols\_cat):}
+\NormalTok{  plt.sca(ax)}
+\NormalTok{  plt.xticks(rotation}\OperatorTok{=}\DecValTok{90}\NormalTok{)}
+\NormalTok{  ax.set\_title(col)}
+\NormalTok{  data[col].hist(ax}\OperatorTok{=}\NormalTok{ax)}
+
+\NormalTok{plt.show()}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# удаляем \textquotesingle{}DTI\textquotesingle{} из категориальных колонок}
+\NormalTok{cols\_cat.remove(}\StringTok{\textquotesingle{}DTI\textquotesingle{}}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+  \paragraph*{Результат выполнения программы}
+  \CRTfigure{hists.pdf}{Гистограммы категориальных переменных}
+
+  \paragraph*{Комментарии}
+  \label{sec:pole}
+  Как можно видеть на гистограмме DTI (см. \autoref{fig:hists.pdf}), у нас переменная
+  \texttt{"debt-to-income ratio — отношение долга к доходам"}
+  неправильно определилась как категориальная, потому что в ней есть одно
+  лишнее значение \texttt{\#ПОЛЕ!}, которое надо будет потом заменить на
+  \texttt{nan}. Также в некоторых других показателях тоже есть лишние
+  значения \texttt{*n.a.*}, которые тоже надо будет заменить.
+
+  \subsubsection{Исследуем распределение данных по числовым показателям (бонус)}
+  \paragraph*{Исходный код}
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# строим диаграммы Ящикова с Усачёвым 0\_0}
+\CommentTok{\# cols\_num = [col for col in data if data[col].dtype == float and data[col].unique().size \textgreater{} 3]}
+\NormalTok{cols\_num }\OperatorTok{=}\NormalTok{ [}
+  \StringTok{\textquotesingle{}Period\_at\_work\textquotesingle{}}\NormalTok{,}
+  \StringTok{\textquotesingle{}age\textquotesingle{}}\NormalTok{,}
+  \StringTok{\textquotesingle{}max90days\textquotesingle{}}\NormalTok{,}
+  \StringTok{\textquotesingle{}avg\_num\_delay\textquotesingle{}}\NormalTok{,}
+  \StringTok{\textquotesingle{}num\_AccountActive180\textquotesingle{}}\NormalTok{,}
+  \StringTok{\textquotesingle{}Active\_to\_All\_prc\textquotesingle{}}\NormalTok{,}
+  \StringTok{\textquotesingle{}numAccountActiveAll\textquotesingle{}}\NormalTok{,}
+  \StringTok{\textquotesingle{}numAccountClosed\textquotesingle{}}\NormalTok{,}
+  \StringTok{\textquotesingle{}sum\_of\_paym\_months\textquotesingle{}}\NormalTok{,}
+  \StringTok{\textquotesingle{}all\_credits\textquotesingle{}}\NormalTok{,}
+  \StringTok{\textquotesingle{}Active\_not\_cc\textquotesingle{}}\NormalTok{,}
+  \StringTok{\textquotesingle{}own\_closed\textquotesingle{}}\NormalTok{,}
+  \StringTok{\textquotesingle{}min\_MnthAfterLoan\textquotesingle{}}\NormalTok{,}
+  \StringTok{\textquotesingle{}max\_MnthAfterLoan\textquotesingle{}}
+\NormalTok{]}
+
+\KeywordTok{def}\NormalTok{ scale\_col(arr):}
+\NormalTok{  arr }\OperatorTok{=}\NormalTok{ arr[}\OperatorTok{\textasciitilde{}}\NormalTok{np.isnan(arr)]}
+  \CommentTok{\# code from StandardScaler}
+  \ControlFlowTok{return}\NormalTok{ (arr }\OperatorTok{{-}}\NormalTok{ np.mean(arr)) }\OperatorTok{/}\NormalTok{ np.std(arr)}
+
+\NormalTok{plt.title(}\StringTok{"Распределение числовых переменных,}\CharTok{\textbackslash{}n}\StringTok{ выравненных по стандартному отклонению"}\NormalTok{)}
+\NormalTok{plt.xticks(rotation}\OperatorTok{=}\DecValTok{90}\NormalTok{)}
+\NormalTok{plt.boxplot([scale\_col(data[col]) }\ControlFlowTok{for}\NormalTok{ col }\KeywordTok{in}\NormalTok{ cols\_num], labels}\OperatorTok{=}\NormalTok{cols\_num, sym}\OperatorTok{=}\StringTok{\textquotesingle{}\textquotesingle{}}\NormalTok{)}
+\NormalTok{plt.show()}
+\end{Highlighting}
+\end{Shaded}
+
+  \paragraph*{Результат выполнения программы}
+  \CRTfigure{boxplot.pdf}{Диаграмма Бокса и Вискера}
+
+  \paragraph*{Комментарии}
+  На диаграмме (см. \autoref{fig:boxplot.pdf}) можно заметить что у некоторых параметров медиана совпадает с минимумом,
+  то есть большинство их значений это ноль.
+  Также у всех параметров довольно длинный хвост в положительную сторону.
+
+  \subsection{Делаем проверки}
+  \subsubsection{Проверка на полноту данных по клиентам}
+  \paragraph*{Исходный код}
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# ищем те самые 20 колонок}
+\NormalTok{stats }\OperatorTok{=} \BuiltInTok{dict}\NormalTok{(res1[}\StringTok{\textquotesingle{}кол{-}во пустых\textquotesingle{}}\NormalTok{].value\_counts())}
+\NormalTok{amount }\OperatorTok{=} \BuiltInTok{max}\NormalTok{(stats, key}\OperatorTok{=}\NormalTok{stats.get)}
+\NormalTok{cols\_sparse }\OperatorTok{=} \BuiltInTok{list}\NormalTok{(res1[res1[}\StringTok{\textquotesingle{}кол{-}во пустых\textquotesingle{}}\NormalTok{] }\OperatorTok{==}\NormalTok{ amount][}\StringTok{\textquotesingle{}колонка\textquotesingle{}}\NormalTok{])}
+\BuiltInTok{print}\NormalTok{(}\StringTok{"amount ="}\NormalTok{, amount)}
+\BuiltInTok{print}\NormalTok{(}\StringTok{"cols\_sparse len ="}\NormalTok{, }\BuiltInTok{len}\NormalTok{(cols\_sparse))}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# проверяем гипотезу}
+\NormalTok{(}\OperatorTok{\textasciitilde{}}\NormalTok{data[data[cols\_sparse[}\DecValTok{0}\NormalTok{]].isna()][cols\_sparse].isna()).}\BuiltInTok{sum}\NormalTok{()}
+\end{Highlighting}
+\end{Shaded}
+
+  \paragraph*{Результаты выполнения программы}
+  \CRTfigure{image20220613210346.png}{Самое популярное количество пропущенных значений, и количество колонок с ним}
+  \CRTfigure{image20220613210400.png}{Количество пропущенных значений после удаления плохих клиентов}
+
+  \paragraph*{Комментарии}
+  \label{sec:nans}
+  Если смотреть на таблицу \ref{table:nans}, то можно заметить что у двадцати последних
+  колонок всегда одинаковое количество пропущенных значений -- 6627.
+  Можно предположить что они всегда пропущенные вместе у одних и тех-же
+  клиентов. Чтобы проверить эту гипотезу, мы можем взять только клиентов,
+  у которых пропущенная первая из этих колонок, и посмотреть пропущены ли
+  у них остальные.
+
+  Все значения пропущены (см. \autoref{fig:image20220613210400.png}).
+  Гипотеза подтвердилась. В дальнейшем мы сможем выкинуть этих клиентов.
+
+  \subsubsection{Проверка на пропущенные и нулевые значения в полях}
+  \paragraph*{Исходный код}
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# удаляем нехороших клиентов}
+\NormalTok{data\_tmp }\OperatorTok{=}\NormalTok{ data[}\OperatorTok{\textasciitilde{}}\NormalTok{data[cols\_sparse[}\DecValTok{0}\NormalTok{]].isna()]}
+\CommentTok{\# смотрим какие остались nan{-}ы}
+\NormalTok{nan\_sum }\OperatorTok{=}\NormalTok{ data\_tmp.isna().}\BuiltInTok{sum}\NormalTok{()}
+\NormalTok{nan\_sum[nan\_sum }\OperatorTok{!=} \DecValTok{0}\NormalTok{]}
+\end{Highlighting}
+\end{Shaded}
+
+  \paragraph*{Результаты выполнения программы}
+  \CRTfigure{image20220613210409.png}{Суммарное количество пропущенных значений во всех колонках}
+
+  \paragraph*{Комментарии}
+  После удаления клиентов с большим числом пропусков, пропущенных значений
+  осталось только 35 в шести разных колонках (см. \autoref{fig:image20220613210409.png}). Это достаточно маленькое
+  количество, чтобы потом их можно было заполнить средними/медианными
+  значениями.
+
+  \subsubsection{Проверка на наличие некорректных знаков}
+  \paragraph*{Исходный код}
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# список всех уникальных значений категориальных переменных}
+\NormalTok{np.unique([x }\ControlFlowTok{for}\NormalTok{ col }\KeywordTok{in}\NormalTok{ cols\_cat }\ControlFlowTok{for}\NormalTok{ x }\KeywordTok{in}\NormalTok{ data[col].unique()])}
+\end{Highlighting}
+\end{Shaded}
+
+  \paragraph*{Результаты выполнения программы}
+  \CRTfigure{image20220613210422.png}{Список всех уникальных значений категориальных переменных}
+
+  \paragraph*{Комментарии}
+  В этом списке (см. \autoref{fig:image20220613210422.png}) нет никаких подозрительных значений, кроме
+  \texttt{"*n.a.*"}, \texttt{"nan"} и \texttt{"\#ПОЛЕ!"} которые мы уже
+  заметили в пункте \ref{sec:pole}.
+
+  \subsection{Готовим итоговую витрину данных для сегментации}
+  \subsubsection{Корректируем данные -- исправляем ошибки}
+  \paragraph*{Исходный код}
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# заменяем неправильные знаечния на nan{-}ы}
+\NormalTok{data }\OperatorTok{=}\NormalTok{ data.replace(}\StringTok{\textquotesingle{}\#ПОЛЕ!\textquotesingle{}}\NormalTok{, np.nan).replace(}\StringTok{\textquotesingle{}*n.a.*\textquotesingle{}}\NormalTok{, np.nan).replace(}\StringTok{\textquotesingle{}nan\textquotesingle{}}\NormalTok{, np.nan).replace(}\StringTok{\textquotesingle{}\textless{} 50\textquotesingle{}}\NormalTok{, }\StringTok{\textquotesingle{}\textless{}50\textquotesingle{}}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# удаляем первые две колонки}
+\NormalTok{data }\OperatorTok{=}\NormalTok{ data.drop(columns}\OperatorTok{=}\NormalTok{[}\StringTok{"Номер варианта"}\NormalTok{, }\StringTok{"ID"}\NormalTok{])}
+\end{Highlighting}
+\end{Shaded}
+
+  \paragraph*{Комментарии}
+  Я заменил значения \texttt{"*n.a.*"} и \texttt{"\#ПОЛЕ!"} на пропуски, потому что они явно просто NaN написанный по-другому.
+  Также я удалил колонки <<Номер варианта>> и <<ID>>, так как они не несут никакой информации, важной для нашего процесса сегментации.
+  Ещё я заменил \texttt{"{}< 50"} с пробелом на \texttt{"{}<50"} без пробела, просто чтобы было красиво.
+
+  \subsubsection{Исключаем клиентов с большим числом пропусков и восстанавливаем пропущенные значения}
+  \paragraph*{Исходный код}
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# исключаем клиентов}
+\NormalTok{data }\OperatorTok{=}\NormalTok{ data[}\OperatorTok{\textasciitilde{}}\NormalTok{data[cols\_sparse[}\DecValTok{0}\NormalTok{]].isna()]}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# заполняем nan{-}ы соседними значениями}
+\NormalTok{data }\OperatorTok{=}\NormalTok{ data.fillna(method}\OperatorTok{=}\StringTok{"ffill"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+  \subsubsection{Переводим категориальные показатели в целочисленные}
+  \paragraph*{Исходный код}
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# пременяем OneHotEncoder только к категориальным колонкам}
+\ImportTok{from}\NormalTok{ sklearn.preprocessing }\ImportTok{import}\NormalTok{ OneHotEncoder}
+\ImportTok{from}\NormalTok{ sklearn.compose }\ImportTok{import}\NormalTok{ ColumnTransformer}
+
+\NormalTok{column\_transformer }\OperatorTok{=}\NormalTok{ ColumnTransformer([}
+\NormalTok{  (}\StringTok{\textquotesingle{}cat\textquotesingle{}}\NormalTok{, OneHotEncoder(), cols\_cat),}
+\NormalTok{], remainder}\OperatorTok{=}\StringTok{"passthrough"}\NormalTok{)}
+
+\NormalTok{X }\OperatorTok{=}\NormalTok{ column\_transformer.fit\_transform(data)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# проверяем что он работает на примере колонок "SEX" и "INCOME\_BASE\_TYPE"}
+\NormalTok{OneHotEncoder().fit\_transform(data[[}\StringTok{"SEX"}\NormalTok{, }\StringTok{"INCOME\_BASE\_TYPE"}\NormalTok{]]).todense()}
+\end{Highlighting}
+\end{Shaded}
+
+  \paragraph*{Результаты выполнения программы}
+  \CRTfigure{image20220613210436.png}{Результат работы OneHotEncoder}
+
+  \paragraph*{Комментарии}
+  OneHotEncoder успешно сработал для колонок \textsc{sex} и \textsc{income\_base\_type}.
+  В полученной матрице (см. \autoref{fig:image20220613210436.png})
+  первые две колонки отвечают за два уникальных значения признака \textsc{sex},
+  а последние четыре -- за четыре уникальных значения признака \textsc{income\_base\_type}.
+  Тут количество уникальных значений на одно меньше чем в таблице \ref{table:nans},
+  потому что OneHotEncoder ну учитывает NaN как уникальное значение.
+
+  \newpage
+  \section{Два способа сегментации данных}
+  \subsection{Метод K-means}
+
+  \paragraph*{Обоснование}
+  Я выбрал метод кластеризации без учителя, то есть метод K-средних, так как он требует меньше всего понимания структуры датасета.
+  Для кластеризации с учителем надо выбрать целевую переменную, а RFM и бизнес-правила вообще полностью пишутся человеком.
+  Чтобы воспользоваться этими методами нужно понимать датасет, который у нас довольно большой -- 43 колонки.
+  Поэтому использовать K-средних имеет смысл первым, а потом, после анализа его результатов, может быть мы будем лучше понимать датасет.
+  Также я выбрал количество кластеров 3, так как два кластера получаются слишком широкие, а четыре уже сложно анализировать.
+
+  \paragraph*{Исходный код}
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# обучаем кластеризатор}
+\ImportTok{from}\NormalTok{ sklearn.cluster }\ImportTok{import}\NormalTok{ KMeans}
+\NormalTok{kmeans }\OperatorTok{=}\NormalTok{ KMeans(n\_clusters}\OperatorTok{=}\DecValTok{3}\NormalTok{, random\_state}\OperatorTok{=}\DecValTok{0}\NormalTok{).fit(X)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# строим гистограммы}
+\KeywordTok{def}\NormalTok{ cluster\_hist(cols1, axs):}
+\NormalTok{  n }\OperatorTok{=}\NormalTok{ np.unique(kmeans.labels\_).size}
+  \ControlFlowTok{for}\NormalTok{ col, ax }\KeywordTok{in} \BuiltInTok{zip}\NormalTok{(cols1, axs.flatten()):}
+\NormalTok{    plt.sca(ax)}
+\NormalTok{    plt.title(cols[cols[}\StringTok{\textquotesingle{}Атрибуты\textquotesingle{}}\NormalTok{] }\OperatorTok{==}\NormalTok{ col][}\StringTok{\textquotesingle{}Описание\textquotesingle{}}\NormalTok{].iloc[}\DecValTok{0}\NormalTok{])}
+    \ControlFlowTok{for}\NormalTok{ i }\KeywordTok{in} \BuiltInTok{range}\NormalTok{(n):}
+\NormalTok{      data[kmeans.labels\_ }\OperatorTok{==}\NormalTok{ i][col].hist(label}\OperatorTok{=}\SpecialStringTok{f\textquotesingle{}cluster }\SpecialCharTok{\{}\NormalTok{i}\SpecialCharTok{\}}\SpecialStringTok{\textquotesingle{}}\NormalTok{, alpha}\OperatorTok{=}\FloatTok{0.8}\NormalTok{)}
+\NormalTok{    plt.legend()}
+
+\NormalTok{fig, axs }\OperatorTok{=}\NormalTok{ plt.subplots(}\DecValTok{2}\NormalTok{, }\DecValTok{3}\NormalTok{, figsize}\OperatorTok{=}\NormalTok{(}\DecValTok{14}\NormalTok{, }\DecValTok{6}\NormalTok{))}
+\NormalTok{cluster\_hist([}
+  \StringTok{\textquotesingle{}all\_credits\textquotesingle{}}\NormalTok{, }\StringTok{\textquotesingle{}Period\_at\_work\textquotesingle{}}\NormalTok{, }\StringTok{\textquotesingle{}numAccountActiveAll\textquotesingle{}}\NormalTok{,}
+  \StringTok{\textquotesingle{}numAccountClosed\textquotesingle{}}\NormalTok{, }\StringTok{\textquotesingle{}sum\_of\_paym\_months\textquotesingle{}}\NormalTok{, }\StringTok{\textquotesingle{}avg\_num\_delay\textquotesingle{}}
+\NormalTok{], axs)}
+
+\NormalTok{plt.suptitle(}\StringTok{"Сравнение кластеров"}\NormalTok{)}
+\NormalTok{plt.show()}
+\end{Highlighting}
+\end{Shaded}
+
+  \paragraph*{Результаты выполнения программы}
+  \CRTfigure{kmeans.pdf}{Сравнение кластеров}
+
+  \paragraph*{Анализ результатов}
+  На рисунке \ref{fig:kmeans.pdf} приведены гистограммы для тех параметров клиентов, на которых, по крайней мере визуально, видны различия между кластерами.
+  Чтобы было проще к ним обращаться, назовём кластеры
+  <<раздолбаи>> (на рисунке синий \texttt{cluster 0}),
+  <<работяги>> (на рисунке оранжевый \texttt{cluster 1}) и
+  <<богачи>> (на рисунке зелёный \texttt{cluster 2}).
+  У раздолбаев мало счетов (закрытых и открытых), они берут мало кредитов, мало работают, мало платят и относительно много задерживают платежи.
+  Работяги много работают, но платят мало платежей, а богачи наоборот: мало работают и много платят.
+
+  \subsubsection{Валидация}
+  \paragraph*{Исходный код}
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# сравниваем все полученные кластеры}
+\ImportTok{from}\NormalTok{ scipy.stats }\ImportTok{import}\NormalTok{ f\_oneway}
+\NormalTok{f\_oneway(X[kmeans.labels\_ }\OperatorTok{==} \DecValTok{0}\NormalTok{], X[kmeans.labels\_ }\OperatorTok{==} \DecValTok{1}\NormalTok{], X[kmeans.labels\_ }\OperatorTok{==} \DecValTok{2}\NormalTok{]).pvalue}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# сравниваем кластер 0 с самим собой}
+\KeywordTok{def}\NormalTok{ split(x):}
+\NormalTok{  np.random.shuffle(x)}
+\NormalTok{  l }\OperatorTok{=}\NormalTok{ x.shape[}\DecValTok{0}\NormalTok{]}\OperatorTok{//}\DecValTok{2}
+  \ControlFlowTok{return}\NormalTok{ x[:l], x[l:]}
+
+\NormalTok{f\_oneway(}\OperatorTok{*}\NormalTok{split(X[kmeans.labels\_ }\OperatorTok{==} \DecValTok{0}\NormalTok{])).pvalue}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# сравниваем кластер 1 с самим собой}
+\NormalTok{f\_oneway(}\OperatorTok{*}\NormalTok{split(X[kmeans.labels\_ }\OperatorTok{==} \DecValTok{1}\NormalTok{])).pvalue}
+\end{Highlighting}
+\end{Shaded}
+
+  \paragraph*{Результаты выполнения программы}
+  \CRTfigure{image20220614013636.png}{Результат дисперсионного анализа между сегментами}
+  \CRTfigure{image20220614013648.png}{Результат дисперсионного анализа внутри одного сегмента}
+
+  \paragraph*{Комментарии}
+  При сравнение разных сегментов дисперсионный анализ выдаёт P-value близкое к нулю для достаточно большого количества колонок
+  (см. \autoref{fig:image20220614013636.png}),
+  а при сравнение внутри первого сегмента P-value всегда больше $0.01$ (см. \autoref{fig:image20220614013648.png}).
+  Можно сделать выводи что внутри сегмента однородность сильно больше однородности между сегментами.
+
+  \subsection{Метод Decision Tree}
+  \paragraph*{Обоснование}
+  В качестве второго метода сегментации я испытал много разных альтернатив и в конце концов пришёл к выбору дерева решений.
+  Этот метод имеет ряд преимуществ. Он строит дерево, которое в дальнейшем можно нарисовать, что помогает в процессе интерпретации результатов. Также можно ограничить высоту этого дерева, что приводит к сниженному качеству дерева как классификатора.
+  Но смысл в том что нам на самом деле не нужен идеальный классификатор.
+  Если бы мы хотели разделить на сегменты по целевой переменной, мы бы могли просто взять её.
+  В ходе выполнения этого задания, я понял что неидеальный классификатор выдаёт сегменты, которые анализировать проще.
+
+  \paragraph*{Исходный код}
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# тренируем классификатор}
+\ImportTok{from}\NormalTok{ sklearn.tree }\ImportTok{import}\NormalTok{ DecisionTreeClassifier, plot\_tree}
+\ImportTok{from}\NormalTok{ sklearn.preprocessing }\ImportTok{import}\NormalTok{ OrdinalEncoder}
+
+\NormalTok{clf }\OperatorTok{=}\NormalTok{ DecisionTreeClassifier(random\_state}\OperatorTok{=}\DecValTok{0}\NormalTok{, max\_depth}\OperatorTok{=}\DecValTok{4}\NormalTok{)}
+\NormalTok{X1 }\OperatorTok{=}\NormalTok{ np.delete(X, }\BuiltInTok{range}\NormalTok{(}\DecValTok{0}\NormalTok{, }\DecValTok{5}\NormalTok{), axis}\OperatorTok{=}\DecValTok{1}\NormalTok{)}
+\NormalTok{y1 }\OperatorTok{=}\NormalTok{  OrdinalEncoder().fit\_transform(data[[}\StringTok{\textquotesingle{}INCOME\_BASE\_TYPE\textquotesingle{}}\NormalTok{]])}
+\NormalTok{clf.fit(X1, y1)}
+\NormalTok{plot\_tree(clf)}
+\ControlFlowTok{pass}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# строим графики}
+\NormalTok{labels }\OperatorTok{=}\NormalTok{ clf.predict(X1)}
+\NormalTok{labels[labels }\OperatorTok{==} \DecValTok{0}\NormalTok{] }\OperatorTok{=} \DecValTok{4}
+\NormalTok{labels[labels }\OperatorTok{==} \DecValTok{2}\NormalTok{] }\OperatorTok{=} \DecValTok{5}
+\NormalTok{fig, axs }\OperatorTok{=}\NormalTok{ plt.subplots(}\DecValTok{2}\NormalTok{, }\DecValTok{3}\NormalTok{, figsize}\OperatorTok{=}\NormalTok{(}\DecValTok{14}\NormalTok{, }\DecValTok{6}\NormalTok{))}
+\NormalTok{cluster\_hist([}
+  \StringTok{\textquotesingle{}all\_credits\textquotesingle{}}\NormalTok{, }\StringTok{\textquotesingle{}age\textquotesingle{}}\NormalTok{, }\StringTok{\textquotesingle{}if\_zalog\textquotesingle{}}\NormalTok{,}
+  \StringTok{\textquotesingle{}numAccountClosed\textquotesingle{}}\NormalTok{, }\StringTok{\textquotesingle{}sum\_of\_paym\_months\textquotesingle{}}\NormalTok{, }\StringTok{\textquotesingle{}BANKACCOUNT\_FLAG\textquotesingle{}}
+\NormalTok{], axs, labels)}
+
+\NormalTok{plt.suptitle(}\StringTok{"Сравнение кластеров (Decision Tree)"}\NormalTok{)}
+\NormalTok{plt.show()}
+\end{Highlighting}
+\end{Shaded}
+
+  \paragraph*{Результаты выполнения программы}
+  \CRTfigure{tree.pdf}{Полученное дерево решений}
+  \CRTfigure{decisiontree.pdf}{Сравнение полученных сегментов}
+
+  \paragraph*{Анализ результатов}
+  У нас получились два больших сегмента (ноль и один на рисунке синий и оранжевый), и два маленьких.
+  Если сравнивать большие сегменты, то можно заметить что оранжевые клиенты в среднем старше синих,
+  берут больше кредитов, закрывают больше счетов и ставят больше залогов.
+  Два маленьких кластера от больших отличаются тем, что у них сильно больше аккаунтов в онлайн банке.
+  И вероятно сегмент 2 соответствует сегменту 0, и сегмент 3 соответствует сегменту 1, но они настолько маленькие, что это сложно понять.
+
+  \subsubsection{Валидация}
+  \paragraph*{Исходный код}
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# сравниваем между собой два больших сегмента}
+\NormalTok{f\_oneway(X[labels }\OperatorTok{==} \DecValTok{1}\NormalTok{], X[labels }\OperatorTok{==} \DecValTok{3}\NormalTok{]).pvalue}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# сравниваем сегмент 1 с самим собой}
+\NormalTok{f\_oneway(}\OperatorTok{*}\NormalTok{split(X[labels }\OperatorTok{==} \DecValTok{1}\NormalTok{])).pvalue}
+\end{Highlighting}
+\end{Shaded}
+
+  \paragraph*{Результаты выполнения программы}
+  \CRTfigure{image20220614215617.png}{Результат дисперсионного анализа между сегментами}
+  \CRTfigure{image20220614215631.png}{Результат дисперсионного анализа внутри одного сегмента}
+
+  \paragraph*{Комментарии}
+  Всё тоже самое, что и в прошлый раз, когда мы смотрели на P-value.
+  При сравнение разных сегментов дисперсионный анализ выдаёт P-value близкое к нулю для достаточно большого количества колонок
+  (см. \autoref{fig:image20220614215617.png}),
+  а при сравнение внутри первого сегмента P-value, за исключением одной колонки, всегда больше $0.01$ (см. \autoref{fig:image20220614215631.png}).
+  Можно сделать выводи что внутри сегмента однородность сильно больше однородности между сегментами.
+
+  \newpage
+  \section{Список использованной литературы}
+  \begin{thebibliography}{3}
+    \bibitem{sklearn} OneHotEncoder [Электронный ресурс]. //URL: \url{https://scikit-learn.org/stable/modules/generated/sklearn.preprocessing.OneHotEncoder.html} (Дата обращения: 26.03.2022, режим доступа: свободный)
+    \bibitem{kmeans} KMeans [Электронный ресурс]. //URL: \url{https://scikit-learn.org/stable/modules/generated/sklearn.cluster.KMeans.html} (Дата обращения: 14.06.2022, режим доступа: свободный)
+    \bibitem{tree} DecisionTreeClassifier [Электронный ресурс]. //URL: \url{https://scikit-learn.org/stable/modules/generated/sklearn.tree.DecisionTreeClassifier.html} (Дата обращения: 14.06.2022, режим доступа: свободный)
+    \bibitem{pandas} pandas documentation [Электронный ресурс]. //URL: \url{https://pandas.pydata.org/docs/} (Дата обращения: 12.06.2022, режим доступа: свободный)
+    \bibitem{matplotlib} Matplotlib documentation [Электронный ресурс]. //URL: \url{https://matplotlib.org/stable/index.html} (Дата обращения: 12.06.2022, режим доступа: свободный)
+
+    \bibitem{rfm}
+    Статья <<Recursive descent parser>> Wikipedia.org
+    //URL: \url{https://en.wikipedia.org/wiki/RFM_(market_research)}
+    (Дата обращения: 14.06.2022, режим доступа: свободный)
+  \end{thebibliography}
+
+\end{document}
