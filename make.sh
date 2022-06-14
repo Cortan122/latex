@@ -32,6 +32,7 @@ for i in *.tex; do
 
   "$cmd" "$i" || exit 1
   grep -Fq 'Rerun to get cross-references right.' "$f.log" && "$cmd" "$i"
+  grep -Fq 'Table widths have changed. Rerun LaTeX.' "$f.log" && "$cmd" "$i"
 
   if grep -Fq 'There were undefined references.' "$f.log"; then
     bibtex "$f" || exit 1
