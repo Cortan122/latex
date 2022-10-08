@@ -1,0 +1,92 @@
+\documentclass{article}
+\usepackage{122}
+
+\usepackage{environ}
+\NewEnviron{centerframebox}{\begin{center}\fbox{\parbox{0.92\textwidth}{\BODY}}\end{center}}
+
+\newcommand{\NP}{\ensuremath{\mathsf{NP}}}
+\renewcommand{\P}{\ensuremath{\mathsf{P}}}
+
+\title{Теория сложности вычислений \\ Домашнее задание №4 и №5}
+\author{AAAAA AAAAAAA \\ AAAAAA}
+
+\begin{document}
+  \maketitle
+
+  \setcounter{section}{3}
+  \section{Домашнее задание №4}
+  \setcounter{subsection}{10}
+  \subsection{Let $L$ be a sparse language $L$ in \NP. Show that the language $\textsc{LADDER}_L$ given in exercise 2.3 is in \NP.}
+  \begin{centerframebox}
+    A ladder is a sequence of words $s_1,\, s_2,\, \dots,\, s_k$ of equal length such that each string differs from the previous one by replacing exactly one character.
+    For example: $$head,\, hear,\, near,\, bear,\, beer,\, deer,\, deed,\, feed,\, feet,\, fret,\, free$$
+    For each language $L$, let $\textsc{LADDER}_L$ be the set of pairs of words $(v,\, w)$ for which there exists a ladder that starts with $v$, ends with $w$, and contains only words of $L$. \vspace{5mm}
+
+    A language $L$ is sparse if there exists c such that for each $n$, language $L$ contains at most $O(n^c)$ words of length $n$.
+  \end{centerframebox}
+  Чтобы доказать что $\textsc{LADDER}_L \in \NP$ нам нужно построить полиномиальный верификатор для этого языка.
+  Длинна лестницы ограничена максимальным количеством слов этой длинны (а в лестнице они все одинаковой длинны), и, поскольку наш язык $L$ sparse, эта длинна будет полиномиальная относительно длинны входной пары слов $(v,\, w)$.
+  Поэтому мы можем использовать всю полученную лестницу в качестве сертификата, и он будет проходить в ограничение по длине.
+
+  \noindent
+  Для проверки правильности сертификата наш верификатор должен будет выполнить следующие действия:
+  \begin{enumerate}
+    \item Проверить принадлежит ли каждое слово лестницы языку $L$. Это можно сделать за полиномиальное время, так как $L \in \NP$ и для нег уже существует полиномиальный верификатор.
+    \item Проверить совпадают ли первое и последнее слова лестницы со словами $v$ и $w$, между которыми надо было построить лестницу.
+    \item Проверить что между соседними словами лестницы действительно отличие только в одном символе.
+  \end{enumerate}
+  Все эти шаги можно сделать за полиномиальное время.
+  $\blacksquare$
+
+  \subsection{Let $A$, $B$ and $C$ be languages over alphabet $\Sigma$ such that $A \neq \Sigma^*$, $A \in \NP$, $C \in \P$, $A \leq_\P B \leq_\P A \cap C$, and $A \cap C$ is \NP-hard. Prove that $B$ is \NP-complete.}
+  Сначала заметим что $A \cap C \in \NP$, поскольку мы можем собрать полиномиальный верификатор для него через конъюнкцию верификаторов для $A$ и $C$, которые существуют, так как $A \in \NP$ и $C \in \P \subseteq \NP$.
+  И, так как эта проблема уже в \NP-hard, мы можем спокойно поместить её в \NP-complete.
+  Теперь попробуем доказать что $A \cap C \leq_\P A$, чтобы распространить \NP-complete-ность по кругу в $A$ и в $B$.
+  Это довольно просто, потому что $C \in \P$.
+  $$
+    A \cap C = \begin{cases}
+      \text{false} & \text{if } x \not\in C \\
+      x \in A & \text{else}
+    \end{cases}
+  $$
+
+  \noindent
+  $\ds A \cap C \leq_\P A$ \\
+  $\ds A \cap C \in \NP\textrm{-complete} \Longrightarrow A \in \NP\textrm{-complete}$ \\
+  $\ds A \leq_P B$ \\
+  $\ds A \in \NP\textrm{-complete} \Longrightarrow B \in \NP\textrm{-complete}$ \\
+  $\blacksquare$
+
+  \subsection{Given a natural number $k$, you want to factorize it, i.e., find the prime numbers $p_1,\, \dots,\, p_m$ such that $k = \prod^m_{i=1}p_i$. Prove that this problem can be solved in polynomial time if $\P = \NP$.}
+  Если $\P = \NP$, то чтобы доказать что проблема решается за полиномиальное время, мы можем просто доказать что она в \NP.
+  Тут мы очевидно хотим чтобы сертификатом был список простых чисел, но для этого надо сначала доказать что он будет полиномиальной длинны.
+  При умножение чисел (записанных в двоичной системе счисления, конечно) их длинна приблизительно складывается, потому что $\log ab = \log a + \log b$.
+  Получается $n \approx \log k \approx \sum^m_{i=1} \log p_i \approx |c|$, и мы спокойно проходим во все ограничения.
+  Тогда наш верификатор может просто преумножить все простые числа из сертификата, и проверить совпадает ли результат с $k$,
+  а алгоритм умножения столбиком работает за $O(n^2)$ на многоленточной машине Тьюринга.
+  Все числа, которые нам надо будет преумножать, будут по длине меньше чем $\log k$, и всего у нас будет максимум $\log k$ таких перемножений.
+  Получается общая сложность будет $O(n^3)$ и у нашего языка существует полиномиальный верификатор, и поэтому он принадлежит \NP.
+  $\blacksquare$
+
+  \section{Домашнее задание №5}
+  \setcounter{subsection}{6}
+  \subsection{Given a graph $G$ and an integer $k$, the question is if $G$ contains a clique of size at least $k$ and an independent set of size at least $k$. Prove that this problem is \NP-complete.}
+  Проблему \textsc{clique}, \NP-complete-ность которой мы уже доказали в задачке 5.2, можно привести к этой проблеме добавив в граф $k$ лишних узлов.
+  Этот процесс займёт полиномиальное время, так как $k$ не может быть больше размера графа $G$, тоесть если $k$ будет больше, чем количество узлов в $G$, то наш алгоритм может сразу вернуть false. \\
+  $\ds f(G,\, k) = \textsc{clique}(G,\, k) \land \textsc{ind-set}(G,\, k)$ \\
+  $\ds \textsc{clique}(G,\, k) = f(G \cup \{\textrm{independent set of size } k\},\, k)$ \\
+  $\ds \textsc{clique} \leq_\P f$ \\
+  $\ds \textsc{clique} \in \NP\textrm{-complete} \Longrightarrow f \in \NP\textrm{-complete}$ \\
+  $\blacksquare$
+
+  \subsection{Prove that the halting problem is \NP-hard.}
+  Любую проблему из \NP, как в принципе и любую разрешимую проблему, можно привести к проблеме остановки.
+  Так как наша проблема в \NP, существует машина Тьюринга, которая её решает и всегда останавливается.
+  Свести это к halting problem мы можем просто заменив отрицательное состояние завершения на бесконечный цикл.
+  Сложность такой замены для нас не играет значения, так как она делается отдельно для каждой проблемы в \NP, в нашем идеальном математическом мире, до запуска машин Тьюринга.
+  Получается для каждой проблемы в \NP, существует такая машина $M$, которую мы сможем скормить в halting problem, чтобы решить эту проблему.
+  В каждом из случаев, мы сможем сделать машину $M$ константой, и сводка к halting problem будет происходить за константное время.
+  Получается каждую проблему из \NP{} можно привести к halting problem, и это, по определению, \NP-hard.
+  $\blacksquare$
+
+\end{document}

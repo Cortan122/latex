@@ -1,0 +1,226 @@
+\documentclass{article}
+\usepackage{122}
+
+\usepackage{algpseudocode}
+
+% swap \phi (φ) and \varphi (ϕ)
+\let\temp\phi
+\let\phi\varphi
+\let\varphi\temp
+
+\title{Теория сложности вычислений \\ Домашнее задание №1, №2 и №3}
+\author{AAAAA AAAAAAA \\ AAAAAA}
+
+\begin{document}
+  \maketitle
+
+  \section{Домашнее задание №1}
+  \setcounter{subsection}{9}
+  \subsection{Show that the following problem is in $\mathsf{P}$. Given a description of a Turing machine, does the machine ever write a non-blank symbol on the tape when started with the empty string as input?}
+  Для решения этой задачи нам не нужно хранить состояние летны, потому что она изначально пустая,
+  а если машина туда что-то запишет, то нам больше не надо будет её симулировать и мы сможем сразу вернуть true.
+  Получается пока мы будем симулировать машину, при каждом переходе из одного состояния в другое,
+  мы можем всегда брать тот вариант, который соответствует blank symbol-у.
+  Чтобы не зацикливаться, нам нужно будет хранить bool значение для каждого состояния машины, о том были мы там или нет.
+  Если мы заходим в состояние, в котором мы уже были, то мы возвращаем false,
+  а если машина пытается записать на ленту что-то кроме blank symbol-а, то мы возвращаем true.
+  Такой алгоритм занимает $\mathsf{SPACE}(n)$, так как количество состояний ограниченно длинной описания машины,
+  и хотя бы $\mathsf{TIME}(n^2)$ на двухленточной машине тюнинга, и получается $\mathsf{TIME}(n^4)$ на обычной.
+  И это попадает в $\mathsf{P}$.
+  $\blacksquare$
+
+  \subsection{Let $C(\phi)$ be a polynomial-time algorithm that, given a 3-CNF $\phi$, decides whether $\phi$ has an assignment that makes true exactly one literal in each clause. Show that, in this case, there is a polynomial-time algorithm $D(\phi)$ that finds such an assignment if it exists and reports that it does not exist otherwise.}
+  % индус рассказывает про 3-CNF https://www.youtube.com/watch?v=D2a1DlqzDWA
+  Чтобы доказать существование алгоритма $D(\phi)$ в таком условие, мы можем написать его используя $C(\phi)$.
+  И если полученный алгоритм вызывает $C(\phi)$ полиномиальное количество раз, то мы можем сказать что он тоже полиномиальный.
+  Мой алгоритм использует $C(\phi)$ чтобы на каждом шаге проверять свои догадки.
+  %  a  b  c
+  %  0  1  0
+  % !a !b  c
+  %  1  0  0
+
+  Описание алгоритма $D(\phi)$:
+  \begin{enumerate}
+    \item Запускаем $C(\phi)$ и если он вернёт false, то тоже возвращаем false.
+    \item Резервируем место для хранения ответа: тернарное значение $\{0,\, 1,\, \#\}$ для каждой переменной в $\phi$, и инициализируем весь массив решётками. Решётка означает что мы ещё не знаем значение для этой переменной.
+    \item Для каждой скобки $(a \lor b \lor c)$ в $\phi$ ($a$, $b$ и $c$ не переменные а литералы):
+    \begin{enumerate}
+      \item Выбираем один из трёх литералов и предполагаем что он $1$, а все остальные $0$.
+      \item Если данное предположение противоречит тому, что уже записано у нас в ответе, то переходим к следующему литералу. Если алгоритм $C(\phi)$ корректен, то он всегда у нас будет.
+      \item Пусть выбранный литерал будет $a$. Определяем $\phi_a = \phi \land (\bar{a} \lor \bar{b} \lor c) \land (\bar{a} \lor b \lor \bar{c})$. Эти скобки, которые мы приклеили к $\phi$, будут давать два нолика и одну единичку в каждой только если в рассматриваемой скобке единичкой был именно литерал $a$.
+      \item Запускаем $C(\phi_a)$. Если он вернёт false, то возвращаемся к шагу <<(a)>> и делаем тоже самое для литералов $b$ и $c$. А если он вернёт true, то мы можем спокойно записать эту догадку в ответ, зная что хотя бы одно решение с такими значениями переменных существует. Тут важно заметить, что до этого мы работали с литералами, а в ответе у нас переменные, и их надо будет конвертировать при записи.
+      \item Переходим к следующей скобке.
+    \end{enumerate}
+    \item Возвращаем полученный ответ. В нём не должно остаться решёток.
+  \end{enumerate}
+  Этот алгоритм использует дополнительно $O(n)$ места и запускает $C(\phi)$ всего $O(n)$ раз.
+  Получается он полиномиальный.
+  $\blacksquare$
+
+  \subsection{Let $N_k$ be the number of languages that can be decided by Turing machines with a fixed tape alphabet and at most $k$ states. We assume that the tape alphabet contains at least a blank and two other symbols. Show that $k - 1 \le \log N_k = O(k \log k)$.}
+  Количество языков всегда ограничено сверху количеством возможных машин Тьюринга.
+  Мы можем не учитывать машины с $<k$ состояний, потому что они эквивалентны машинам с ровно $k$ состояний, где несколько последних просто не используются.
+  Размер алфавита зафиксирован и нам важно только количество возможных функций перехода.
+  Для каждой из $k \cdot |\Sigma|$ возможных комбинаций состояния и символа ленты будет $2$ опции передвижения головки, $|\Sigma|$ опций записанного символа и $k$ опций следующего состояния.
+
+  \vspace{3mm} \noindent
+  Алфавит у нас всегда содержит хотя бы три символа $\ds |\Sigma| \ge 3$ \\
+  $\ds N_k \le \l(k \cdot |\Sigma| \cdot 2\r)^{k \cdot |\Sigma|} $ \\
+  Определим константу $c = |\Sigma| \cdot 2$ \\
+  $\ds N_k \le \l(k \cdot c\r)^{k \cdot c} $ \\
+  $\ds N_k \le c \cdot k^{k \cdot c} $ \\
+  Мы можем записать это через О большое, чтобы избавиться от констант $\ds N_k = O(k^k) $ \\ % опасный поворот
+  $\ds N_k = O(2^{k \log k}) $ \\
+  $\ds \log N_k = O(k \log k) $ \\
+  $\blacksquare$ % и это всё...????
+
+  \vspace{3mm} \noindent
+  Теперь осталось доказать что $k - 1 \le \log N_k \iff 2^{k-1} \le N_k$.
+  Я это сделал придумав $2^{k-1}$ конкретных языков, которые все можно решить машиной с $k$ состояниями.
+  Каждый из этих языков состоит из одного бинарного слова длинны $k-1$.
+  Таких бинарных слов всего $2^{k-1}$ и языков получается тоже.
+  Мы можем довольно просто придумать машину, которая будет решать такой язык за $k$ состояний.
+  В $i$-ом состояние мы смотрим на $i$-ый бит входного слова, и если он совпадает с $i$-ым битом слова из решаемого языка, переходим в $i+1$-ое состояние и идём вправо, а если не совпадает, то возвращаем false.
+  В последнем $k$-ом состояние мы проверяем что последний символ blank, и только тогда возвращаем true.
+  $\blacksquare$
+
+
+  \section{Домашнее задание №2}
+  \setcounter{subsection}{6}
+  \subsection{Let $\mathsf{TISP}(f,\, g)$ be the set of languages which can be decided by a Turing machine that simultaneously uses $O(f(n))$ time and $O(g(n))$ space. Prove that for any $h \in o(n^5)$ there exists $L \in \mathsf{TISP}(n^{13}\log^3 n,\, n^5) \setminus \mathsf{TISP}(n^{13},\, h(n))$}
+  % очень похоже на что-то что было
+  % на лекции для тупых были теоремы с o малым
+  Тут решение очень похоже на space hierarchy theorem.
+  Создаём алгоритм $D(w)=$
+  \begin{enumerate}
+    \item Пусть $n = |w|$.
+    \item Вычисляем значение $n^{13}$ и сохраняем его в бинарный счётчик. При каждом шаге симуляции машины будем его декрементировать. Если он дойдёт до 0, то возвращаем false.
+    \item Вычисляем значение $n^5$ и резервируем столько места для симуляции машины Тьюринга. Если машина выходит за эти границы, то тоже возвращаем false.
+    \item Если $w$ не представляет из себя $\l<M\r>10^*$, где $M$ это какая-то машина Тьюринга, возвращаем false.
+    \item Симулируем $M$ с $w$ на входе.
+    \item Если $M$ вернёт true, то мы возвращаем false, а в противном случае true.
+  \end{enumerate}
+  Данный алгоритм определяет язык, так как всегда завершается за конечное время.
+  Назовём этот язык $A$.
+  Он будет принадлежать $\mathsf{TISP}(n^{13}\log^3 n,\, n^5)$, поскольку мы в алгоритме ограничили и время и место.
+  Нам дали фору $\log^3 n$ по времени, и поэтому у нас не будет проблемы с неэффективностью симуляции машины Тьюринга.
+
+  Теперь мы попытаемся доказать что $A \not\in \mathsf{TISP}(n^{13},\, h(n))$ от обратного.
+  Предполагаем, что существует машина Тьюринга $M$ решающая этот язык за время $O(n^{13})$ и место $o(n^5)$.
+  По определению big O notation мы сможем найти такое большое $n_0$,
+  чтобы после него машина $M$ всегда занимала меньше $n^5$ места.
+  Тогда если мы запустим машину $D$ на $\l<M\r>10^{n_0}$, машина $M$ должна вместиться в ограничение по месту, потому что длинна входного слова больше чем $n_0$.
+  В этом случае машина $D$ и машина $M$ вернут разные ответы и будет противоречие.
+  % TODO надо гдето использовать число 13, тк с 4 там не работает
+
+  \subsection{Let $B_A = \{s\#^{|s|^2-|s|} \mid s \in A\}$ for an arbitrary language $A$. Prove that there exists $A \in \mathsf{TIME}(n^6)$, such that $B_A \in \mathsf{TIME}(n^3)$.}
+  Поскольку $n$ во всех классах сложности это длинна входного слова, а наша операция увеличивает длину каждого слова в языке $A$ в квадрат, для каждого языка $A \in \mathsf{TIME}(f(n^2))$ получится $B_A \in \mathsf{TIME}(f(n))$.
+  Тоесть если машина $M$ решает $A$, то мы можем сначала убрать все решётки, а потом запустить её, чтобы решить $B_A$.
+  Или можно просто заставить машину $M$ игнорировать решётки.
+
+  И тоже самое в принципе и для $\mathsf{SPACE}$.
+  Стоит заметить что $A$ должен принадлежать именно $\mathsf{TIME}(f(n^2))$, а не $\mathsf{TIME}(f^2(n))$,
+  но в нашем случае с $n^6$ это неважно.
+
+  \subsection{Show that $\mathsf{P} \neq \mathsf{SPACE}(n)$.}
+  % https://mathoverflow.net/questions/40770/how-do-we-know-that-p-linspace-without-knowing-if-one-is-a-subset-of-the-othe
+  Начинаем доказательство от обратного и предполагаем что $\mathsf{P} = \mathsf{SPACE}(n)$.
+  Возьмём любой язык $A \in \mathsf{SPACE}(n^2)$ и построим язык $B = \{s\#^{|s|^2-|s|} \mid s \in A\}$.
+  Получается $B \in \mathsf{SPACE}(n)$, по аргументу из прошлой задачки.
+  Используя наше предположение $\mathsf{P} = \mathsf{SPACE}(n)$ мы можем сказать что $B \in \mathsf{P}$.
+  Предполагаем, что существует машина Тьюринга $M$, которая решает $B$ за $O(n^c)$, где $c$ это достаточно большая константа.
+  % Эта же машина будет решать язык $A$ за $O(n^2c)$, если мы просто подставим $n^2$ на место $n$. % todo
+  Мы можем придумать машину $M'$, которая добавит $n^2-n$ решёток в конец своего входного слова, и потом запустит на нём машину $M$.
+  Таким образом $A \in \mathsf{P}$ и, поскольку мы делали это всё для любого языка из $\mathsf{SPACE}(n^2)$,
+  получается неравенство $\mathsf{SPACE}(n^2) \subseteq \mathsf{P}$.
+  Но по нашему изначальному предположению будет $\mathsf{SPACE}(n^2) \subseteq \mathsf{SPACE}(n)$,
+  что противоречит space hierarchy theorem.
+
+  \section{Домашнее задание №3}
+  \setcounter{subsection}{5}
+  \subsection{Prove that \textsc{subsequence} is in $\mathsf{P}$.}
+  % https://www.geeksforgeeks.org/given-two-strings-find-first-string-subsequence-second/amp/
+  Задачка \textsc{subsequence} довольно популярная и для неё существует рекурсивный алгоритм, который работает за $O(n)$ на языке си.
+
+  \begin{algorithmic}[1]
+    \Function{\textsc{subsequence}}{$u,\, v,\, |u|,\, |v|$}
+      \If{$|u| = 0$}
+        \State \Return true
+      \ElsIf{$|v| = 0$}
+        \State \Return false
+      \ElsIf{$u_{|u|} = v_{|v|}$}
+        \State \Return $\textsc{subsequence}(u,\, v,\, |u|-1,\, |v|-1)$
+      \Else
+        \State \Return $\textsc{subsequence}(u,\, v,\, |u|,\, |v|-1)$
+      \EndIf
+    \EndFunction
+  \end{algorithmic}
+
+  Данный алгоритм проходит за линейное время, так как на каждой его итерации длинна входных слов уменьшается хотя-бы на $1$.
+  Каждый шаг этого алгоритма можно легко проделать за константное время на двухленточной машине Тьюринга, просто удаляя символы на конце каждой из строк на blank-и, если они совпадают, и только на конце $v$, если различаются.
+  Тогда на обычной машине это займёт $O(n^2)$ времени и $\textsc{subsequence} \in \mathsf{TIME}(n^2) \subset \mathsf{P}$.
+  $\blacksquare$
+
+  \subsection{Input Graph Reachability}
+  Let $m$ in unary be the string $0^m = \overbrace{00 \cdots 0}^m$.
+  Let $A^{\leq l}$ be the set of strings over $A$ of length at most $l$.
+
+  \vspace{3mm} \noindent
+  Given a Turing machine $M$ with input alphabet $A$, let the \textit{$l$-length input graph} be the directed graph \\
+  --- whose vertices are strings in $A^{\leq l}$ and \\
+  --- there is an edge from $x \in A^{\leq l}$ to $y \in A^{\leq l}$
+  if and only if machine $M$ accepts the pair $(x,\, y)$.
+
+  \vspace{3mm} \noindent
+  For a machine \textbf{that runs in linear space} and has input alphabet $A$,
+  consider the problem \textsc{input graph reachability}: \\
+  \hspace*{2mm} Instance: number $m$ in unary, strings $u$ and $v$ in $A^{\leq m}$. \\
+  \hspace*{2mm} Problem: is there a path from $u$ to $v$ in the $(m^2)$-length input graph?
+
+  \subsubsection{Show that for each machine, this problem is in $\mathsf{SPACE}(n^4)$.}
+  Всего в графе у нас будет $|A|^{m^2+1} = O\l(2^{n^2}\r)$ вершин, и для хранения каждой из них нам очевидно не хватит места.
+  Поэтому нам надо придумать алгоритм, который проверяет есть ли путь и при этом не хранит граф.
+  Для этого нам понадобиться рекурсия: мы переберем все возможные слова $w \in A^{\leq m}$ и ставим их посередине между $u$ и $v$.
+  Так мы рекурсивно запускаем алгоритм $IGR(m,\, u,\, w) \land IGR(m,\, w,\, v)$ и если существуют оба этих пути, то и существует путь от $u$ до $v$, а если нет, то мы инкриминируем слово $w$ и идём пытаться дальше.
+  Если мы перебрали все возможные $w$, то нам придётся вернуть false.
+
+  Также тут надо следить за глубиной рекурсии, и когда она достигает $\lceil\log |A|\rceil \l(m^2+1\r)$ просто проверять есть ли ребро между $u$ и $v$ запуская машину Тьюринга, которая определяет наш граф.
+  Для хранение слова $w$ на каждой итерации нам нужно $m^2$ места, и глубина у нас тоже ограничена $m^2$.
+  Получается всего нужно $m^4 = O(n^4)$ места.
+
+  Осталось только доказать что $\lceil\log |A|\rceil \l(m^2+1\r)$ итераций в глубь рекурсии нам точно хватит чтобы найти существующий путь.
+  Максимальная возможная длинна пути в нашем графе это $|A|^{m^2+1} = 2^{\l(m^2+1\r)\log |A|}$, и при каждой выбранной середине эта длинна делится на два.
+  В итоге нам понадобиться $\log \l(2^{\l(m^2+1\r)\log |A|}\r) = O(m^2)$ середин.
+  $\blacksquare$
+
+  \subsubsection{Show that there exists a machine such that this problem can not be solved in $\mathsf{SPACE}(n)$.}
+  \begin{center}
+    \fbox{\parbox{0.9\textwidth}{
+      Consider a universal Turing machine $B$ with a unique accept configuration (before accepting, it clears its
+      tape and returns to the first cell). Let $Q$ be its states and $\Gamma$ be its tape alphabet. Let $A = (Q \cup \{-\}) \times \Gamma$. A configuration
+      of such a machine can be encoded as a finite string $e \in A^*$, such that for all $i \in N$:
+      \begin{itemize}
+        \item[---] If the head has state $q$, is above the $i$-th cell of the tape, and this cell contains $c \in \Gamma$, then $e_i = (q,\, c)$.
+        \item[---] For all $i \leq |e|$ such that the head is not on the $i$-th cell, let $e_i = (-,\, c)$, where $c \in \Gamma$ is the symbol in this cell.
+        \item[---] For all $i > |e|$, the $i$-th cell of the tape must contain a blank.
+      \end{itemize}
+      There is an edge between state $x$ and $y$ if the machine can transform the state encoded by $x$ to the state encoded by $y$ in
+      1 computation step.
+    }}
+  \end{center}
+
+  Описанную в рамочке функцию, которая берёт входные слова машины $B$ и кодирует соответствущие начальное состояние в строку $e \in A^*$, назовём $\operatorname{encoded}(M,\, w)$.
+  Длинны закодированных состояний будут пропорциональны количеству места, занятого машиной $B$.
+  Также, поскольку в универсальных машинах Тьюринга потеря места, по сравнению с тем местом, которое бы заняла симулируемая машина, не зависит от размера машины, мы можем сказать тоже самое про машину $M$.
+  Назовём уникальную конфигурацию завершения машины $B$, которая состоит из пустой ленты и некого завершающего состояния, $\mathsf{uniq}$.
+
+  Тогда, используя наш алгоритм $IRG(m, u, v)$ можно будет узнать завершиться ли машина Тьюринга, если ей дать $m^2$ места.
+  Надо будет подставить $u = \operatorname{encoded}(M,\, w)$ и $v = \mathsf{uniq}$, и мы сможем узнать завершиться ли машина $M$ на входном слове $w$ если ей дать $m^2$ места.
+  И, если предположение в условие этого задания неверно, то мы сможем это понять за $\mathsf{SPACE}(n)$.
+  Назовём подобную проблему завершения $\mathrm{HALT}_{\mathsf{SPACE}(m^2)}(M,\, w)$.
+
+  Получается $IGR(m,\, \operatorname{encoded}(M,\, w),\, \mathsf{uniq}) = \mathrm{HALT}_{\mathsf{SPACE}(m^2)}(M,\, w) \in \mathsf{SPACE}(n)$ и мы можем решить завершиться ли машина Тьюринга $M$ используя меньше места, чем она сама.
+  Мы можем собрать машину Тьюринга $C_m$, которая берёт на вход машину $M'$ и запускает $IGR(m,\, \operatorname{encoded}(\l<M'\r>,\, \l<M'\r>),\, \mathsf{uniq})$ и зависает, если алгоритм $IGR$ вернул true.
+  Получается, при достаточно большом $m$, запуск $C_m(\l<C_m\r>)$ будет вызывать противоречие, так как она должна будет делать противоположенную вещь от себя. Такого парадокса не происходит, если $IGR$ для машины $B$ занимает больше чем $\mathsf{SPACE}(n)$ места.
+  $\blacksquare$
+\end{document}
