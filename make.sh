@@ -29,6 +29,7 @@ for i in *.tex; do
 
   cmd="xelatex"
   grep -Fq '\usepackage[english,russian]{babel}' "$i" && cmd="pdflatex"
+  grep -Fq '\usepackage[report]{styledoc19}' "$i" && cmd="pdflatex"
 
   "$cmd" "$i" || exit 1
   grep -Fq 'Rerun to get cross-references right.' "$f.log" && "$cmd" "$i"
