@@ -1,6 +1,6 @@
 #!/bin/sh
 
-# pm i texlive-xetex texlive-lang-cyrillic fonts-cmu texlive-bibtex-extra
+# pm i texlive-xetex texlive-lang-cyrillic fonts-cmu texlive-bibtex-extra texlive-science
 # git clone https://github.com/Cortan122/fasm.git asm
 # scp -r ~/dz2020/bio scp://cortan122.tk/~/
 # rm !(**/*.png|**/*.fasta)
