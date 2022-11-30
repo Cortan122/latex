@@ -1,0 +1,269 @@
+\documentclass{article}
+\usepackage{122}
+
+\usepackage[many]{tcolorbox}
+\newtcolorbox{cross}{blank,breakable,parbox=false,
+  overlay={\draw[red,line width=5pt] (interior.south west)--(interior.north east);
+    \draw[red,line width=5pt] (interior.north west)--(interior.south east);}}
+
+\usepackage{algpseudocode}
+
+% swap \epsilon (𝜀) and \varepsilon (𝜖)
+\let\temp\epsilon
+\let\epsilon\varepsilon
+\let\varepsilon\temp
+
+\usepackage{environ}
+\NewEnviron{centerframebox}{\begin{center}\fbox{\parbox{0.92\textwidth}{\BODY}}\end{center}}
+
+\newcommand{\RP}{\ensuremath{\mathsf{RP}}}
+\newcommand{\PP}{\ensuremath{\mathsf{PP}}}
+\newcommand{\BPP}{\ensuremath{\mathsf{BPP}}}
+\newcommand{\ZPP}{\ensuremath{\mathsf{ZPP}}}
+\newcommand{\coRP}{\ensuremath{\mathsf{coRP}}}
+\newcommand{\QP}{\ensuremath{\mathsf{QP}}}
+
+\newcommand{\NP}{\ensuremath{\mathsf{NP}}}
+\newcommand{\coNP}{\ensuremath{\mathsf{coNP}}}
+\newcommand{\TIME}{\ensuremath{\mathsf{TIME}}}
+\newcommand{\EXP}{\ensuremath{\mathsf{EXP}}}
+\newcommand{\NC}{\ensuremath{\mathsf{NC}^1}}
+\newcommand{\PSPACE}{\ensuremath{\mathsf{PSPACE}}}
+\renewcommand{\P}{\ensuremath{\mathsf{P}}}
+
+\title{Теория сложности вычислений \\ Домашнее задание №9, №10 и №11}
+\author{Костя Борисов \\ БПИ196}
+
+\begin{document}
+  \maketitle
+
+  \setcounter{section}{8}
+  \section{Домашнее задание №9}
+  \setcounter{subsection}{8}
+  % old version: \subsection{Show that the following problem is \NP-complete: given an oracle Turing machine $M$, decide whether there exists an oracle $A$, such that $M^A$ accepts the empty input.}
+  \subsection{Show that the following problem is \NP-complete: given a number $t$ in unary and an oracle Turing machine $M$, decide whether there exists an oracle $A$, such that $M^A$ accepts the empty input in at most $t$ steps.}
+  Поскольку мы должны рассмотреть все возможные варианты оракула $A$, можно притвориться, что машина $M^A$ -- недетерминированная.
+  Каждый раз, когда машина $M$ делает запрос к оракулу $A$ с новым входом (повторяющиеся запросы, мы можем пропустить, потому что ответ оракула всегда будет одинаковый), она может пойти в одно из двух следующих состояний, примерно как недетерминированная машина Тьюринга.
+
+  Представим дерево решений, которые может принимать машина $M^A$, основываясь на ответах $A$.
+  Это дерево получается глубины $t$.
+  Мы можем хранить оракул $A$ как список битов, на каждой развилке в дереве, и он будет длинны $t$.
+  Этот список битов можно легко использовать в качестве сертификата, для проверки за \P{} время, потому что нам на вход даётся унарное число $t$ и длинна сертификата будет $O(n)$.
+  Поэтому наша проблема в \NP.
+
+  Теперь надо доказать что наша проблема \NP-hard.
+  Тут мы можем взять любую проблему из \NP, и, поскольку она из \NP, существует недетерминированная машина Тьюринга $N$, которая решает эту проблему за полиномиальное время.
+  Эту машину нам надо переделать из недетерминированной в оракульскую $B$.
+  Для этого мы добавляем в неё счётчик, и каждый раз, когда машина $N$ делает недетерминированный шаг, машина $B$ увеличивает этот счётчик и отправляет его оракулу, и шаг в зависимости от его ответа.
+  Так как машина $B$ будет работать за полиномиальное время, мы можем придумать такое число $t$, чтобы она гарантированно успела завершиться за столько шагов.
+  Ещё надо не забывать, что у нас теперь есть входная строка, и надо её, уже во время исполнения, встроить в исходный код машины $B$, чтобы она заполняла ей пустую входную ленту.
+
+  Таким образом мы можем привести любую проблему из \NP{} к нашей за полиномиальное время.
+  $\NP \cap \NP\textrm{-hard} = \NP\textrm{-complete}$.
+  $\blacksquare$
+
+  \subsection{Show that $\QP^\QP = \QP$. Also prove that $\EXP^\EXP \neq \EXP$. Here $\QP = \bigcup^{+\infty}_{k=1} \TIME(2^{\log^k n}).$}
+  Чтобы понять будет ли принадлежать оракульская комбинация двух классов какому-то классу, мы можем попробовать симулировать каждый вызов оракула, и оценить временные затраты этого процесса.
+  Тогда затраченное время для симуляции $\TIME(f)^{\TIME(g)}$ будет меньше $O(f(n) \cdot g(f(n)))$, поскольку мы можем вызывать оракул максимально $f(n)$ раз, то есть на каждом шаге, и максимальная длинна входного слова, которое мы сможем в него передать, будет равна максимально возможной использованной памяти, то есть, в нашем случае, $f(n)$.
+
+  % 2^{log^k n} * 2^{log^l m} = 2^{log^k n + l log^k n} = 2^{l log^k n} = 2^{log^k n}
+  % m < 2^{log^k n}
+  \noindent
+  Попробуем этот приём на $\QP^\QP$. \\
+  $\ds \QP^\QP$ \\
+  $\ds \TIME\l(2^{\log^k n}\r)^{\TIME\l(2^{\log^l m}\r)}$ \\
+  $\ds \TIME\l(2^{\log^k n} \cdot 2^{\log^l m}\r)$ \\
+  $\ds \TIME\l(2^{\log^k n + \log^l m}\r)$ \\
+  $\ds \TIME\l(2^{\log^k n + \log^l \l(2^{\log^k n}\r)}\r)$ \\
+  $\ds \TIME\l(2^{\log^k n + l \log^k n}\r)$ \\
+  $\ds \TIME\l(2^{(l+1) \cdot \log^k n}\r)$ \\
+  $\ds \TIME\l(2^{\log^k n}\r)$ \\
+  $\ds \QP$ \\
+  $\blacksquare$
+
+  % 2^n * 2^m = 2^{n+m} = 2^{2^n}
+  % m < 2^n
+  \noindent
+  Теперь тоже самое, только для $\EXP^\EXP$. \\
+  $\ds \EXP^\EXP$ \\
+  $\ds \TIME\l(2^{n^k}\r)^{\TIME\l(2^{m^l}\r)}$ \\
+  $\ds \TIME\l(2^{n^k} \cdot 2^{m^l}\r)$ \\
+  $\ds \TIME\l(2^{n^k + m^l}\r)$ \\
+  $\ds \TIME\l(2^{n^k + 2^{n^l}}\r)$ \\
+  $\ds \TIME\l(2^{2^{n^l}}\r)$ \\
+  $\ds 2\textrm{-}\EXP$ \\
+  $\ds \neq \EXP$ \\
+  $\blacksquare$
+
+  \subsection{Show that there is a language $B \in \EXP$ such that $\coNP^B \neq \NP^B$.}
+  Возьмём язык $B = \{(\langle M \rangle,\, w,\, t) \mid$ Turing machine $M$ halts on input word $w$ in at most $t$ steps$\}$,
+  где $t$ записано в двоичной системе.
+  Этот язык будет в \EXP, потому что для симуляции мишины Тьюринга нужно $t$ шагов, а, так как число $t$ у нас записано в двоичной, а не в унарной, системе, это будет $O(2^{\log t}) = O(2^n)$.
+
+  Возьмём определение \coNP, где недетерминированная машина должна вернуть true на \textbf{всех} ветках своего выполнения, а не на хотябы одной, как в обычном \NP.
+  Тогда мы можем определить язык $C = \{(\langle M \rangle,\, 1^k,\, t) \mid \forall w \in \sigma^k$ Turing machine $M$ halts on input word $w$ in at most $t$ steps$\}$, то есть этот язык содержит такие машины Тьюринга, которые завершаются на всех своих входных словах длинны $k$ за $t$ шагов.
+  Здесь число $k$ надо записать в унарной системе, чтобы это можно было решить \NP{} машиной, и не надо было лезть в какой-то $\mathsf{NEXP}$.
+  Такой язык легко решается недетерминированным алгоритмом: надо создать по одной ветке для каждого возможного слова $w$, и потом запустить оракул $B$.
+  Поэтому мы можем надёжно положить его в класс $\coNP^B$.
+
+  Из-за сложности данной проблемы, её нельзя будет решить в $\NP^B$, потому что там в недетерминированных машинах другой квантор.
+  Нам просто не хватит полиномиально многих вызовов к оракулу, чтобы проверить все возможные входные слова, а проверить принадлежность языку $B$ нам никак, кроме оракула (потому что $B \in \EXP\textrm{-complete}$).
+  Получается $C \in \coNP^B \land C \not\in \NP^B \Longrightarrow \coNP^B \neq \NP^B$.
+
+  \section{Домашнее задание №10}
+  \setcounter{subsection}{8}
+  \subsection{Show that $\ZPP = \RP \cap \coRP$.}
+  \begin{centerframebox}
+    The class \ZPP{} contains all the languages $L$ for which there exists a probabilistic machine such that for every input $x$ the following holds:
+    \begin{itemize}
+      \item the expected running time is bounded by a polynomial in $|x|$,
+      \item whenever $M$ halts, the output $M(x)$ is exactly $L(x)$ ($1$ if $x \in L$ and $0$ if $x \not\in L$).
+    \end{itemize}
+  \end{centerframebox}
+  % https://en.wikipedia.org/wiki/ZPP_(complexity)#Intersection_definition
+  Рассмотрим любой язык $L \in \RP \cap \coRP$.
+  Для него есть \RP{} алгоритм $A$, и \coRP{} алгоритм $B$.
+  Чтобы решить этот язык \ZPP{} алгоритмом, мы можем по очереди запускать алгоритмы $A$ и $B$, пока один из них не даст нам точный ответ ($A$ даёт точный ответ <<Да>>, а $B$ -- точный ответ <<Нет>>).
+  С каждой итерацией этого цикла, шанс в неё попасть уменьшается по экспоненте.
+  Таким образом средние время выполнение этого алгоритма будет полиномиальным, и $\RP \cap \coRP \subseteq \ZPP$.
+
+  Теперь нам надо доказать обратное вхождение.
+  Мы можем привести любой алгоритм из \ZPP{} в \RP.
+  Для этого надо просто запустить его, и подождать в два раза больше его среднего времени.
+  Если он вернёт ответ, то мы можем его вернуть, а если нет, то мы можем вернуть <<Нет>>, и это будет с достаточно маленькой вероятностью, чтобы войти в \RP.
+  Получается $\ZPP \subseteq  \RP \cap \coRP$, и, поскольку мы уже доказали $\RP \cap \coRP \subseteq \ZPP$, то можем сказать что $\ZPP = \RP \cap \coRP$.
+  $\blacksquare$
+
+  \subsection{Show that $\NP \subseteq \PP$.}
+  \begin{centerframebox}
+    The class \PP{} contains all languages $L$ for which there exists a probabilistic machine $M$ that runs in polynomial time on all computational paths and such that for any $x$ we have $x \in L$ if and only if $\Pr[M(x) = 1] > 1/2$.
+  \end{centerframebox}
+  % https://en.wikipedia.org/wiki/PP_(complexity)#PP_compared_to_other_complexity_classes
+  Чтобы доказать, что $\NP \subseteq \PP$, мы докажем, что $3\textrm{-SAT} \in \PP$, и, поскольку $3\textrm{-SAT} \in \NP\textrm{-complete}$, класс \PP{} будет включать в себя все проблемы из \NP, через полиномиальное приведение.
+  При решение проблемы 3-SAT вероятностным алгоритмом, мы можем случайно выбрать подстановку переменных, и проверить получается ли формула true.
+  Если формула вернула true, то мы можем сразу вернуть true, а если нет, то надо вернуть true с вероятностью $\f{1}{2} - \epsilon$, где $\epsilon = \f{1}{2^{n+1}}$.
+  Такой $\epsilon$ мы взяли чтобы вероятность угадать была больше него.
+
+  Получается, в случае, когда формула у нас satisfiable, вероятность угадать правильную подборку переменных $\f{1}{2^n}$ (в худшем случае у нас ровно $n$ переменных и только одна подходящая комбинация), и в сумме вероятность вернуть true будет $\l(\f{1}{2} - \f{1}{2^{n+1}}\r) \cdot \l(1-\f{1}{2^n}\r) + \f{1}{2^n} = \f{1}{2} + \f{1}{2^{2n+1}} > \f{1}{2}$.
+  А если формула unsatisfiable, то вероятность будет $\f{1}{2} - \f{1}{2^{n+1}} < \f{1}{2}$.
+  $\blacksquare$
+
+  \subsection{Show that if $\NP \subseteq \BPP$, then $\NP = \RP$.}
+  % \begin{cross}
+  %   Недетерминированные машины можно проанализировать как особый случай рандомных.
+  %   Для получения вероятностной машины из недетерминированной, надо просто заменить все недетерминированные ветки на рандомные, и поменять квантор $\exists$ в условие, на неравенство с вероятностью.
+  %   Получает такое новое определение класса \NP.
+
+  %   \begin{centerframebox}
+  %     The class \NP{} contains all languages $L$ for which there exists a probabilistic machine $M$ that runs in polynomial time on all computational paths and such that for any $x$ we have $x \in L$ if and only if $\Pr[M(x) = 1] > 0$.
+  %   \end{centerframebox}
+
+  %   Мы можем сделать ещё лучше.
+  %   Поскольку количество шагов машины из \NP{} ограничено полиномом, можно ограничить снизу вероятность правильного ответа не нулём, а степенью двойки.
+  %   Получается $\Pr[M(x) = 1] \geq 2^{-\mathrm{poly}(n)}$, так как количество возможных веток ограничивается экспонентой от количества шагов.
+  %   Если мы используем 3-SAT, то мы точно знаем что (как и в предыдущей задачке) вероятность угадать правильный ответ будет $\f{1}{2^n}$.
+  % \end{cross}
+
+  Мы тривиально знаем что $\RP \subseteq \NP$, так как недетерминированные машины можно проанализировать как частный случай рандомных, и нам для равенства нужно доказать только $\NP \subseteq \RP$.
+  Чтобы доказать такое включение, нам не обязательно проверять все задачи в \NP, а можно просто доказать включение в \RP{} для какой-то одной \NP-complete задачки, например 3-SAT.
+  Прелесть 3-SAT-а заключается в том, что используя алгоритм для satisfiability мы можем восстановить какое-то конкретное решение, по одной переменной за раз.
+  Для этого надо будет просто сделать предположение для значения этой переменной, и если от него 3-SAT перестаёт быть satisfiable, то мы угадали неправильно.
+
+  У \BPP{} алгоритмов есть интересное свойство, что их можно запускать много раз подряд, и, таким образом, экспоненциально увеличивать вероятность правильного ответа.
+  Например после $k$ итераций вероятность ошибки при выданном ответе <<Да>> будет $2^{-k}$, то есть $x \in L \iff \Pr[M^k(x) = 1] > 1-2^{-k}$.
+
+  Используя эти два свойства, мы можем запустить \BPP{} алгоритм для 3-SAT по $k$ раз для каждой из $n$ переменных,
+  и тогда у нас будет подстановка, которая правильная с довольно большой вероятностью.
+  Дальше мы обычным детерминированным полиномиальным алгоритмом проверяем её правильность, и если она оказывается правильной, то возвращаем <<Да>>. Вероятность того, что мы найдём неправильную подстановку в худшем случае равна $(2^{-k})^n$, и, чтобы она была меньше $1/2$, надо взять $k = n+2$.
+
+  Наш алгоритм, как любой послушный алгоритм из \RP, говорит <<Да>> только когда в этом полностью уверен, и делает ошибки с вероятностью меньшей половины.
+  Получается $\textrm{3-SAT} \in \RP \Longrightarrow \NP \subseteq \RP \Longrightarrow \RP = \NP$.
+  $\blacksquare$
+
+  \section{Домашнее задание №11}
+  \setcounter{subsection}{5}
+  \subsection{Show that there exists a streaming algorithm that, given a stream of numbers $a_1,\, \dots,\, a_m$ from $[m] = \{1,\, ...,\, m\}$, outputs the maximal length of an increasing substring $a_i,\, a_{i+1},\, ...,\,a_j$ and uses $O(\log m)$ memory.}
+  Для решения этой задачки можно придумать алгоритм, использующий только три ячейки памяти, размер каждой из которых $\log m$.
+  Одна ячейка для хранения предыдущего значения $a_{i-1}$, вторая для длинны текущей подстроки и третья для длинны максимальной подстроки.
+  Длины подстрок можно хранить в $\log m$ бит, потому что возрастающая подстрока никогда не может быть длиннее $m$, так как она тогда будет использовать все доступные элементы.
+
+  \begin{center}
+    \begin{minipage}{10cm}
+      \hrulefill
+      \begin{algorithmic}[1]
+        \State $A \gets \textsc{blank}$ \Comment{Предыдущий элемент}
+        \State $B \gets 0$ \Comment{Текущая длина}
+        \State $C \gets 0$ \Comment{Максимальная длина}
+
+        \While{$a_i$}
+          \If{$A < a_i \lor A = \textsc{blank}$}
+            \State $B \gets B+1$
+            \If{$C < B$}
+              \State $C \gets B$
+            \EndIf
+          \Else
+            \State $B \gets 1$
+          \EndIf
+          \State $A \gets a_i$
+        \EndWhile
+
+        \State \Return $C$
+      \end{algorithmic}
+      \hrulefill
+    \end{minipage}
+  \end{center}
+
+  \subsection{Given a number $n$ and a stream of unknown length containing items from $[m]$, you need to find all the items that occur more than $\epsilon n$ times among the last $n$ items of the stream (if the length of the stream is $k < n$, you need to find the items that occur more than $\epsilon k$ times in the stream). Describe a streaming algorithm that uses $O(1/\epsilon \cdot \log(n + m))$ memory and returns a set containing all such items (perhaps, among others). Explain why your algorithm is correct}
+  Тут очень похоже на алгоритм из лекции, где надо было найти тот элемент, который встречался больше половины раз.
+  Мы тоже храним счётчик ``популярности'' данного числа, увеличиваем его каждый раз когда оно нам попадается, и уменьшаем его когда попадается что-то другое.
+
+  Но теперь у нас есть $\epsilon$, и от этого возникают некоторые сложности.
+  Допустим $\epsilon \in \mathbb{Q}$ (мы же каким-то образом его записали, а если бы он был иррациональным, то записать его было бы сложно), тогда его можно представить как $\epsilon = \f{a}{b}$, где $0 < a < b$.
+  Мы резервируем массив для $\lceil 1/\epsilon \rceil$ ячеек, в каждой из которых мы будем хранить значение элемента и счётчик популярности, которые в сумме займут $O(\log (mn))$ бит.
+  Изменять значения этого счётчика нам надо будет несимметрично: когда встречается правильный элемент, мы добавляем $1-\epsilon$, а когда неправильный -- вычитаем $\epsilon$.
+  Также этот считчик надо ограничить сверху $\epsilon n$, чтобы в ответе учитывалась только последняя часть потока, а не он весь.
+  Но делать счётчик в рациональных числах мы не можем, поэтому нам придётся всё домножить на знаменатель $b$.
+
+  Чтобы ограничить использованием наших ячеек памяти, мы выкидываем из них все элементы, счётчик которых достигает нуля.
+  То как работают наши счётчики, и как мы подобрали количество ячеек гарантирует что нам их хватит.
+
+  Также тут есть подвох насчёт O-шки.
+  В условиях везде написано $O(\log (n+m))$, а по логике должно получиться $O(\log n + \log m) = O(\log (mn))$.
+  Это немного неочевидно, но под O-шкой эти две записи будут эквивалентны.
+  Чтобы это доказать надо сначала привести всё к одной переменной, например допустим что $m \geq n$.
+  Тогда $O(\log(n+m)) = O(\log 2m) = O(\log m)$ и $O(\log n + \log m) = O(2\log m) = O(\log m)$, и мы всё доказали.
+  Есть ещё небольшая проблема, что там может появляться фактор числителя эпсилона под логарифмом.
+  От этого можно избавиться заменив эпсилон на ближайшую под ним дробь с единичным числителем.
+  Тогда нам даже не надо будет делать его рациональным.
+
+  \begin{center}
+    \begin{minipage}{13cm}
+      \hrulefill
+      \begin{algorithmic}[1]
+        \State $\textrm{arr} \gets$ reserve $\lceil 1/\epsilon \rceil$ cells, $\log (mn)$ bits each
+
+        \While{$c$} \Comment{$c$ это текущий элемент}
+          \If{$c \in \textrm{arr}$} \Comment{есть ли он в списке}
+            \State $\textrm{arr}_c \gets \textrm{arr}_c + b$ \Comment{будет $b-a$ после второго этапа алгоритма}
+            \If{$\textrm{arr}_c > an$}
+              \State $\textrm{arr}_c \gets an$
+            \EndIf
+          \Else
+            \State $\textrm{arr}_c \gets b$ \Comment{выделяем новую ячейку}
+          \EndIf
+
+          \For{$d \in \textrm{arr}$}
+            \State $\textrm{arr}_d \gets \textrm{arr}_d - a$
+            \If{$\textrm{arr}_d \leq 0$}
+              \State \textbf{delete} $\textrm{arr}_c$ \Comment{освобождаем ячейку}
+            \EndIf
+          \EndFor
+        \EndWhile
+
+        \State \Return $\textrm{arr}$
+      \end{algorithmic}
+      \hrulefill
+    \end{minipage}
+  \end{center}
+
+\end{document}

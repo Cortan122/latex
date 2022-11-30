@@ -31,14 +31,17 @@ for i in *.tex; do
   grep -Fq '\usepackage[english,russian]{babel}' "$i" && cmd="pdflatex"
   grep -Fq '\usepackage[report]{styledoc19}' "$i" && cmd="pdflatex"
 
-  "$cmd" "$i" || exit 1
-  grep -Fq 'Rerun to get cross-references right.' "$f.log" && "$cmd" "$i"
-  grep -Fq 'Table widths have changed. Rerun LaTeX.' "$f.log" && "$cmd" "$i"
+  date_string="$(git log --format="%ad" --date=format:'%d %B %Y г.' -- "$i")"
+  latex_arg="\date{$date_string} \input{$i}"
+
+  "$cmd" "$latex_arg" || exit 1
+  grep -Fq 'Rerun to get cross-references right.' "$f.log" && "$cmd" "$latex_arg"
+  grep -Fq 'Table widths have changed. Rerun LaTeX.' "$f.log" && "$cmd" "$latex_arg"
 
   if grep -Fq 'There were undefined references.' "$f.log"; then
     bibtex "$f" || exit 1
-    "$cmd" "$i" || exit 1
-    "$cmd" "$i" || exit 1
+    "$cmd" "$latex_arg" || exit 1
+    "$cmd" "$latex_arg" || exit 1
   fi
 
   cp "$f.pdf" ../latex_pdfs/"$f.pdf"
