@@ -21,6 +21,7 @@ for i in *.tex; do
   if [ -f "$f.ipynb" ]; then
     if pandoc --list-input-formats | grep -Fq ipynb; then
       [ "$f.ipynb" -ot "$f.ipynb.tex" ] || pandoc "$f.ipynb" -o "$f.ipynb.tex" --extract-media=pandoc_media
+      sed -i 's|\\includegraphics{pandoc_media/.*.svg}|Latex doesnt support SVG images...|' "$f.ipynb.tex"
     else
       jupyter nbconvert --to pdf "$f.ipynb"
       continue
