@@ -1,0 +1,191 @@
+\documentclass{article}
+\usepackage{hyperref}
+\usepackage[dvipsnames]{xcolor}
+\usepackage{122}
+
+\hypersetup{
+  colorlinks=false,
+  urlbordercolor=MidnightBlue,
+  pdfborderstyle={/S/U/W 2}
+}
+
+\usepackage{environ}
+\NewEnviron{centerframebox}{\begin{center}\fbox{\parbox{0.92\textwidth}{\BODY}}\end{center}}
+
+\title{Random math stuff from Tumblr}
+\author{A Funny Internet Person \\ {\small he's just a litte guy}}
+
+\setlength{\parskip}{5pt plus2pt}
+\geometry{a5paper}
+\sloppy
+
+\begin{document}
+  \selectlanguage{english}
+  \maketitle
+
+  \section{A post about Math}
+
+  do you ever get confused why you can't raise negative one to a fractional exponent?
+  if we try, we can two get different results for the same expression:
+
+  \[
+    (-1)^{0.5} = (-1)^\frac{1}{2} = \sqrt{-1} = i
+  \]
+  \[
+    (-1)^{0.5} = (-1)^\frac{2}{4} = \sqrt[4]{(-1)^2} = 1
+  \]
+
+  this is all because there are two (2) different ``power'' operations taught to you in school.
+  wow. one works by repeated multiplication, and the other is defined thru natural logarithms \texttt{0\_0}
+
+  let's go thru the process of inventing it from scratch. so if we want to repeatedly multiply something, we just need a multipliable number and a counter to count the multiplications. it doesn't make sense to multiply zero or a negative number of times, so the exponent has to be a nonzero natural number. but we can easily extend it to all integers, if our base is also dividable and has a multiplicative identity (i.e. it's a member of some \href{https://en.wikipedia.org/wiki/Field_(mathematics)}{Field}). i'll just take the real numbers for now.
+
+  but extending to real exponents is a bit harder. it doesn't make any sense to multiply something a fractional number of times. so we have to rely on the exponent ``product rule'': when you multiply two numbers, their exponents add.
+
+  \[
+    a^b \cdot a^c = a^{b+c}
+  \]
+
+  if you do some tricky math (which i don't remember shhhh), you can prove that the only function, that satisfies this relationship, is $e$ to the $x$ (or $\exp$ for short). we can now use it to expand our definition to all numbers, for which we can define The Natural Logarithm (epik). but that doesn't include negative numbers at all. so the previous definition is still useful.
+
+  \[
+    \mathbb{R}^{\mathbb{N_+}} \to \mathbb{R}^{\mathbb{Z}} \to \mathbb{R}^{\mathbb{R}}_+
+  \]
+  \[
+    a^b = e^{b\ln a} = \exp(b\cdot \ln a)
+  \]
+  \[
+    \exp x := \sum_{k = 0}^{\infty} \frac{x^k}{k!} = 1 + x + \frac{x^2}{2} + \frac{x^3}{6} + \frac{x^4}{24} + \cdots
+  \]
+
+  if you're feeling extra fancy, you can even use this infinite sum definition for exp. this way our exponent can be literally anything even vaguely resembling a number. like a matrix, for example \texttt{:)}
+
+  \[
+    e\begin{bmatrix}
+      1&0\\
+      0&1\\
+    \end{bmatrix}^{12} =
+    e^{\begin{bmatrix}
+      1&0\\
+      0&1\\
+    \end{bmatrix}}
+  \]
+
+  here's an example of how you can (but probably shouldn't) use this knowledge. the matrix powers here are actually different operations
+
+  \section{A problem from the \href{https://pmt.physicsandmathstutor.com/download/Admissions/STEP/Papers/2021 STEP 3.pdf}{STEP math exam}}
+
+  ok, i'll give it a try\texttt{)}
+
+  \begin{centerframebox}
+    A curve has parametric equations
+    \[x = -4 \cos^3 t,\, y = 12 \sin t - 4 \sin^3 t\]
+    Find the equation of the normal to this curve at the point
+    \[(-4 \cos^3 \phi,\, 12 \sin \phi - 4 \sin^3 \phi)\]
+    where $0 <\phi< \dfrac{\pi}{2}$.
+
+    Verify that this normal is a tangent to the curve
+    \[x^\frac{2}{3} + y^\frac{2}{3} = 4\]
+    at the point $(8 \cos^3 \phi,\, 8 \sin^3 \phi)$.
+  \end{centerframebox}
+
+  so what does this mean to be normal? it means that our first derivative vectors need to be at a 90° angle. first we need some shortcut definitions.
+
+  \[
+    \nabla = \begin{bmatrix}\dfrac{dx}{dt} \\[4mm]\dfrac{dy}{dt}\end{bmatrix} \qquad
+    f(t) = \begin{bmatrix}-4\cos^3t\\12\sin t-4\sin^3t\end{bmatrix} \qquad
+    \mathbf{v}^\perp = \begin{bmatrix}\mathbf{v}_y \\ -\mathbf{v}_x\end{bmatrix}
+  \]
+
+  now we can calculate the derivatives at $t = \phi$.
+
+  \[
+    \nabla f(t) = \begin{bmatrix}
+      12\cos^2t \sin t \\
+      12\cos t - 12\sin^2t\cos t
+    \end{bmatrix} = 12\begin{bmatrix}
+      \cos^2t \sin t \\
+      \cos t - \sin^2t\cos t
+    \end{bmatrix}
+  \]
+
+  the normal is just a line, and we want a $y=ax+b$ type equation. let's call this normal $g(t)$ for now..
+
+  \[
+    g(t) = f(\phi) + t \cdot \nabla f(\phi) \qquad
+    \begin{cases}
+      x = x_1 + t x_2 \\
+      y = y_1 + t y_2
+    \end{cases} \qquad
+    \begin{cases}
+      t = \dfrac{x - x_1}{x_2} \\
+      y = y_1 + t y_2
+    \end{cases}
+  \]
+  \[
+    y = y_1 + \frac{y_2}{x_2} (x - x_1) = \frac{y_2}{x_2} x + \left(y_1 - \frac{x_1y_2}{x_2}\right)
+  \]
+  \[
+    y = \frac{\cos \phi - \sin^2\phi\cos \phi}{\cos^2\phi \sin \phi} x + \left(12 \sin \phi - 4 \sin^3 \phi - 4\cos^3\phi\frac{\cos \phi - \sin^2\phi\cos \phi}{\cos^2\phi \sin \phi}\right)
+  \]
+  \[
+    \frac{\cos \phi - \sin^2\phi\cos \phi}{\cos^2\phi \sin \phi} =
+    \frac{1 - \sin^2\phi}{\cos\phi \sin \phi} =
+    \frac{\cos^2\phi}{\cos\phi \sin \phi} =
+    \frac{\cos\phi}{\sin \phi} = \frac{1}{\tan\phi}
+  \]
+  \[
+    y = \frac{\cos\phi}{\sin \phi} x + 4\left(3 \sin \phi - \sin^3 \phi -\frac{\cos^4\phi}{\sin \phi}\right)
+  \]
+
+  welp, that was scary. now we have to check weather or not this line is tangent to that almost circle from the beginning.
+  actually, $x^\frac{2}{3}$ is not very well defined (see my previous post), but we can work with that.
+  but i have no idea how to compute its derivative...
+  let's just check if they intersect for now.
+
+  \[
+    (8 \cos^3 \phi)^\frac{2}{3} + (8 \sin^3 \phi)^\frac{2}{3} = 4
+  \]
+  \[
+    8^\frac{2}{3} (\cos^3 \phi + \sin^3 \phi)^\frac{2}{3} = 4
+  \]
+  \[
+    4 (\cos^2 \phi + \sin^2 \phi) = 4
+  \]
+  \[
+    1 = 1
+  \]
+
+  well, this checks out. now the hard part.
+
+  \[
+    y = \frac{\cos\phi}{\sin \phi} x + 4\left(3 \sin \phi - \sin^3 \phi -\frac{\cos^4\phi}{\sin \phi}\right)
+  \]
+  \[
+    8 \sin^3 \phi = 8 \cos^3 \phi \frac{\cos\phi}{\sin \phi} + 4\left(3 \sin \phi - \sin^3 \phi -\frac{\cos^4\phi}{\sin \phi}\right)
+  \]
+  \[
+    \sin^3 \phi = \frac{\cos^4\phi}{\sin \phi} + \frac{1}{2}\left(3 \sin \phi - \sin^3 \phi -\frac{\cos^4\phi}{\sin \phi}\right)
+  \]
+  \[
+    \sin^3 \phi = \frac{1}{2}\frac{\cos^4\phi}{\sin \phi} + \frac{1}{2}\left(3 \sin \phi - \sin^3 \phi\right)
+  \]
+  \[
+    2\sin^3 \phi = \frac{\cos^4\phi}{\sin \phi} + 3 \sin \phi - \sin^3 \phi
+  \]
+  \[
+    3\sin^3 \phi = \frac{\cos^4\phi}{\sin \phi} + 3 \sin \phi
+  \]
+  \[
+    3\sin^4 \phi - 3 \sin^2 \phi = \cos^4\phi
+  \]
+  \[
+    \begin{cases}
+      \cos^4\phi \geq 0 \\
+      3\sin^4 \phi - 3 \sin^2 \phi \leq 0
+    \end{cases}
+  \]
+
+  oh no.. they don't even intersect. i fucked up somewhere. i give up! but it was fun at least
+
+\end{document}
