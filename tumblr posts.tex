@@ -73,6 +73,35 @@
 
   here's an example of how you can (but probably shouldn't) use this knowledge. the matrix powers here are actually different operations
 
+  \subsection{Some clarification on the first two equations}
+  my point was that rational exponents don't make sense as anything more than a notational trick.
+
+  if you see $a^{b/c}$ you can't treat $b/c$ as a number!!
+  the standard interpretation of this is to first simplify the fraction and then convert it to $\sqrt[c]{a^b}$.
+
+  \[
+    a^\frac{b}{c} = \sqrt[c]{a^b} \qquad\iff\qquad \mathrm{GCD}(b,\, c) = 1
+  \]
+
+  this works perfectly well if $a$ is positive or $c$ is odd, but otherwise we have to deal with complex roots ang logarithms.
+  in cases where it's not complex, the order doesn't matter!
+
+  but in the complex case, we run into the problem of roots not actually being exponentials at all.
+  imagine taking the 5th root of $e$.
+  we can write it as $e^{1/5}$, which is a perfectly well defined \textbf{single valued} function!
+
+  \[
+    \sqrt[5]{e} = e^{\frac{1}{5}} = e^{0.2} \approx 1.22
+  \]
+
+  or we can actually remember what it means to be a root, and then solve that.
+
+  \[ \sqrt[5]{e} = x \qquad\iff\qquad x^5 = e \]
+  \[ e^{5\ln{x}} = e \]
+  \[ e^{\ln{x}} = e^{\frac{1}{5}} \]
+
+  here it works out to 5 equally spaced points around a circle, but i tried to reason about what will happen if $5$ is not a whole number, and my brain melted a little \texttt{:(}
+
   \section{A problem from the \href{https://pmt.physicsandmathstutor.com/download/Admissions/STEP/Papers/2021 STEP 3.pdf}{STEP math exam}}
 
   ok, i'll give it a try\texttt{)}
@@ -187,5 +216,32 @@
   \]
 
   oh no.. they don't even intersect. i fucked up somewhere. i give up! but it was fun at least
+
+  \subsection{Implicit differentiation}
+  i get it now!
+
+  it's like we pretend y is a function of x, and use the chain rule.
+
+  \[
+    x^\frac{2}{3} + y^\frac{2}{3} = 4 \mid_{dx}
+  \]
+  \[
+    x^\frac{2}{3} + g(x)^\frac{2}{3} = 4 \mid_{dx}
+  \]
+  \[
+    \frac{2}{3}x^{-\frac{1}{3}} + \frac{2}{3}g(x)^{-\frac{1}{3}}g'(x) = 0
+  \]
+  \[
+    \frac{2}{3}x^{-\frac{1}{3}} + \frac{2}{3}y^{-\frac{1}{3}}\cdot \frac{dy}{dx} = 0
+  \]
+  \[
+    x^{-\frac{1}{3}} + y^{-\frac{1}{3}}\cdot \frac{dy}{dx} = 0
+  \]
+  \[
+    \frac{dy}{dx} = -\frac{x^{-\frac{1}{3}}}{y^{-\frac{1}{3}}}
+  \]
+  \[
+    \frac{dy}{dx} = -\frac{y^{\frac{1}{3}}}{x^{\frac{1}{3}}}
+  \]
 
 \end{document}
