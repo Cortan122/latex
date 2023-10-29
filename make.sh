@@ -33,7 +33,7 @@ for i in *.tex; do
   grep -Fq '\usepackage[report]{styledoc19}' "$i" && cmd="pdflatex"
   grep -Fq '\documentclass[conference]{IEEEtran}' "$i" && cmd="pdflatex"
 
-  date_string="$(git log --format="%ad" --date=format:'%d %B %Y г.' -- "$i" | tail -n -1)"
+  date_string="$(git log --format="%ad" --date=format:'%_d %B %Y г.' -- "$i" | tail -n -1)"
   latex_arg="\date{$date_string} \input{$i}"
 
   "$cmd" "$latex_arg" || exit 1
