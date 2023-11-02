@@ -34,6 +34,10 @@ for i in *.tex; do
   grep -Fq '\documentclass[conference]{IEEEtran}' "$i" && cmd="pdflatex"
 
   date_string="$(git log --format="%ad" --date=format:'%_d %B %Y г.' -- "$i" | tail -n -1)"
+  if [ "$cmd" == "xelatex" ] && grep -Pqv '\usepackage{122}' "$i"; then
+    # use english date format
+    date_string="$(LC_ALL=C git log --format="%ad" --date=format:'%B %_d, %Y' -- "$i" | tail -n -1)"
+  fi
   latex_arg="\date{$date_string} \input{$i}"
 
   "$cmd" "$latex_arg" || exit 1
