@@ -1,0 +1,227 @@
+\documentclass{article}
+
+\usepackage{enumitem}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage{textcomp}
+\usepackage{gensymb}
+\usepackage[margin=0.5in]{geometry}
+\usepackage[hidelinks]{hyperref}
+
+\usepackage{tkz-berge}
+
+\let\oldemptyset\emptyset
+\let\emptyset\varnothing
+
+\usepackage{environ}
+\NewEnviron{centerframebox}{\begin{center}\fbox{\parbox{0.92\textwidth}{\BODY}}\end{center}}
+
+\usepackage[many]{tcolorbox}
+\newtcolorbox{cross}{blank,breakable,parbox=false,
+  overlay={\draw[red,line width=5pt] (interior.south west)--(interior.north east);
+    \draw[red,line width=5pt] (interior.north west)--(interior.south east);}}
+
+\newcommand{\N}{\mathbb{N}}
+
+\title{Combinatorial Optimization \\ Exercise Set 2 \\ Tuesday class}
+\author{
+  AAAAAAAAAA AAAAAAA \\
+  \href{mailto:AAAAAAAAAAAAAAAAAAAA}{AAAAAAAAAAAAAAAAAAAA}
+  \and
+  Carola Ley \\
+  \href{mailto:s6caleyy@uni-bonn.de}{s6caleyy@uni-bonn.de}
+  \and
+  Bailee Zacovic \\
+  \href{mailto:s38bzaco@uni-bonn.de}{s38bzaco@uni-bonn.de}
+}
+
+\begin{document}
+  \maketitle
+
+  \setcounter{section}{2}
+  \subsection{The number of ears is always the same}
+  \begin{centerframebox}
+    Prove that the number of ears in any two odd ear-decompositions of a factor-critical graph $G$ is the same.
+  \end{centerframebox}
+
+Fix an odd ear decomposition $r, P_1, P_2, \dots, P_k$ of a factor critical graph $G.$ Let $N_i$ be the number of vertices (excluding the end points) which first appear in $P_i$, and denote $\delta(v)$ the degree of $v\in V(G)$. Since $P_i$ is a cycle or path, it contributes $2N_i+2$ to the total sum of degrees in $G$ (two for each edge inside the ear, and two connecting it to the graph). That is,
+
+$$\sum_{v\in V(G)} \delta(v)=\sum_{0\leq i\leq k} (2N_i+2).$$
+
+Recall that $2|E(G)|=\sum_{v\in V(G)} \delta(v)$, and that $|V(G)|-1=\sum_{0\leq i\leq k} N_i $ since only $r$ does not appear in some ear $P_i$. It follows that
+
+$$|E(G)|=\frac{1}{2}\left(\sum_{0\leq i\leq k} (2N_i+2)\right)=\sum_{0\leq i\leq k} N_i+\sum_{0\leq i\leq k}1=|V(G)|-1+k,$$
+
+hence the number of ears of any odd ear decomposition is given by $k=|E(G)|-|V(G)|+1.$ $\blacksquare$
+
+  \subsection{Students and seminars}
+  \begin{centerframebox}
+    A set of students applies for a set of seminars. Each student chooses
+    exactly three seminars. Two seminars are chosen by $40$ students, all others by
+    fewer.
+
+    \begin{enumerate}[label=(\alph*)]
+      \item
+      Prove that each student can be assigned to a seminar they chose without
+      assigning more than $13$ students to any seminar.
+
+      \item
+      Show how to compute such an assignment in $O(n^2)$ time, where $n$ is the number of seminars.
+    \end{enumerate}
+
+  \end{centerframebox}
+  % i think this is the https://en.wikipedia.org/wiki/Rural_hospitals_theorem
+  % or is it...?
+
+  \subsubsection*{(a) Proof}
+  First let's denote the set of students as $A$, the set of seminars as $B$,
+  and the resulting bipartite graph as $G=(A \dot\cup B,\, E)$,
+  where an edge exists between student $a_i \in A$ and seminar $b_j \in B$ if and only if $a_i$ applied for $b_j$.
+  We also know that $|A| \geq 40$ and $|B| \geq 4$, and can label the two seminars of degree $40$ as $b_0$ and $b_1$.
+  The case $|B| = 3$ is impossible, because then the third seminar will also have degree $40$,
+  but that's not allowed and it has to have ``fewer''.
+
+  Let's construct a graph $G'=(A' \dot\cup B',\, E')$ such that a matching fully covering $A'$ in $G'$
+  will be a correct assignment  between students and seminars in $G$.
+  To that end we replace every vertex $b_i \in B$ with $13$ identical copies,
+  so that each seminar can be assigned to $13$ students by a matching.
+  More precisely $B' = \bigcup_{b_i \in B} \{b_i^j : j \in [1,\, 13]_\N \}$
+  and an edge $\{a_k,\, b_i^j\}$ exists if and only if $\{a_k,\, b_i\} \in E(G)$.
+  $A'$ is just a copy of $A$.
+
+  Now we can use Hall's Theorem on this graph $G'$ to prove that it contains a matching covering all of $A'$.
+  For that the Hall Condition has to hold for all subsets of $A'$.
+
+  \[ \forall S \in A' : |\Gamma_{G'}(S)| \geq |S| \]
+  \[ \forall S \in A : 13|\Gamma_{G}(S)| \geq |S| \]
+
+  Because of how we constructed the graph $G'$, the neighborhood $\Gamma_{G'}(S)$ will always be $13$ times larger
+  then its corresponding neighborhood $\Gamma_{G}(S)$ in the original graph $G$.
+  If we think about the amount of ``incoming'' and ``outgoing'' edges (all edges go from $A$ to $B$),
+  denoted by $\delta_-$ and $\delta_+$, we get $\delta_+(S) = 3|S|$ for all $S \subseteq A$ and
+  $\delta_-(B) = 80 + \delta_-(B \setminus \{b_0,\, b_1\})$ for the whole set $B$.
+  We can put an upper bound of the indegree of the neighbor $\Gamma_{G}(S)$ based on the fact that
+  the degrees of all but two of the individual seminars must be $39$ or less.
+  \begin{align*}
+    \delta_-(\Gamma_{G}(S)) &\leq 40 + 40 + 39(|\Gamma_{G}(S)| - 2) \\
+    &\leq 39 + 1 + 39 + 1 + 39(|\Gamma_{G}(S)| - 2) \\
+    &\leq 39 \cdot 2 + 2 + 39(|\Gamma_{G}(S)| - 2) \\
+    &\leq 2 + 39|\Gamma_{G}(S)|
+  \end{align*}
+  Also, because the incoming and outgoing edges must be balanced, we can derive
+  $\delta_-(\Gamma_{G}(S)) = \delta_+(S) = 3|S|$ from $|S|$.
+  \begin{align*}
+    3|S| &\leq 2 + 39|\Gamma_{G}(S)| \\
+    % 3|S| - 2 &\leq 39|\Gamma_{G}(S)| \\
+    \frac{3|S| - 2}{39} &\leq |\Gamma_{G}(S)| \\
+    13\frac{3|S| - 2}{39} &\leq 13|\Gamma_{G}(S)| \\
+    \frac{3|S| - 2}{3} &\leq 13|\Gamma_{G}(S)| \\
+    % |S| - \frac{2}{3} &\leq 13|\Gamma_{G}(S)| \\
+    |S| - \frac{2}{3} &\leq |\Gamma_{G'}(S)| \\
+  \end{align*}
+  Because both $|S|$ and $|\Gamma_{G'}(S)|$ are integers, we can just ignore the factor of $\frac{2}{3}$
+  and say that $|\Gamma_{G'}(S)| \geq |S|$ for all subsets $S \subseteq A'$, which is our Hall Condition.
+  This means that the graph $G'$ has a matching covering $A'$,
+  and $G$ also has an assignment for the students, that only uses each seminar at most $13$ times.
+  $\blacksquare$
+
+  % \begin{cross}
+  %   % So it our minimal case the only other seminar will also have degree $40 = 3|A| - 80$.
+  %   % This way all of our students are identical, and we can just assign the first $13$,... but wait. that's illegal!
+  %   Let's think about the minimal case with only $40$ students and $4$ seminars.
+  %   If we label the remaining seminars as $b_2$ and $b_3$, then $\delta(b_2) = 40-\delta(b_3)$.
+  %   The students can be separated into two groups based on whether or not they are connected to $b_2$ or to $b_3$.
+  %   All students in each group will be indistinguishable, because all must be connected to $b_0$ and $b_1$ as there's only $40$ of them.
+  % \end{cross}
+
+  % i think we should do some induction
+
+  % Using Hall's Theorem and the same argument as in the first part of Exercise 1.3,
+  % we can deduce that the graph $G$ contains $3$ disjoint matchings that all cover $A$.
+  % THIS IS FALSE
+  % From Exercise 1.3, we can deduce that $E(G)$ can be partitioned into $40$ matchings and..... what now??
+
+  \subsubsection*{(b) Algorithm}
+  % \begin{cross}
+  %   The problem is formulated in such a way, that we don't ``need'' students and want to have as little of them as possible,
+  %   because each one \textbf{has} to be assigned to a seminar, and might risk overfilling it.
+  %   So every seminar with degree $\delta(b_i) \leq 13$ can be immediately linked with all of its students,
+  %   and the problem simplified into a variation with those students removed,
+  %   i.e. the new set $A$ becomes $A \setminus \Gamma(b_i)$ and $B := B \setminus {b_i}$.
+  %   This way, without loss of generality, we can assume $\forall b_i \in B : \delta(b_i) \geq 14$.
+  %   % But we have to keep in mind that the degree of $b_0$ and $b_1$ is now $\leq 40$, instead of just being equal.
+  % \end{cross}
+
+  From Theorem 1.10
+  \footnote{The \textsc{Cardinality Matching Problem} for bipartite graphs can be solved in $O(nm)$ time, where $n = |V|$ and $m = |E|$}
+  we know that a maximal cardinality matching can be found in $G'$ in $O(|V| \cdot |E|)$ time.
+  In our graph $|E(G')| = 13 \cdot 3|A|$, $|V(G')| = |A| + 13|B|$ and the number of students is also limited by the number of seminars
+  $|A| \leq \frac{40}{3} |B|$.
+  So under big-O notation all those linear proportionality constants can be discarded
+  and the total runtime of the algorithm will be $O(n^2)$, where $n = |B|$.
+
+  This maximum cardinality matching will cover all the vertices in $A$,
+  because the cardinality of the matching we proved exists in part one is $|A|$,
+  and this is also the maximum cardinality possible on this bipartite graph, as all other edges will have to share a vertex in $A$.
+  This matching also corresponds to an assignment of students on $G$, where each seminar is used at most $13$ times.
+  We can see this by merging all the $b_i^j$ vertices back together.
+  $\blacksquare$
+
+  \subsection{Connected factor-critical graph}
+  \begin{centerframebox}
+    Show that a graph $G$ is factor-critical if and only if $G$ is connected and
+    for every vertex $v \in V(G)$ we have $\nu(G - v) = \nu(G)$.
+
+    By $\nu(G)$ we denote the maximum cardinality of a matching of $G$.
+  \end{centerframebox}
+
+Let $G$ be factor-critical. Then for every $v\in V(G),$ we have $\nu(G-v)=\frac{|V(G-v)|}{2}$ implies $|V(G)|$ is odd, hence $\nu(G)=\nu(G-v).$ To show $G$ is connected, fix $v_i,v_j \in V(G).$ First, suppose $|V(G)|=3.$ Then without loss of generality, $\{v_1,v_2\}\in E(G)$ since $G-v_3$ has a perfect matching by $G$ factor critical. Now let $|V(G)|\geq 5.$ Since $G$ is factor-critical, $G-v_i$ and $G-v_j$ admit perfect matchings and therefore satisfy the Tutte Condition. In particular, $\{v_i,s\},\{v_j,t\}\in E(G)$ for some $s,t\in V(G)\setminus\{v_i,v_j\},$ and $0<q_{G-v_i}(\{v_j\})\leq 1.$ That is, $G-v_i-v_j$ is connected, and hence $G$ is connected.
+
+%We will show $G$ is connected by induction on $|V(G)|=:n\geq 3.$ Let $n=3.$ Then without loss of generality, $\{v_1,v_2\}\in E(G)$ since $G-v_3$ has a perfect matching by $G$ factor critical. Let $n>3,$ and suppose all factor critical graphs on $n-1$ vertices are connected. Fix $v_i,v_j\in V(G).$ Since $G$ is factor critical, $G-v_i$ has a perfect matching; in particular, $\{v_j,w\}\in E(G)$ for some $w\in V(G).$ By induction hypothesis, $G-v_j$ is connected, hence there exists a sequence of edges$$\{v_i,w_m\},\{w_m,w_{m-1}\},\dots,\{w_1,w\},\{w,v_j\}$$where $w_i\in V(G)$. It follows that $G$ is connected.
+
+Conversely, suppose $G$ is connected and for all $v\in V(G),$ $\nu(G)=\nu(G-v)$. Recall the Berge Formula, which states:
+$$2\nu(G)+\underset{X\subset V(G)}{\text{max}}(q_G(X)-|X|)=|V(G)|.$$Observe that any $X\subset V(G)$ witnessing the maximum on the left-hand side is covered by every maximum matching of $G.$ By $\nu(G)=\nu(G-v)$ for all $v\in V(G),$ it follows that
+$$\underset{Y\subset V(G-v)}{\text{max}}(q_{G-v}(Y)-|Y|)+1=\underset{X\subset V(G)}{\text{max}}(q_G(X)-|X|).$$Furthermore, the maximum on the right-hand side must be achieved at $X=\emptyset.$ If not, there would exist some vertex $w\in X\neq \emptyset$ covered by every maximum matching of $G,$ but exposed by every maximum matching of $G-w,$ violating $\nu(G)=\nu(G-w)$ (since every matching $M'$ of $G-w$ is a matching $M$ of $G$). Note here we rely on the fact that $G$ is connected--in particular, $v$ is not isolated--hence every maximum matching of $G$ is non-empty. The graph being connected is also important for the right-hand side, because $q_G(\emptyset)$ is only $\leq 1$ on connected graphs, otherwise we might have extra components. Therefore, \begin{align*} & \underset{Y\subset V(G-v)}{\text{max}}(q_{G-v}(Y)-|Y|)+1=\underset{X\subset V(G)}{\text{max}}(q_G(X)-|X|)\leq 1\end{align*}implies for all $Y\subset V(G-v),$
+\begin{align*} q_{G-v}(Y)-|Y|\leq \underset{Y\subset V(G-v)}{\text{max}}(q_{G-v}(Y)-|Y|)\leq 0.\end{align*}Since $v$ was arbitrary, it follows from Tutte's Theorem that $G-v$ has a perfect matching for all $v\in V(G),$ hence $G$ is factor-critical. $\blacksquare$
+
+%Then for some $w\in V(G),$ $G-w$ does not admit a perfect matching, i.e. there exists $Y\subset V(G-w)$ such that $q_{G-w}(Y)>|Y|.$
+
+%f $\nu(G-v)=\nu(G)$ for all $v\in V(G),$ then $G$ does not admit a perfect matching, hence for some $X\subset V(G),$ $q_G(X)>|X|$ by Tutte's Theorem. It immediately follows that $G$ is disconnected. $\blacksquare$
+
+  \subsection{Tutte condition}
+  \begin{centerframebox}
+    Let $G$ be a graph, $n := |V(G)|$ even, and for any set $ X \subseteq V(G)$
+    with $|X| \leq \frac{3}{4}n$ we have
+
+    \[ \left|\bigcup_{x \in X}\Gamma(x)\right| \geq \frac{4}{3}|X| \]
+
+    Prove that $G$ has a perfect matching.
+
+    Hint: Let S be a set violating the Tutte condition.
+    Prove that the number of connected components in $G - S$ with just one element is at most
+    $\max \left\{0,\, \frac{4}{3}|S| - \frac{1}{3}n \right\}$.
+    Consider the cases $|S| \geq \frac{n}{4}$ and $|S| < \frac{n}{4}$ separately.
+
+  \end{centerframebox}
+
+Let $S$ be a set violating the Tutte condition, so $|S|<q_G(S)$.
+Let $k$ be the number of connected components in $G-S$ with just one element. We can assume that $G$ is not the empty graph and as $n$ is even, $n\geq 2$. For every vertex $x$ in $G$ it is $|\{x\}|=1\leq \frac 34 n$, so $\left|\Gamma(x)\right| \geq \frac{4}{3}$ and every vertex has degree at least 2. \\
+
+\textbf{Case 1 $|S|\geq \frac n4$:} As $|S|\geq \frac n4 \Rightarrow |V(G-S)|=n-|S|\leq \frac34 n$ we can use the given property for $G-S$ and the fact that the $k$ vertices from connected components with one element are not adjacent to any vertex in $G-S$ and get $$n-k\geq \left|\bigcup_{x \in V(G-S)}\Gamma(x)\right| \geq \frac{4}{3}|V(G-S)|=\frac 43(n-|S|) ~ \Rightarrow ~ k\leq \frac{4}{3}|S| - \frac{1}{3}n.$$
+As every odd connected component in $G-S$ with more than one vertex has at least three vertices, we can approximate $n$ by the number of vertices in $S$, the odd components in $G-S$ with one vertex and the odd components with more than one vertex:
+\begin{align*}n&\geq |S|+k+3(q_G(S)-k)&\\
+&=|S|-2k+3q_G(S) &|k\leq \frac{4}{3}|S| - \frac{1}{3}n \\
+&\geq  |S|-2\left(\frac{4}{3}|S| - \frac{1}{3}n\right)+3q_G(S) &||S|<q_G(S)\\
+&>|S|-\frac{8}{3}|S| + \frac{2}{3}n+3|S|&\\
+&=\frac{4}{3}|S| + \frac{2}{3}n&
+\end{align*}
+This gives us $|S|<\frac n4$ which is a contradiction to $|S|\geq \frac n4$.\\
+
+\textbf{Case 2 $|S|< \frac n4$:}
+For every $A\subseteq V(G-S)$ with size $|A|=\frac 34 n$ we have  $ \left|\bigcup_{x \in A}\Gamma(x)\right| \geq \frac{4}{3}|A|=\frac 43 \frac 34 n=n$. Thus if there was an isolated vertex $v$ in $G-S$, there is an set of vertices $v\notin A\subseteq V(G-S)$ which are adjacent to all vertices in $G$, also to $v$, which is a contradiction to $v$ being isolated. So we get $k=0$.
+%As $k\leq\max \left\{0,\, \frac{4}{3}|S| - \frac{1}{3}n \right\}$ and $\frac{4}{3}|S| - \frac{1}{3}n<\frac{4}{3}\frac n4 - \frac{1}{3}n=0$ we get $k=0$.
+By assumption it is $|S|<q_G(S)$, so there are at least $|S|+1$ odd connected components in $G-S$ and each of them has more than one element. Let $T$ be the set of the vertices in $|S|+1$ odd connected components in $G-S$. Then $|T|\geq 3(|S|+1)\Rightarrow |S|\leq \frac 13 |T|-1$. The vertices in $T$ can only have neighbours in $T$ or $S$, so $\left|\bigcup_{x \in T}\Gamma(x)\right|\leq |T|+|S|\leq |T|+\frac 13 |T|-1<\frac 43 |T|$. This is a contradiction to either $\left|\bigcup_{x \in T}\Gamma(x)\right| \geq \frac{4}{3}|T|$ if $T\leq\frac 34 n$ or if $|T|\geq \frac 34 n$ to $\left|\bigcup_{x \in T}\Gamma(x)\right|=n$.\\
+
+As both cases lead to a contradiction, there can be no set that violates the Tutte condition and thus $G$ has a perfect matching.
+\end{document}

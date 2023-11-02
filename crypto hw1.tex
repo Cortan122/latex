@@ -1,0 +1,325 @@
+\documentclass{article}
+
+\usepackage{enumitem}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage{textcomp}
+\usepackage{gensymb}
+\usepackage[dvipsnames]{xcolor}
+\usepackage[margin=0.5in]{geometry}
+\usepackage[hidelinks]{hyperref}
+
+\usepackage{environ}
+\NewEnviron{centerframebox}{\begin{center}\fbox{\parbox{0.92\textwidth}{\BODY}}\end{center}}
+
+\hypersetup{
+  colorlinks=true,
+  urlcolor=MidnightBlue,
+  % pdfborderstyle={/S/U/W 2}
+}
+
+\usepackage[listings,many]{tcolorbox}
+\makeatletter
+\newtcblisting{mylisting}{
+  listing only,
+  breakable, enhanced jigsaw,
+  listing engine=listings,
+  colback=gray!20,
+  listing options={
+    language=python,
+    keywordstyle=\color{blue},
+    basicstyle=\ttfamily,
+    stringstyle=\color{ForestGreen},
+    commentstyle=\color{gray},
+    ndkeywordstyle={\color{orange}},
+    identifierstyle=\color{black},
+    numbers=none,
+    showstringspaces=false,
+    aboveskip={0\p@ \@plus 6\p@}, belowskip={0\p@ \@plus 6\p@},
+    columns=fullflexible, keepspaces=true,
+    breaklines=true, breakatwhitespace=true,
+    extendedchars=false,
+    inputencoding=utf8,
+    upquote=true,
+    xleftmargin=-25pt,
+  }
+}
+\makeatother
+
+\newtcolorbox{cross}{blank,breakable,parbox=false,
+  overlay={\draw[red,line width=5pt] (interior.south west)--(interior.north east);
+    \draw[red,line width=5pt] (interior.north west)--(interior.south east);}}
+
+\title{Cryptography \\ Exercise Sheet 1}
+\author{
+  AAAAAAAAAA AAAAAAA \\
+  \href{mailto:AAAAAAAAAAAAAAAAAAAA}{AAAAAAAAAAAAAAAAAAAA}
+}
+
+\usepackage{pifont}
+\usepackage{newunicodechar}
+\newunicodechar{✅}{\textcolor{OliveGreen}{\ding{51}}}
+\newunicodechar{❌}{\textcolor{BrickRed}{\ding{55}}}
+
+\usepackage{enumitem}
+
+\begin{document}
+  \maketitle
+
+  \setcounter{section}{1}
+  \subsection{Break Vigenère}
+  \subsubsection*{(i) Periodic frequency}
+  \begin{centerframebox}
+    For $\tau = 1,\, 2,\, \dots,\, 10$ compute $S_\tau = \sum_{i=0}^{25} q^2_{\tau,i}$
+    where $q_{\tau,i}$ is the frequency of the letter $i$ in the ciphertext letters $c_1,\, c_{1+\tau},\, c_{1+2\tau},\, \dots$.
+    Let $\tau_0$ be the value for which $S_\tau$ is closest to the `English' value $\sum_{i=0}^{25} p_i^2 \approx 0.065$
+    where $p_i$ is the frequency of letter $i$ in English.
+  \end{centerframebox}
+  The ciphertext here is formatted in a very unusual way.
+  Every character not in the range $[\text{A} .. \text{Z}]$ is left unencrypted,
+  but it's unclear whether or not the action of not encrypting a non-letter character consumes an element of the key or not.
+  This is very important for us, because we have to know the exact position of the key, to try to guess its periodicity.
+  Both implementations logically make sense, because consuming the key makes it easer to match up the indexes,
+  but not consuming it is also logical, because we don't want to waste the entropy.
+
+  Let's write some python code to compute that:
+  \begin{mylisting}
+    from collections import Counter
+
+    ciphertext = open("exercises/01-vig.txt", 'r').read()
+    for tau in range(1, 11):
+      substring = ciphertext[::tau]
+      counter = Counter(substring)
+      val = sum((counter[k]/len(substring))**2 for k in counter if 'A' <= k <= 'Z')
+      print(tau, val)
+  \end{mylisting}
+  This code was written with the assumption that every character of the plaintext consumes a character of the key,
+  but it outputs almost the same value for all $\tau$: approximately $0.028$ which is nowhere close to the english $0.065$.
+  So we can conclude that our initial assumption was wrong, and we have to run the same code again, but remove the non-letter characters.
+
+  \begin{mylisting}
+    ciphertext = "".join(x for x in ciphertext if 'A' <= x <= 'Z')
+  \end{mylisting}
+  This way it outputs better values $\approx 0.047$, and the value for $\tau=6$ is the biggest being $\approx 0.067$.
+  So we can say that the key is probably a $6$ letter word.
+
+  \subsubsection*{(ii) Periodic frequency}
+  \begin{centerframebox}
+    For each offset $a \in \{0,\, 1,\, 2,\, \dots,\, \tau_0 - 1\}$ compute the key letter $k_a \in \{0,\, 1,\, 2,\, \dots,\, 25\}$
+    for which $\sum_{i=0}^{25} p_i r_{a,i+k_a}$ is closest to $0.065$.
+    Here $r_{a,i}$ is the frequency of letter $i$ in $c_a,\, c_{a+\tau_0},\, c_{a+2\tau_0},\, \dots$.
+  \end{centerframebox}
+  The code is mostly the same as before, but this time we also have to load in the english letter frequencies
+  and write a tiny helper function to add letters together.
+  Because there are now a lot of values to chose from,
+  we store them in an array and use the `\texttt{min()}' function to find the closest one to $0.065$ each time.
+  We also have to multiply the english frequencies by $100$, because they were stored as percentages.
+
+  \begin{mylisting}
+    def add_letters(l1: str, l2: str) -> str:
+      num1 = ord(l1.upper()) - ord('A')
+      num2 = ord(l2.upper()) - ord('A')
+      num3 = (num1 + num2) % 26
+      return chr(num3 + ord('A'))
+
+    key = []
+    for offset in range(tau0):
+      vals = []
+      for key_letter in range(26):
+        key_letter = chr(key_letter + ord('A'))
+        substring = ciphertext[offset::tau0]
+        counter = Counter(substring)
+        keyed_freq = {k: counter[add_letters(k, key_letter)]/len(substring) for k in counter}
+        val = sum(keyed_freq[k]*english_letter_freq[k]/100 for k in keyed_freq)
+        vals.append((key_letter, val))
+      closest = min(vals, key=lambda x: abs(0.065 - x[1]))[0]
+      key.append(closest)
+  \end{mylisting}
+
+  This code generate the key value ``GEHEIM'', which is a bit suspicious, because it is not an english word...
+  It is the german for `secret' tho.
+  Shame on you, course developers, for making it so people need to know german, to understand they got the correct key!
+
+  \subsubsection*{(iii) Find the key $k$ and decrypt}
+  Well we already have the key. Now we just have to decrypt it.
+  Because we're using modular addition, and not some symmetric operation like `\texttt{xor}',
+  we have to make a separate function to subtract letters.
+  If we were using a language other then python, we would've had to implement our own Euclidean mod, that works for negative numbers.
+
+  \begin{mylisting}
+    def subtract_letters(l1: str, l2: str) -> str:
+      num1 = ord(l1.upper()) - ord('A')
+      num2 = ord(l2.upper()) - ord('A')
+      num3 = (num1 - num2) % 26
+      return chr(num3 + ord('A'))
+
+    plaintext = "".join(subtract_letters(x, key[i % tau0]) for i, x in enumerate(ciphertext))
+  \end{mylisting}
+  The resulting plaintext begins with `\texttt{THELASTQUESTIONWASASKEDFORTHEFIRSTTIME}',
+  so we got the key right, and the only thing left to do is to readd all the non-letter characters we deleted.
+
+  \begin{mylisting}
+    ciphertext = open("exercises/01-vig.txt", 'r').read()
+    plaintext_arr = []
+    plaintext_index = 0
+    for char in ciphertext:
+      if "A" <= char <= "Z":
+        plaintext_arr.append(plaintext[plaintext_index])
+        plaintext_index += 1
+      else:
+        plaintext_arr.append(char)
+
+    plaintext = "".join(plaintext_arr)
+  \end{mylisting}
+
+  This code is a little bit more verbose, because we have to manually keep track of a separate index.
+  % But it does give us the correct decrypted plaintext.
+
+  \begin{tcolorbox}[breakable, enhanced jigsaw, colback=Green!5!white, colframe=Green!75!black]
+  THE LAST QUESTION WAS ASKED FOR THE FIRST TIME, HALF IN JEST, ON MAY 21, 2061, AT A TIME WHEN HUMANITY FIRST STEPPED INTO THE LIGHT. THE QUESTION CAME ABOUT AS A RESULT OF A FIVE-DOLLAR BET OVER HIGHBALLS, AND IT HAPPENED THIS WAY:
+
+  ALEXANDER ADELL AND BERTRAM LUPOV WERE TWO OF THE FAITHFUL ATTENDANTS OF MULTIVAC. AS WELL AS ANY HUMAN BEINGS COULD, THEY KNEW WHAT LAY BEHIND THE COLD, CLICKING, FLASHING FACE -- MILES AND MILES OF FACE -- OF THAT GIANT COMPUTER. THEY HAD AT LEAST A VAGUE NOTION OF THE GENERAL PLAN OF RELAYS AND CIRCUITS THAT HAD LONG SINCE GROWN PAST THE POINT WHERE ANY SINGLE HUMAN COULD POSSIBLY HAVE A FIRM GRASP OF THE WHOLE.
+
+  MULTIVAC WAS SELF-ADJUSTING AND SELF-CORRECTING. IT HAD TO BE, FOR NOTHING HUMAN COULD ADJUST AND CORRECT IT QUICKLY ENOUGH OR EVEN ADEQUATELY ENOUGH. SO ADELL AND LUPOV ATTENDED THE MONSTROUS GIANT ONLY LIGHTLY AND SUPERFICIALLY, YET AS WELL AS ANY MEN COULD. THEY FED IT DATA, ADJUSTED QUESTIONS TO ITS NEEDS AND TRANSLATED THE ANSWERS THAT WERE ISSUED. CERTAINLY THEY, AND ALL OTHERS LIKE THEM, WERE FULLY ENTITLED TO SHARE IN THE GLORY THAT WAS MULTIVAC'S.
+
+  FOR DECADES, MULTIVAC HAD HELPED DESIGN THE SHIPS AND PLOT THE TRAJECTORIES THAT ENABLED MAN TO REACH THE MOON, MARS, AND VENUS, BUT PAST THAT, EARTH'S POOR RESOURCES COULD NOT SUPPORT THE SHIPS. TOO MUCH ENERGY WAS NEEDED FOR THE LONG TRIPS. EARTH EXPLOITED ITS COAL AND URANIUM WITH INCREASING EFFICIENCY, BUT THERE WAS ONLY SO MUCH OF BOTH.
+
+  BUT SLOWLY MULTIVAC LEARNED ENOUGH TO ANSWER DEEPER QUESTIONS MORE FUNDAMENTALLY, AND ON MAY 14, 2061, WHAT HAD BEEN THEORY, BECAME FACT.
+  \end{tcolorbox}
+
+  This text is the start of \textit{The Last Question} by Isaac Asimov.
+  You can read the whole thing \href{https://users.ece.cmu.edu/~gamvrosi/thelastq.html}{here}!!
+
+  \subsection{Perfect secrecy for two messages}
+  \begin{centerframebox}
+    The point is, that perfectly secret means the cipher text for one $m$ does not give you any information about $m$.
+    However, the task is to prove that two ciphertexts necessarily give you information about $m$ and $m'$.
+  \end{centerframebox}
+
+  The problem here is worded in a very confusing way with all of those probabilities.
+  I didn't really understand what the formal formulation was trying to say, but I think,
+  because of all the $\forall$ quantifiers, we only have to find one counterexample to prove the statement false.
+
+  One obvious counterexample would be the case where both ciphertexts are the same!
+  That way we would definitely know that both messages were the same.
+  And it breaks out probably thing.
+  (at least I think it does...)
+
+  \subsection{A complex cryptosystem}
+  \begin{centerframebox}
+    Let's brainstorm a little. You have to argue mostly intuitively since we
+    have not yet discussed all precise details in the course. Consider secure
+    identification documents -- like passports or identity cards.
+  \end{centerframebox}
+
+  \subsubsection*{(i) Player roles}
+  \begin{centerframebox}
+    Which player roles are involved, good and malicious? Which sensitive inputs do the players have? Which information about other
+    players is available or can be assumed to be available? Which result(s) do the participants expect?
+  \end{centerframebox}
+
+  We should expect the following properties from this system:
+  \begin{enumerate}[itemsep=3pt, parsep=0pt]
+    \item Only real humans should ever hold IDs, and the data stored on them should match their real life identities.
+    \item Every human must ever have at most one valid ID at all times.
+    \item It is possible to verify that you are the holder of an ID without giving it (or its secret part) away.
+    \item It should be impossible fake such an ID.
+    \item A user must be able to receive a replacement ID in case of loss. That would make the old ID invalid.
+  \end{enumerate}
+
+  Well I can think of 3 intended roles:
+  \begin{enumerate}[itemsep=3pt, parsep=0pt]
+    \item ID issuing authority (like the government, for example).
+    They use some sort of out-of-band method to verify your identity and issue you a signed ID.
+    There should probably be only one of those (or maybe one per ID ``type'') and it should keep a centralized up-to-date database of all the valid IDs.
+    \item ID holder person. They want to use their ID to prove that they are a unique human.
+    \item ID demanding business. It want to make sure that all of its customers are unique human people (and not bots, for example) and maybe verify some other properties, like `age' or `legal name'. The businesses also want to be able to compare the IDs they have with each other, to share information about their users.
+  \end{enumerate}
+
+  And also 2 malicious ones:
+  \begin{enumerate}[itemsep=3pt, parsep=0pt]
+    \item The fake ID producer. They want to pretend like they are a bunch of different people to some business, and create a bunch of fake accounts for example.
+    \item The personal data hoarder. It pretends to be a legitimate business (or maybe it actually is), but in reality it actually want to collect as much user ID data as possible. Maybe to sell it later.
+  \end{enumerate}
+
+  \subsubsection*{(ii) Which of the basic cryptographic schemes may help to implement this?}
+  The system I described in the above section is somewhat similar to the current
+  SSL/TLS\footnote{it has two names, because of some patent shenanigans 20 years ago} certificate infrastructure,
+  but with the client and server roles reversed.
+  SSL/TLS is the encryption protocol we use for HTTPS and a bunch of other stuff.
+
+  It also has authorities that can sign you certificate if you can prove the ownership of a domain,
+  usually through hosting a special file over regular HTTP.
+  And the visitors of your websites, if they trust that certificate authority,
+  can be sure that they are, in fact, connecting to who they should be, and not some kind of imposter.
+
+  There actually exists a little known feature of SSL/TLS called ``Client certificates'',
+  that is used for rare protocols like \href{https://en.wikipedia.org/wiki/Gemini_(protocol)}{Gemini}.
+  My system would be something like if client certificates could be signed by a certificate authority.
+
+  \subsubsection*{(iii) Where are the limits? What cannot be done with the listed primitive cryptosystem?}
+  There's a tradeoff between two contradictory requirements:
+  on one hand we want to make sure that a single user cannot secretly pretend to be two (or more) people,
+  but on the other hand we want our users to have at least some sort of anonymity/privacy.
+  The point mentioned in section (i), about how businesses want to be able to share information,
+  is actually bad for the users, because it leads to very thorough tracking.
+  Giving your ID to a business, maybe just to buy some beer, would let them know almost very single detail about your personal life.
+
+  It might be possible to come up with an cryptographic scheme, where an ID can prove it's legit, without revealing its actual public key, or maybe a different public key each time.
+  But in this case it would necessarily be impossible for a business to tell if this a new person, or if they have seen them before.
+
+  \subsection{Negligible or significant?}
+  \begin{centerframebox}
+    A function $f$ is called noticeable or significant iff there exists an exponent
+    $c$ such that for large $n$ we have $|f(n)| \geq \frac{1}{n^c}$.
+    Thus a function $\varepsilon$ is nonsignificant iff for all $c$ and infinitely many $n$ we have $|\varepsilon(n)| < \frac{1}{n^c}$.
+    We thus have two candidate notions for saying that a function is `very small':
+    negligible (reconsider the definition!) and non-significant.
+    Decide which of the following functions are negligible or non-significant.
+
+    A function $f$ is called negligible if for every positive integer $c$ there exists an integer $N_c$
+    such that for all sufficiently large $x > N_c$, $|f(x)| < \frac{1}{x^c}$.
+  \end{centerframebox}
+  As we can see, the only difference between those definitions,
+  is that to be called \textit{negligible} a function has to smaller than all inverse polynomials for \textbf{all} large n,
+  but to be \textit{non-significant} it just has to happen for infinitely many of them.
+  Also ever negligible function will automatically be non-significant,
+  and their is a quick way to check if a function is negligible by comparing it to $2^{-g(x)}$,
+  where $g(x)$ is any unbounded function that grows to infinity.
+
+  The function $\frac{1}{\sqrt{\log_2 \log_2 n}}$ actually grows to infinity, so it definitely doesn't satisfy our conditions.
+  The function $\frac{\log_2^7 n}{n^2}$ can just be simplified to an inverse polynomial $n^{-2}$, and $f(x) = 2$ is not an unbounded function.
+  For the functions that have an exponential form, we can see that $n$, $n^3$ and $\frac{\log_2 n}{\log_2 \log_2 n}$ go to infinity, so they must be negligible and non-significant.
+  The $\frac{1}{\sqrt{n}}$ actually goes to zero, but we have to be more careful when considering the rest of the functions, that have $\sin(x)$ in them.
+
+  For $n^{-\sin^3 n}$ we can see that it is always larger then $n^-2$, because $\sin^3(x)$ can't be larger than $1$.
+  But the last function $2^{-\frac{\log_2 n}{\sin^2{n}}}$ is (almost) more interesting.
+  The exponent explodes to negative infinity every time $\sin^2 n$ is approaching zero.
+  And, because $\pi$ is irrational, it does so infinitely many times, even just in the $\mathbb{N}$ natural numbers.
+  Which is enough to satisfy non-significant-ness.
+  But $\log_2 n$ just happen to be an unbounded function, so... this whole thing is also negligible!
+  It would've been so much cooler, if if was something like $2^{-\frac{1}{\sin^2 n}}$ and we would've had a mismatch between the two definitions.
+
+  \begin{center}
+    \def\arraystretch{1.5}
+    \begin{tabular}{c|c|c|c|c|c|c|c|c|}
+      % & 1 & 2 & 3 & 4 & 5 & 6 & 7 & 8 \\
+      $f(n)$ &
+      $\dfrac{1}{\sqrt{\log_2 \log_2 n}}$ &
+      $n^{-\sin^3 n}$ &
+      $n^3 2^{-n}$ &
+      $\dfrac{\log_2^7 n}{n^2}$ &
+      $2^{-n^3}$ &
+      $2^{-\frac{1}{\sqrt{n}}}$ &
+      $2^{-\frac{\log_2 n}{\log_2 \log_2 n}}$ &
+      $2^{-\frac{\log_2 n}{\sin^2{n}}}$
+      \\\hline negligible? &
+      ❌ & ❌ & ✅ & ❌ & ✅ & ❌ & ✅ & ✅
+      \\\hline non-significant? &
+      ❌ & ❌ & ✅ & ❌ & ✅ & ❌ & ✅ & ✅
+      \\\hline
+    \end{tabular}
+  \end{center}
+
+\end{document}

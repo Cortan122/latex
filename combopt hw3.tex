@@ -1,0 +1,312 @@
+\documentclass{article}
+
+\usepackage{enumitem}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage{textcomp}
+\usepackage{gensymb}
+\usepackage[margin=0.5in]{geometry}
+\usepackage[hidelinks]{hyperref}
+
+\usepackage{tkz-berge}
+
+\let\oldemptyset\emptyset
+\let\emptyset\varnothing
+
+\usepackage{environ}
+\NewEnviron{centerframebox}{\begin{center}\fbox{\parbox{0.92\textwidth}{\BODY}}\end{center}}
+
+\usepackage[many]{tcolorbox}
+\newtcolorbox{cross}{blank,breakable,parbox=false,
+  overlay={\draw[red,line width=5pt] (interior.south west)--(interior.north east);
+    \draw[red,line width=5pt] (interior.north west)--(interior.south east);}}
+
+\newcommand{\N}{\mathbb{N}}
+
+\title{Combinatorial Optimization \\ Exercise Set 3 \\ Tuesday class}
+\author{
+  AAAAAAAAAA AAAAAAA \\
+  \href{mailto:AAAAAAAAAAAAAAAAAAAA}{AAAAAAAAAAAAAAAAAAAA}
+  \and
+  Carola Ley \\
+  \href{mailto:s6caleyy@uni-bonn.de}{s6caleyy@uni-bonn.de}
+  \and
+  Bailee Zacovic \\
+  \href{mailto:s38bzaco@uni-bonn.de}{s38bzaco@uni-bonn.de}
+}
+
+\begin{document}
+  \maketitle
+
+  \setcounter{section}{3}
+  \subsection{Vertex connected graph}
+  \begin{centerframebox}
+    Let $G$ be a $k$-vertex-connected graph which has neither a perfect nor a near-perfect matching.
+
+    \begin{enumerate}[label=(\alph*)]
+      \item Show that $\nu(G) \geq k$.
+      \item Show that $\tau(G) \leq 2 \cdot \nu(G) - k$.
+    \end{enumerate}
+
+    By $\nu(G)$ we denote the maximum cardinality of a matching of $G$. \\
+    By $\tau(G)$ we denote the minimum cardinality of a vertex cover of $G$. \\
+    A graph is $k$-vertex-connected (or $k$-connected) if it is still connected after removing any $k-1$ vertices and $|V(G)| > k$.
+  \end{centerframebox}
+  \subsubsection*{(a) Matching number}
+  Let's try induction on $k$ starting from $k=1$.
+  A $1$-vertex-connected is simply any connected graph.
+  It doesn't have a perfect nor a near-perfect matching, so it must have at least $4$ vertices,
+  because every possible graph on $3$ vertices (a triangle and a length $2$ path) has an obvious near-perfect matching.
+  For $\nu(G) \geq 1$ the graph just has to have an edge, and as it is connected and has more than one vertex, it definitely has an edge.
+
+  Now we need to consider the $k \geq 2$ case, with the assumption that $\nu(G) \geq k$ (our induction hypothesis) holds for $k-1$.
+  A $k$-connected graph automatically counts as a $j$-connected graph for all $j < k$,
+  and it will still be $(k-1)$-connected, if we remove any vertex.
+  This follows trivially from the definition.
+  So we already know that $\nu(G) \geq k-1$ and $\forall v \in V(G) : \nu(G - v) \geq k-1$.
+  To prove that there exists a bigger matching, we must find an augmenting path.
+
+  Let's pick an arbitrary vertex $a$, and construct a maximum matching $M_0$ in the subgraph $G - a$.
+  By our induction hypothesis,
+  this matching will have cardinality $\nu(G - a) \geq k-1$ and cover at least $2(k-1)$ vertices.
+  To get rid of those annoying inequalities, we can remove edges from $M_0$ until its cardinality equals $k-1$.
+  We call the resulting matching $M$ and its cardinality $|M| = k-1$ exactly.
+  There must exist another vertex $b \in V(G) \setminus V(M)$ not covered by the matching,
+  because if all such vertices were covered, $M$ would have been a near-perfect matching in $G$.
+
+  Denote the subgraph $G' = G[V(M)]$ of all vertices in $G - a$ covered by the matching $M$.
+  Then consider the neighborhood $A = \Gamma_{G'}(a)$ and $B = \Gamma_{G'}(b)$.
+  Because $G$ is $k$-connected, every vertex $v \in V(G)$ must have degree at least $k$,
+  as removing any $k-1$ vertices must still leave $v$ connected to the rest of the graph.
+  Now we consider two cases: either $a$ and $b$ have an edge between each other, or another non-matching vertex, or all $k$ of their edges are leading to vertices in $G'$.
+  In the first case we can just add that edge to our matching $M$ and construct a bigger one.
+  So we only have to consider the second case.
+
+  So the cardinality of the sets $A$ and $B$ must be $\geq k$.
+  Construct another subset $A'$ in $V(G')$ based on the matching mates of the vertices in $A$,
+  more specifically it must contain all vertices that are matched to some vertex in $A$
+  and $A' = \{v \in V(G') \mid \exists u \in A : \{u,\, v\} \in M\}$.
+  Because of what a matching is, the sets $A$ and $A'$ will have the same cardinality.
+
+  By the Pigeonhole principle, the sets $A'$ and $B$ must intersect,
+  because they both have cardinality at least $k$ and are contained in $V(M)$,
+  whose cardinality is exactly $2(k-1)$.
+  When we select a vertex $m_2 \in A' \cap B$, it will have a non-matching edge leading to $b$
+  and a matching edge leading to some vertex $m_1 \in A$.
+  There must also be a non-matching edge between $a$ and $m_1$.
+  Thus $a,\, m_1,\, m_2,\, b$ is an $M$-augmenting path,
+  and so there exists a bigger matching $M'$ in $G$ with cardinality $|M'| = |M|+1 = k-1+1 = k$.
+  And $\nu(G)$ must of course be at least $k$.
+  $\blacksquare$
+
+  % Because $G$ has neither a perfect nor a near-perfect matching,
+  % the number of its vertices must be larger than the number of vertices covered by the maximum matching $2\nu(G)$ by at least $2$.
+  % This way we get $|V(G)|-2 \geq 2\nu(G) \geq 2k$.
+
+  \subsubsection*{(b) Vertex covers}
+  It is true in general for all graph, not just our specific case of a $k$-connected one,
+  that the minimum vertex cover number is always $\tau(G) \leq 2 \cdot \nu(G)$,
+  because a vertex cover $C$ of that size can be constructed by taking the union of all the edges of the maximum matching $M$.
+  This vertex cover will cover every edge at least once, because if it didn't the matching $M$ wouldn't be maximum,
+  and it will cover all the matching edges in $M$ twice.
+
+  Let's again prove this by induction.
+  The base case is just a connected graph with a vertex cover $\tau(G) \leq 2\nu(G) - 1$
+  one smaller than the dumb solution of picking every matching vertex.
+  We start by picking a vertex $a$ that is not covered by our maximum matching $M$, .
+  One of its neighbors must be a covered vertex $m_1 \in C$, and it will also have a matching mate $m_2$.
+  Now, if we consider the neighborhood of $m_2$, there are there cases:
+  either $m_2$ has a non-matching neighboring vertex $b$;
+  every one of its neighbors is in $C$;
+  or it has no neighbors, other than $m_1$.
+  In the first case $a,\, m_1,\, m_2,\, b$ is an $M$-augmenting path,
+  and we get a contradiction, because $M$ was supposed to a maximum matching.
+  In the second and third cases all edges leading out of $m_2$ are already covered by some vertex in $C$,
+  so we can safely remove it from our vertex cover.
+  And its size will be $\leq 2\nu(G) - 1$.
+
+  Next we need to consider the $k \geq 2$ case, with the assumption that
+  $\tau(G) \leq 2 \cdot \nu(G)$ (our induction hypothesis) holds for $k-1$.
+  By the same logic, we can subtract an arbitrary vertex $v$ from our graph,
+  and the resulting subgraph $G' = G - v$ will meet the induction hypothesis.
+  Considering what $\nu(G')$ might be, there are two cases:
+  either we $\nu(G') = \nu(G)$ (this might happen if $v$ was not covered by the maximum matching)
+  or $\nu(G') = \nu(G)-1$, as we can remove the edge containing $v$ from the matching,
+  and the resulting matching must be at least as good as $\nu(G)-1$.
+
+  By Exercise 2.3\footnote{A graph $G$ is factor-critical if and only if $G$ is connected
+  and for every vertex $v \in V(G)$ we have $\nu(G - v) = \nu(G)$},
+  we can conclude that a vertex $u$ such that $\nu(G - u) = \nu(G)-1$ must exist,
+  or else the graph $G$ will be factor-critical and have a near-perfect matching.
+
+  We pick $v$ equal to that vertex $u$, and get the following inequality:
+  \begin{align*}
+    \tau(G') &\leq 2 \cdot (\nu(G) - 1) - (k - 1)\\
+    &\leq 2\nu(G) - 2 - k + 1 \\
+    &\leq 2\nu(G) - k - 1
+  \end{align*}
+
+  By using that minimal vertex cover in our full graph $G$ and also adding $v$ as an extra vertex,
+  we get exactly the size we were looking for $\tau(G) \leq 2\nu(G) - k$.
+  $\blacksquare$
+  \subsection{Bipartite matching algorithm}
+  \begin{centerframebox}
+  Let $G$ be a graph and $M$ a matching in $G$ that is not maximum. In this exercise we use the terminology \textit{disjoint subgraphs/paths/circuits} and mean it
+quite literally: Two subgraphs are \textit{disjoint} if they have no edges and no vertices
+in common. (Note that the term \textit{vertex-disjoint paths} is often used to mean that
+two paths have no \textit{inner}-vertices in common, but possibly endpoints.)
+    \begin{enumerate}
+        \item Let $M$ be a non-maximum matching of $G.$ Show that there are $\nu(G)-|M|$ disjoint $M$-augmenting paths.
+        \item Let $M$ be a non-maximum matching of $G.$ Show the existence of an $M$-augmenting path of length at most $\frac{\nu(G)+|M|}{\nu(G)-|M|}.$
+        \item Let $M$ be a non-maximum matching of $G.$ Let $P$ be a shortest $M$-augmenting path in $G$ and $P'$ an $(M\Delta E(P))$-augmenting path. Prove $|E(P')|\geq |E(P)|+2\cdot |E(P)\cap E(P')|.$
+    \end{enumerate}
+ Consider the following algorithm: We start with the empty matching and in each iteration augment the matching along a shortest augmenting path. Let $P_1,P_2,\dots$ be the sequence of augmenting paths chosen.
+    \begin{enumerate}[resume]
+        \item Show that if $|E(P_i)|=|E(P_j)|$ for all $i\neq j,$ then $P_i$ and $P_j$ are disjoint.
+        \item Show that the sequence $|E(P_1)|,|E(P_2)|,\dots$ contains less than $2\sqrt{\nu(G)}+1$ different numbers.
+    \end{enumerate}
+    From now on, let $G$ be bipartite and set $n := |V (G)|$ and $m := |E(G)|$.
+    \begin{enumerate}[resume]
+        \item Given a non-maximum matching $M$ in $G$ show that we can find in $O(n+m)$-time a family $\mathcal{P}$ of disjoint shortest $M$-augmenting paths such that if $M'$ is the matching obtained by augmenting $M$ over every path in $\mathcal{P}$, then
+        $$ \min\{|E(P)| : P\textrm{ is an }M'\textrm{-augmenting path}\} > \min\{|E(P)| : P\textrm{ is an }M\textrm{-augmenting path}\} $$
+
+        \item Describe an algorithm with runtime $O(\sqrt{n}(m + n))$ that solves the \textsc{Cardinality Matching Problem} in bipartite graphs.
+    \end{enumerate}
+  \end{centerframebox}
+
+  \subsubsection*{(1)} Fix a matching $M'$ witnessing $\nu(G)$, and consider $M'\Delta M.$ Recalling the proof of Berge's theorem, $M'\Delta M$ is a disjoint collection of circuits and paths, where at least one path must be $M$-augmenting. In particular, $M'\Delta M$ may consist of (1) even length cycles, (2) even length paths, (3) odd length paths. (We omit odd cycles since this would contradict that $M$ or $M'$ is a matching.) Since $M'$ is a maximum matching, it follows that the number of edges in $M'\Delta M$ belonging to $M'$ must exceed the number belonging to $M$ by $\nu(G)-|M|.$ Since even cycles and path contain the same number of edges from $M'$ as from $M,$ and since each odd length path contains one more edge from $M'$ than from $M$, it follows that $M'\Delta M$ must contain $\nu(G)-|M|$ odd length paths, and thus there are $\nu(G)-|M|$ disjoint $M$-augmenting paths. $\blacksquare$
+
+  \subsubsection*{(2)} For $M$ a non-maximum matching and $M'$ a maximum matching witnessing $\nu(G),$ we have $$|M'\Delta M|=|M'\setminus M|+|M\setminus M'|\leq \nu(G)+|M|.$$ By part (1), $M'\Delta M$ consists of $\nu(G)-|M|$ odd length paths, which are disjoint $M$-augmenting paths in $G$. Labelling these paths $P_1,P_2,\dots, P_{\nu(G)-|M|},$ we know $$\sum_{i=1}^{\nu(G)-|M|} |E(P_i)| = |M'\Delta M|\leq \nu(G)+|M|.$$ If all paths $P_i$ were of length strictly greater than $\frac{\nu(G)+|M|}{\nu(G)-|M|},$ it would happen that
+  $$\sum_{i=1}^{\nu(G)-|M|} |E(P_i)| > \nu(G)-|M|\cdot \frac{\nu(G)+|M|}{\nu(G)-|M|}=\nu(G)+|M|,$$which is a contradiction. Hence, there must exist some $M$-augmenting path of length at most $\frac{\nu(G)+|M|}{\nu(G)-|M|}$. $\blacksquare$
+
+  \subsubsection*{(3)} Fix $P$ an $M$-augmenting path in $G,$ and $P'$ an $(M\Delta E(P))$-augmenting path. Then $P'$ cannot share its endpoints with $P,$ as they must remain exposed. Suppose $|E(P')|<|E(P)|+2\cdot |E(P)\cap E(P')|,$ and consider $E(P)\Delta E(P')$. This symmetric difference is the disjoint union of cycles (in the case that $E(P)\cap E(P')\neq \emptyset$) and two paths. When $E(P)\cap E(P')$ these two paths are just $P$ and $P'$; otherwise, each path contains one endpoint from $P$ and one endpoint from $P'.$ Now, $E(P') \setminus E(P)$ is a collection of paths, each of odd length. When $E(P')\setminus E(P)=E(P'),$ this is trivial. Otherwise, this holds because $P'$ is $M\Delta E(P)$-alternating. In particular, all edges in $P'$ incident to vertices in $P$ must not lie in $M\Delta E(P),$ and both endpoints must be exposed, hence the components of $E(P')\setminus E(P)$ are $M\Delta E(P)$-alternating paths which start and end with edges not contained in $M\Delta E(P)$, and are therefore of odd length.
+
+  Moreover, the paths in $E(P)\setminus E(P')$ containing the endpoints of $P$ must be of even length. Since $P'$ is $M\Delta E(P)$-augmenting, meaning that each edge in $P'$ meeting a vertex in $P$ must be followed by an edge in $E(P)\cap E(P')$ contained $M\Delta E(P)$. This edge was therefore not contained in $M,$ meaning that the paths in $E(P)\setminus E(P')$ containing the endpoints of $P$ must meet a vertex in $P\cap P'$ via an edge covered by $M.$ Since $P$ is $M$-alternating, these paths start at the endpoints of $P$ with edges not contained in $M,$ and end with edges contained in $M,$ hence are of even length. The path components of $E(P')\Delta E(P)$ are therefore of odd length, and their vertices are exposed by $M$ since $P$ is $M$-augmenting, and since the endpoints of $P'$ are disjoint from $P$. They are also $M$-augmenting. This is because each path in $E(P)\setminus E(P')$ meets a vertex in $P\cap P'$ via an edge in $M,$ and each path in $E(P')\setminus E(P)$ meets a vertex in $P\cap P'$ via an edge not in $M.$ Also, $P$ is $M$-alternating, and any path in $E(P')\setminus E(P)$ is $M$-alternating as well, since it is $(M\Delta E(P))$-augmenting but disjoint from $E(P),$ hence $M$-alternating.
+
+  Now, on the assumption that $|E(P')|<|E(P)|+2\cdot |E(P)\cap E(P')|,$ it follows that
+  $$|E(P')\Delta E(P)|=(|E(P')|-|E(P)\cap E(P')|)+(|E(P)|-|E(P)\cap E(P')|)<2|E(P)|,$$meaning that $E(P)\Delta E(P')$ must contain some odd length $M$-augmenting path of length strictly less than $|E(P)|,$ contradicting that $P$ was a shortest $M$-augmenting path. $\blacksquare$
+
+
+
+  % We prove (1) by induction on $|E(P_i)|=|E(P_j)|=n\in 2\mathbb{N}+1.$ Let $n=1,$ and suppose $P_i$ and $P_j$ are not disjoint for $i<j$. That is, $P_i$ is given by $\{v,w\}$ and $P_j$ is given by $\{v,u\}$ for $v,w,u\in E(G)$, $w\neq u.$ Then after the $i^{th}$ iteration of the algorithm, $\{v,w\}$ appears in the matching. Because only paths of length $1$ are augmented between $P_i$ and $P_j$, it follows that $\{v,w\}$ remains in the matching until the $j^{th}$ iteration. In other words, $v,$ an endpoint of $P_j$, remains covered after the $(j-1)^{th}$ iteration, contradicting that $P_j$ is an augmenting path. Hence $P_i$ and $P_j$ are disjoint for $|E(P_i)|=|E(P_j)|=1.$
+
+  % Let $n>1$ be odd, and suppose all augmenting paths $P_{\ell}\neq P_k$ of lengths $1\leq |E(P_{\ell})|=|E(P_k)|\leq n-2$ are disjoint. Fix $P_i$, $P_j$ satisfying $|E(P_i)|=|E(P_j)|=n$ for $i<j.$ First, note that the endpoints of $P_j$ must be exposed after the $(j-1)^{th}$ iteration. Since every vertex in $P_i$ is covered after the $i^{th}$ iteration, and since vertices cannot become uncovered by the algorithm after they are covered, it follows that the endpoints of $P_j$ cannot lie in $P_i.$
+
+  %Since $v,$ an endpoint of $P_j$, is therefore covered
+
+  \subsubsection*{(4)} Denote $M_i$ the matching given after augmenting paths $P_1,P_2,\dots, P_{i-1}.$ We aim to show that subsequences of the form $P_i,P_{i+1},\dots,P_{j}$ for all $i,j$ satisfying $|E(P_i)|=|E(P_{i+1})|=\dots=|E(P_j)|$ are pairwise disjoint. We will do so by induction on $j-i.$
+
+  As a first base case, let $j=i+1.$ Then, for $P_{i+1}$ (a $(M_i\Delta E(P_i))$-augmenting path by construction) satisfying $|E(P_i)|=|E(P_{i+1})|$, it follows by a previous part that $$|E(P_{i+1})|\geq |E(P_i)|+2\cdot |E(P_i)\cap E(P_{i+1})|\implies |E(P_i)\cap E(P_{i+1})|=0,$$i.e. $P_i, P_{i+1}$ are disjoint. Let $j=i+2,$ and suppose $|E(P_{i+2})|=|E(P_i)|.$ We must first show $P_{i+2}$ is a $(M_i\Delta E(P_i))$-augmenting path. To this end, we note that $P_{i+1}$ is a $M_{i+1}=(M_i\Delta E(P_i))$-augmenting path. Since $M_{i+1}$ differs from $M_i$ only at $P_{i+1},$ and since $P_{i+1}$ and $P_{i+2}$ are disjoint by previous argument, it follows that $P_{i+2}$ is a $(M_i\Delta E(P_i))$-augmenting path. Hence,
+  $$|E(P_{i+2})|\geq |E(P_i)|+2\cdot |E(P_i)\cap E(P_{i+2})|\implies |E(P_i)\cap E(P_{i+2})|=0,$$i.e. $P_i, P_{i+2}$ are disjoint.
+
+  %Inductively, we obtain $P_i,P_j$ disjoint for all $j>i$ satisfying $|E(P_i)|=|E(P_j)|.$
+
+  For the induction step, fix $j>i$ with $|E(P_j)|=|E(P_i)|,$ and let all length-$(j-1)$ subsequences of paths of equal size be pairwise disjoint. In particular, $P_i,P_{i+1},\dots,P_{j-1}$ is pairwise disjoint, and $P_{i+1},P_{i+2},\dots,P_j$ is pairwise disjoint by hypothesis. We note that $|E(P_i)|=|E(P_j)|$ implies $|E(P_i)|=|E(P_{i+1})|=\dots=|E(P_j)|,$ since our algorithm augments the matching along a \textit{shortest} augmenting path at each iteration. Then, since $M_{j}$ differs from $M_i$ only at $P_{i+1},P_{i+2},\dots, P_{j-1},$ from which $P_j$ is disjoint, it follows that $P_{j}$ is a $(M_i\Delta E(P_i))$-augmenting path. Hence,
+  $$|E(P_{j})|\geq |E(P_i)|+2\cdot |E(P_i)\cap E(P_{j})|\implies |E(P_i)\cap E(P_j)|=0,$$i.e. $P_i, P_{j}$ are disjoint. $\blacksquare$
+
+  %For the induction step,
+
+  %$P_i,P_{i+1},\dots,P_{j-1}$ be pairwise disjoint.
+
+
+  %For general $j>i,$ we proceed by induction.
+
+ % Without loss of generality fix $i<j,$ and suppose $|E(P_i)|=|E(P_j)|$.
+
+  %Toward a contradiction, suppose further that $P_i$ and $P_j$ are not disjoint, i.e. they share some vertex $v\in V(G).$ Since $P_j$ is augmenting, its endpoints must remain exposed by the matching after the $i^{th}$ iteration. Moreover, since every vertex in $P_i$ is covered after the $i^{th}$ iteration, and since vertices cannot become uncovered by the algorithm after they are covered, it follows that $v$ cannot be an endpoint of $P_j$.
+
+  %Then $v$ is covered by some $\{v,w\}$ in the matching after the $(j-1)^{th}$ iteration, for $w$ an inner point of $P_j.$
+
+  %If $w\notin P_i,$ then $v$ is covered by two edges--one in $P_j$ and one in $P_i$--after the $(j-1)^{th}$ iteration, which is a contradiction. Hence, $w\in P_i.$ Since $P_i$ is augmenting, $\{v,w\}$ must have appeared in the matching before or after the $i^{th}$ iteration.
+
+  %In general, $P_i$ and $P_j$ may have $0<i\leq n-2$ edges in common, which we label $\{v_1,w_1\},\{v_2,w_2\},\dots, \{v_i,w_i\}.$
+
+
+
+  %then because $v$ cannot become exposed before the $j^{th}$ iteration,
+
+  %and $\{v,w\}$ appears in the matching after augmenting $P_i$.
+
+  %Since $v$ cannot become exposed before the $j^{th}$ iteration, if $w\notin P_i,$
+
+  %Since $v$ is covered after augmenting $P_i,$ and because only paths of cardinality $|E(P_i)|=|E(P_j)|$ are augmented between $P_i$ and $P_j$ (that is, $v$ cannot become exposed before the $j^{th}$ iteration) it follows that $w\in P_i.$ Since $w$ is covered after the $i^{th}$ iteration, and cannot become exposed before the $j^{th}$ iteration, it further holds that $\{v,w\}$ appears in the matching after augmenting $P_i$. Since $P_i$ and $P_j$ may share more
+
+
+
+  % Now, can decompose $P_i$ and $P_j$ into unions of smaller paths. Noting that neither $v$ nor $w$ are endpoints of $P_j$, we may write
+  % $$P_j-\{v,w\}=\underbrace{P_j^1}_{|E(P_j^1)|>0}\cup \underbrace{P_j^2}_{|E(P_j^2)|>0}\text{ and }P_i-\{v,w\}=P_i^1\cup P_i^2.$$Since $\{v,w\}$ appears in the matching after the $(j-1)^{th}$ iteration and $P_j$ is an augmenting path (in particular, of odd length), we may let $|E(P_j^1)|>|E(P_j^2)|$ without loss of generality, and note that $|E(P_j^1)|,|E(P_j^2)|\equiv 1\pmod{2}.$
+
+  % Since $\{v,w\}$ appears in the matching after the $i^{th}$ iteration and $P_i$ is an augmenting path (in particular, $\{v,w\}$ did \textit{not} appear in the matching after the $(i-1)^{th}$ iteration), $|E(P_i^1)|,|E(P_i^2)|\equiv 0\pmod{2}.$ It may happen that exactly one of $|E(P_i^1)|$ or $|E(P_i^2)|$ is zero.
+
+  % Then,
+  % $$|E(P_j)|=|E(P_j^1)|+|E(P_j^2)|+1$$
+  % $$|E(P_i)|=|E(P_i^1)|+|E(P_i^2)|+1$$which implies that
+
+  % \begin{align*}2(|E(P_i)|-1)&=(|E(P_j^1)|+|E(P_j^2)|)+(|E(P_i^1)|+|E(P_i^2)|)\\&<(|E(P_j^1)|+|E(P_i^1)|)+(|E(P_j^1)|+|E(P_i^2)|)\end{align*}
+  % It must happen that at least one of $|E(P_j^1)|+|E(P_i^1)|$ or $|E(P_j^1)|+|E(P_i^2)|$ is strictly larger than $|E(P_i)|-1,$ which implies one of $|E(P_j^2)|+|E(P_i^1)|$ or $|E(P_j^2)|+|E(P_i^2)|$ is strictly smaller than $|E(P_i)|-1.$ Without loss of generality, let $|E(P_j^2)|+|E(P_i^1)|<|E(P_i)|-1.$
+  % But then $P_j^2\cup P_i^1$ is a path of odd length
+
+
+
+
+
+
+  \subsubsection*{(5)} Let $|E(P_1)|,|E(P_2)|,\dots$ be the sequence of augmenting paths chosen for fixed $G.$ Recall that for $M$ a non-maximum matching in $G,$ there exists an $M$-augmenting path of length at most $\frac{\nu(G)+|M|}{\nu(G)-|M|}.$
+
+  Thus we can put an upper bound on the number of unique values in our sequence of path lengths, by considering the following function and its integer values:
+  $$f(|M|) = \left\lfloor\frac{\nu(G)+|M|}{\nu(G)-|M|}\right\rfloor.$$
+  Actually, because all our paths are augmenting, their lengths must necessarily be odd, as both of its endpoints must not be covered by the matching $M$ and it is impossible for it to have even length.
+  Thus every even value $y$ of our function needs to be replaced by $y-1$, and we can do that by subtracting $1$ from the original function, dividing it by $2$ and flooring it again.
+  \[ f'(|M|) = \left\lfloor\frac{f(|M|)-1}{2}\right\rfloor+1
+    = \left\lfloor\frac{\nu(G)+|M|-(\nu(G)-|M|)}{2(\nu(G)-|M|)}\right\rfloor+1
+    = \left\lfloor\frac{|M|}{\nu(G)-|M|}\right\rfloor+1 \]
+
+  Now we have to turn our function into a simple $\frac{N}{x}$ form, so it will be easier to reason about the unique values.
+  \begin{align*}
+    \frac{|M|}{\nu(G)-|M|} &= \frac{|M| + (\nu(G)-|M|) - (\nu(G)-|M|)}{\nu(G)-|M|} \\
+    &= \frac{|M| + (\nu(G)-|M|)}{\nu(G)-|M|} - 1 \\
+    &= \frac{\nu(G)}{\nu(G)-|M|} - 1 \\
+    &= \frac{N}{N-|M|} - 1 \qquad (N := \nu(G)) \\
+    &= \frac{N}{x} - 1 \qquad\qquad (x := N-|M|) \\
+  \end{align*}
+  Here we replaced $\nu(G)$ with $N$, which is also a constant, and replaced $\nu(G)-|M|$ with $x$, because that just reverses the order in which we iterate over the values of our function.
+  We can also get rid of the $+1$ and $-1$ on the ends, because it will not affect the amount of unique values.
+  The final function will be:
+  \[ f'(x) = \left\lfloor\frac{N}{x} - 1\right\rfloor+1 = \left\lfloor\frac{N}{x}\right\rfloor \]
+
+  Now, when $k:=\left\lfloor \frac{N}{x}\right\rfloor \leq \sqrt{N},$ it follows that $$k\cdot \left\lfloor \frac{N}{k}\right\rfloor\leq N<\left(\left\lfloor \frac{N}{k}\right\rfloor+1\right)k\leq \left\lfloor \frac{N}{k}\right\rfloor\cdot (k+1)\implies k\leq N/\left\lfloor \frac{N}{k}\right\rfloor<k+1\implies k=\left\lfloor N/\left\lfloor \frac{N}{k}\right\rfloor\right\rfloor.$$In other words, the value $k$ is achieved on the interval $\left[\frac{N}{x},\frac{N}{x}+1\right)$ when $0\leq k\leq \sqrt{N}.$ Moreover, we have
+  $$\frac{N}{k-1}-\frac{N}{k}=\frac{N}{k(k-1)}>\frac{N}{N-\sqrt{N}}>1,$$i.e. $\left\lfloor \frac{N}{k-1}\right\rfloor >\left\lfloor \frac{N}{k}\right\rfloor$ and so each $0\leq k\leq \sqrt{N}$ generates  a \textit{different} value of $\left\lfloor \frac{N}{k}\right\rfloor.$ This gives $\lfloor \sqrt{N}\rfloor$ different values for $k$. On the other hand, when $k>\sqrt{N},$ it happens that $x\leq \sqrt{N}.$ In this situation, there are at most $\sqrt{N}$ different possible values for $\left\lfloor \frac{N}{x}\right\rfloor=k.$ Therefore, over all possible values of $k,$ we obtain a total of $$\lfloor \sqrt{N}\rfloor +\sqrt{N}\leq 2\sqrt{N}$$values for $\left\lfloor \frac{N}{x}\right\rfloor.$ Returning to our previous computations and substituting $N=\nu(G),$ this means our sequence of paths lengths contains strictly fewer than $2\sqrt{\nu(G)}+1$ different numbers. $\blacksquare$
+
+
+
+  % https://math.stackexchange.com/questions/1069460/how-many-distinct-values-of-floorn-i-exists-for-i-1-to-n
+
+  %We observe that augmenting any path $P_i$ requires ``spending'' one additional edge of $\nu(G).$ Moreover, the union of $k$ augmenting paths of length $\ell$ may give an augmenting path of length $k(\ell-1)+1.$ Now, iterate the algorithm until no more length $1$ augmenting paths may be chosen.
+
+  %Moreover, $w\in P_i.$ Otherwise, we would either not  otherwise we would not have a valid matching after augmenting $P_i,$ since
+
+
+  %Denote $M$ the matching after the $(i-1)^{th}$ iteration.
+
+ % Since $P_i,P_j$ are augmenting paths, their inner-vertices must be covered, while their endpoints must be exposed. Thus, $v$ must either be an endpoint of both $P_i,P_j$, or a midpoint of both. If it is an endpoint of both, then augmenting $P_i$ will cover an endpoint of $P_j,$ contradicting that $P_j$ is an augmenting path after the $i$th iteration.
+
+% Kotya's attempt: [this is probably nonsense]
+ \subsubsection*{(6)} Let $k$ be the minimum length of the shortest $M$-augmenting path in $G$, i.e. the length of all paths in $\mathcal{P}$. Because of what we found in part (4) we know that all those paths are disjoint.
+ Assume that $M'$ has an augmenting path $P'$ of length $k$ or smaller. Because all the paths in $\mathcal{P}$ are disjoint and have length $k$, we can use the condition we proved in part (3) to show that if $P'$ intersects one of theses paths, it must be longer then it by at least 2 edges, and not length $k$ anymore. Thus this path $P'$ must also be disjoint with all paths in $\mathcal{P}$.
+ But then $P'$ will also be in $\mathcal{P}$ because none of its vertices were augmented by paths in $\mathcal{P}$, and it will also be a valid augmenting path for $M$. And all of them are already in $\mathcal{P}$, and we get a contradiction.
+
+ A naive algorithm for finding all the paths in $\mathcal{P}$ will take $O(n^2)$ time, by running at most $n$ consecutive depth first searches on the graph, each of which check all $n$ vertices, until there are no shortest disjoint paths left. But we have to do better, and find some way to look for them in linear time.
+
+ % \textcolor{red}{i did what i could, but i don't have any ideas on how to do the algorithm (c) Kotya}
+ % i think it works now...
+ % now we have to prove the complexity of the algorithm
+ % \\
+% \textcolor{red}{I think this should work in linear time:}
+
+ Let $V(G)=A\cup B$ be the bipartition of $G$, then every $M$-augmenting path has odd length, thus one endpoint is in $A$ and one in $B$. To find a family of shortest $M$-augmenting paths, let $L_1$ be the vertices in $A$ that are not covered by $M$. From this vertices we use the idea of BFS and take all neighbors of vertices in $L_1$ as $L_2$. If there is at least one vertex in $L_2$ which is not covered by $M$, all shortest $M$-augmenting paths are between $L_1$ and $L_2$. If all vertices in $L_2$ are covered by $M$, $L_3$ is defined as the matching-partners of the vertices in $L_2$. From $L_3$ continue with BFS the same way as with $L_1$ until there is a layer $L_i\subseteq B $ with a vertex not covered by $M$. All shortest $M$-augmenting paths are $L_1-L_i$-paths, let $\mathcal{P}$ be the set of such shortest $M$-augmenting paths, that can be found by greedily taking all $M$-augmenting $L_1-L_i$-paths which are disjoint.
+ By construction there is no $M'$-augmenting path with the same length, and by (iv) there is no shorter $M'$-augmenting path, thus $\min\{|E(P)|:P \text{ is an $M'$-augmenting path}\}>\min\{|E(P)|:P \text{ is an $M$-augmenting path}\}$. This algorithm has the same runtime as BFS, thus it runs in $O(n+m)$.
+
+\subsubsection*{(7)} By (v) there are at most $2\sqrt{\nu(G)}+1$ different lengths of shortest $M$-augmenting paths, thus by running the algorithm from (vi) at most $2\sqrt{\nu(G)}+1$ times we can find a maximum matching. As $\nu(G)\leq \frac 12 n$ it is  $2\sqrt{\nu(G)}+1\in O(\sqrt n)$ and running the algorithm from (vi) until there is no $M$-augmenting path left, solves the Cardinality Matching Problem in bipartite graphs in $O(\sqrt n (n+m))$.
+
+\end{document}
