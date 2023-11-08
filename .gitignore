@@ -16,5 +16,7 @@
 !sas/**
 !coursework
 !coursework/**
+!img
+!img/**
 !LICENSE
 *.ipynb.tex
