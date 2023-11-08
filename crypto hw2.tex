@@ -1,0 +1,212 @@
+\documentclass{article}
+
+\usepackage{enumitem}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage{textcomp}
+\usepackage{gensymb}
+\usepackage[dvipsnames]{xcolor}
+\usepackage[margin=0.5in]{geometry}
+\usepackage[hidelinks]{hyperref}
+
+\usepackage{environ}
+\NewEnviron{centerframebox}{\begin{center}\fbox{\parbox{0.92\textwidth}{\BODY}}\end{center}}
+
+\hypersetup{
+  colorlinks=true,
+  urlcolor=MidnightBlue,
+  % pdfborderstyle={/S/U/W 2}
+}
+
+\usepackage[listings,many]{tcolorbox}
+\makeatletter
+\newtcblisting{mylisting}{
+  listing only,
+  breakable, enhanced jigsaw,
+  listing engine=listings,
+  colback=gray!20,
+  listing options={
+    language=python,
+    keywordstyle=\color{blue},
+    basicstyle=\ttfamily,
+    stringstyle=\color{ForestGreen},
+    commentstyle=\color{gray},
+    ndkeywordstyle={\color{orange}},
+    identifierstyle=\color{black},
+    numbers=none,
+    showstringspaces=false,
+    aboveskip={0\p@ \@plus 6\p@}, belowskip={0\p@ \@plus 6\p@},
+    columns=fullflexible, keepspaces=true,
+    breaklines=true, breakatwhitespace=true,
+    extendedchars=false,
+    inputencoding=utf8,
+    upquote=true,
+    xleftmargin=-25pt,
+  }
+}
+\makeatother
+
+\newtcolorbox{cross}{blank,breakable,parbox=false,
+  overlay={\draw[red,line width=5pt] (interior.south west)--(interior.north east);
+    \draw[red,line width=5pt] (interior.north west)--(interior.south east);}}
+
+\title{Cryptography \\ Exercise Sheet 2}
+\author{
+  AAAAAAAAAA AAAAAAA \\
+  \href{mailto:AAAAAAAAAAAAAAAAAAAA}{AAAAAAAAAAAAAAAAAAAA}
+}
+
+\begin{document}
+  \maketitle
+
+  \setcounter{section}{1}
+  \subsection{One-time pad or Vernam's cipher}
+  \begin{centerframebox}
+    When using the one-time pad (Vernam's cipher) with the key $k = 0^\kappa$, it
+    follows that $\operatorname{Enc}_k(m) = m$ and the message is effectively sent in the clear.
+    It has therefore been suggested to improve the one-time pad by only encrypting with a key $k \neq 0^\kappa$,
+    i. e. to have KeyGen choose $k$ uniformly at random from the set of non-zero keys of length $\kappa$.
+    Is this an improvement? In particular, is it still perfectly secret? Prove your answer.
+
+    If your answer is positive, explain why the one-time pad is not described
+    in this way. If your answer is negative, reconcile this with the fact that
+    encrypting with $0^\kappa$ doesn't change the plaintext.
+  \end{centerframebox}
+  Removing the all zero key $0^\kappa$ actually breaks perfect secrecy.
+  To prove this, we just need to find one counterexample pair of $m$ and $c$,
+  for which the probability of seeing the message $m$ depends of seeing the ciphertext $c$.
+  Let's just pick $c = m$.
+  Because we made it so the key $0^\kappa$ is impossible,
+  encrypting $m$ could not have resulted in the ciphertext $c$, and $\operatorname{prob}(m \mid c) = 0$.
+  Which is obviously not the same as $\operatorname{prob}(m)$, because that depends on our message distribution.
+  In simpler terms, if the key $0^\kappa$ is impossible, when an attacker receives a ciphertext, that could be a plausible message,
+  they will automatically know that that message is the the message that was sent.
+
+  Sometimes not encrypting the message is fine, because
+  (1) in practice the probability of the zero key $0^\kappa$ is negligibly small, and
+  (2) it is also the same probability of randomly hitting a different plausible message just by chance.
+  When an attacker receives a ciphertext, that could be a plausible message, they can't know if the key was zero,
+  or if the ciphertext came from encrypting a completely different plausible message.
+
+  But it the real word, the attacker should probably assume the encryption algorithm has a bug,
+  and generates zero keys with an abnormally high probability.
+  A bug that makes zero keys more common is much more likely to occur in actual software
+  (and I think there are historical examples of this very thing, that we unnoticed for years),
+  than hitting the miniscule probabilities for one of the theoretical scenarios described above.
+
+  \subsection{Game definition for pseudo-randomness}
+  \begin{centerframebox}
+    Show that the definition for pseudo-randomness coincides with the game-based one.
+
+    Pseudo-randomness is defined as:
+    For each probabilistic polynomial-time distinguisher $\mathcal{D}$ the advantage
+    \[ \operatorname{adv}_G(\mathcal{D}) = \frac{1}{2}\left|
+      \vphantom{\frac{1}{2}}
+      \operatorname{prob}(\mathcal{D}(G(s)) = 1) -
+      \operatorname{prob}(\mathcal{D}(r) = 1)
+    \right| \]
+    is negligible. Here, $s \leftarrow \{0,\, 1\}^\kappa$ and $r \leftarrow \{0,\, 1\}^{\ell(k)}$ are chosen uniformly at random.
+
+    The game based definition involves the same distinguisher $\mathcal{D}$, and feeds it either $G(s)$ or $r$ at random,
+    determined by the random bit $h_\textsc{prg}$, and then expects the distinguisher to guess it.
+  \end{centerframebox}
+  First prove that the game based definition follows from the normal one.
+  Then we can use the fact that the probabilities $\operatorname{prob}(\mathcal{D}(G(s)) = 1)$ and $\operatorname{prob}(\mathcal{D}(r) = 1)$ are significantly different.
+  We can rewrite them to include the our random bit $h_\textsc{prg}$:
+  \begin{align*}
+    \operatorname{prob}(\mathcal{D}(G(s)) = 1) &= \operatorname{prob}(\mathcal{D}(w_{h_\textsc{prg}}) = 1 \mid h_\textsc{prg} = 0)
+    = \operatorname{prob}(G^\textsc{prg}(\mathcal{D}) = \textcolor{BrickRed}{REJECT} \mid h_\textsc{prg} = 0)\\
+    \operatorname{prob}(\mathcal{D}(r) = 1) &= \operatorname{prob}(\mathcal{D}(w_{h_\textsc{prg}}) = 1 \mid h_\textsc{prg} = 1)
+    = \operatorname{prob}(G^\textsc{prg}(\mathcal{D}) = \textcolor{OliveGreen}{ACCEPT} \mid h_\textsc{prg} = 1)
+  \end{align*}
+
+  From the lemma on page 84 of the lecture slides we know, that for the indistinguishability game:
+  \[ \frac{1}{2}\left|
+    \vphantom{\frac{1}{2}}
+    \operatorname{prob}(G(\dots) = \textcolor{OliveGreen}{ACCEPT} \mid h = 0) -
+    \operatorname{prob}(G(\dots) = \textcolor{BrickRed}{REJECT} \mid h = 1)
+  \right| = \left|
+    \operatorname{prob}(G(\dots) = \textcolor{OliveGreen}{ACCEPT}) - \frac{1}{2}
+  \right| \]
+  This is derived form basic algebra, and can be safely used here, with a completely different game,
+  as long as it also has this random bit $h$.
+  We can also swap the $h=0$ and $h=1$ states, because that will normally flip the sign, and we are under the absolute value operator.
+  Applying it to our game $G^\textsc{prg}(\mathcal{D})$, along with the equalities we derived in the previous paragraph, we get:
+
+  \[ \operatorname{adv}_G(\mathcal{D}) = \frac{1}{2}\left|
+    \vphantom{\frac{1}{2}}
+    \operatorname{prob}(\mathcal{D}(G(s)) = 1) -
+    \operatorname{prob}(\mathcal{D}(r) = 1)
+  \right| = \left|
+    \operatorname{prob}(G^\textsc{prg}(\mathcal{D}) = \textcolor{OliveGreen}{ACCEPT}) - \frac{1}{2}
+  \right| = \operatorname{adv}^\textsc{prg}_G(\mathcal{D}) \]
+
+  So if the probabilities on the left differ by a non-negligible advantage, the ones on the right will also have that advantage.
+  And we don't even need to consider the inverse case, because we proved they are perfectly equal.
+
+  \subsection{A toy generator}
+  \begin{centerframebox}
+    Consider the (one-size) generator given by the following table:
+
+    \begin{center}
+      \begin{tabular}{r|r}
+        $s$ & $G(s)$ \\ \hline
+        000 & 000000 \\
+        001 & 010001 \\
+        010 & 111001 \\
+        011 & 101110 \\
+        100 & 010111 \\
+        101 & 101101 \\
+        110 & 110011 \\
+        111 & 010100 \\
+      \end{tabular}
+    \end{center}
+  \end{centerframebox}
+
+  \subsubsection*{(i) Determine the advantage of the distinguisher that on input $w$ returns whether $\operatorname{bit}_0 w$ equals $\operatorname{bit}_2 w$.}
+  Let's look at the values of the $f(w) = \operatorname{bit}_0 w == \operatorname{bit}_2 w$ function for all of our 8 possible outputs:
+
+  Update: I was actually working with the old version of the Exercise Sheets.
+  In the updated version we actually had to compare $g(w) = \operatorname{bit}_3 w == \operatorname{bit}_4 w$
+
+  \begin{center}
+    \begin{tabular}{r|r|c|c}
+      $s$ & $G(s)$ & $f(G(s))$ & $g(G(s))$\\ \hline
+      000 & 000000 & $0=0$ & $0 = 0$\\
+      001 & 010001 & $0=0$ & $0 = 0$\\
+      010 & 111001 & $1=1$ & $0 = 0$\\
+      011 & 101110 & $1=1$ & $1 = 1$\\
+      100 & 010111 & $0=0$ & $1 = 1$\\
+      101 & 101101 & $1=1$ & $1 \neq 0$\\
+      110 & 110011 & $1 \neq 0$ & $0 \neq 1$\\
+      111 & 010100 & $0=0$ & $1 \neq 0$\\
+    \end{tabular}
+  \end{center}
+
+  We can see that it is true in 7 out of the 8 possible cases. And for the random values it will just be $\frac{1}{2}$.
+  \begin{align*}
+    \operatorname{prob}(\mathcal{D}(G(s)) = 1) &= \frac{7}{8} \\
+    \operatorname{prob}(\mathcal{D}(r) = 1) &= \frac{1}{2}
+  \end{align*}
+  So the advantage of this distinguisher $\mathcal{D}$ will be:
+  \[ \operatorname{adv}_G(\mathcal{D}) = \frac{1}{2}\left|\frac{7}{8} - \frac{1}{2}\right| = \frac{3}{16} \]
+  Sadly this is still smaller then $\frac{1}{4}$, and we have to construct a better distinguisher for part (ii).
+
+  And for the function $g$, we get the advantage:
+  \[ \operatorname{adv}_G(\mathcal{D}) = \frac{1}{2}\left|\frac{5}{8} - \frac{1}{2}\right| = \frac{1}{16} \]
+
+  \subsubsection*{(ii) Construct a distinguisher with advantage $\frac{1}{4}$ or better.}
+  Here we can take the obvious brute force distinguisher, because I don't think we can get anything better then $\frac{7}{8}$ with a hand crafted bit function.
+  The brute force distinguisher $\mathcal{B}$ just checks if the input
+  \[w \in \{000000,\, 010001,\, 111001,\, 101110,\, 010111,\, 101101,\, 110011,\, 010100\},\]
+  and returns 0 otherwise.
+  The probabilities are a lot easier here, because $\mathcal{B}$ never\footnote{not really \texttt{:)}} makes mistakes.
+  \clearpage
+  \[\operatorname{prob}(\mathcal{B}(G(s)) = 1) = 1  \]
+  \[\operatorname{prob}(\mathcal{B}(r) = 1) = \frac{2^3}{2^6} = \frac{8}{64} = \frac{1}{8} \]
+  And the advantage of this distinguisher $\mathcal{B}$ will be:
+  \[ \operatorname{adv}_G(\mathcal{B}) = \frac{1}{2}\left|1 - \frac{1}{8}\right| = \frac{7}{16} > \frac{1}{4} \]
+  It is impossible to construct anything with a better advantage for this generator.
+
+\end{document}

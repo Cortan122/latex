@@ -1,0 +1,166 @@
+\documentclass{article}
+
+\usepackage{enumitem}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage{textcomp}
+\usepackage{tikz}
+\usepackage{gensymb}
+\usepackage[margin=0.5in]{geometry}
+\usepackage[hidelinks]{hyperref}
+
+\makeatletter
+\def\input@path{{.}{./img/}}
+\makeatother
+
+\let\oldemptyset\emptyset
+\let\emptyset\varnothing
+\let\oldepsilon\epsilon
+\let\epsilon\varepsilon
+\newcommand{\N}{\mathbb{N}}
+
+\usepackage{environ}
+\NewEnviron{centerframebox}{\begin{center}\fbox{\parbox{0.92\textwidth}{\BODY}}\end{center}}
+
+\title{Combinatorial Optimization \\ Exercise Set 4 \\ Tuesday class}
+\author{
+  AAAAAAAAAA AAAAAAA \\
+  \href{mailto:AAAAAAAAAAAAAAAAAAAA}{AAAAAAAAAAAAAAAAAAAA}
+  \and
+  Carola Ley \\
+  \href{mailto:s6caleyy@uni-bonn.de}{s6caleyy@uni-bonn.de}
+  \and
+  Bailee Zacovic \\
+  \href{mailto:s38bzaco@uni-bonn.de}{s38bzaco@uni-bonn.de}
+}
+
+\begin{document}
+  \maketitle
+
+  \setcounter{section}{4}
+  \subsection{Maximum matching in the graph}
+  \begin{centerframebox}
+    Find a maximum matching in the graph in Figure 4.1. Prove that
+    the matching is indeed maximum, e.g. using the Berge-Tutte-formula.
+  \end{centerframebox}
+  Consider the matching $M=\{\{1,11\},\{2,7\},\{3,10\},\{4,15\},\{8,13\},\{9,12\},\{14,16\}\},$ where $|M|=7.$ By the Berge-Tutte formula, we recall that $$|V(G)|=2\nu(G)+\underset{X\subset V(G)}{\text{max}}(q_G(X)-|X|).$$Observe that for $X=\{1,8,16\},$ $q_G(X)=5,$ given by the odd connected components $\{5\},\{2,6,7\},\{13\},\{3,9,10,12,14\},$ and $\{11\}.$ It follows that $$\underset{X\subset V(G)}{\text{max}}(q_G(X)-|X|)\geq q_G(\{1,8,16\})-|\{1,8,16\}|=5-3=2.$$ Noting that $|V(G)|=16,$ we obtain
+  $$2\nu(G)=16-\underset{X\subset V(G)}{\text{max}}(q_G(X)-|X|)\leq 16-2=14\implies \nu(G)\leq 7.$$ Since $|M|=7,$ it follows that $\nu(G)=7,$ and hence $M$ is indeed maximal. $\blacksquare$
+
+  \subsection{Non-bipartite matching algorithm}
+  \begin{centerframebox}
+    Recall Exercise 3.2. Although you only had to solve parts (vi)
+    and (vii) for bipartite graphs, they can also be solved in general for undirected
+    graphs (with the same runtime), only with a more complicated algorithm in part
+    (vi). Using this, describe a linear-time approximation scheme for the \textsc{Maximum
+    Cardinality Matching Problem}. More specifically, describe an algorithm
+    which takes as input an undirected graph $G$ and a positive number $\epsilon$, outputs a
+    matching $M$ in $G$ such that $|M| \geq (1 - \epsilon) \cdot \nu(G)$, and runs in
+
+    $$ O\left(\frac{1}{\epsilon} \cdot (|V (G)| + |E(G)|) \right)\textrm{-time.} $$
+  \end{centerframebox}
+  First, let's assume, without loss of generality, that the factor $\epsilon$ is in the form $\epsilon = \frac{1}{\kappa}$, where $\kappa \in \N$.
+  This doesn't matter for the time complexity, because it's inside the big $O()$ asymptotic function,
+  and it also doesn't matter for the inequality $|M| \geq (1 - \epsilon) \cdot \nu(G)$, because we can round down, and still satisfy it.
+
+  Recall how in Exercise 3.2 part (v) we considered how the sequence of augmenting path lengths has a lot of repeating numbers,
+  and our algorithm took $O(|V (G)| + |E(G)|)$ time to process such a group of consecutive same length augmenting paths.
+  We looked at the unique odd values of $\frac{\nu(G)+|M|}{\nu(G)-|M|}$, reframed as $f(x) = \left\lfloor\frac{\nu(G)}{x}\right\rfloor$, where $x$ goes down from $\nu(G)$ to $0$.
+  In our case it will be useful to think of $x$ as the number of matching edges we still need to get for a maximum matching, and for our approximation we only need to consider the values of $x \geq \epsilon\nu(G)$.
+
+  If $\kappa \geq \sqrt{\nu(G)}$, then we can get away with just running the full algorithm, because its $O(\sqrt{n}(n+m))$ time complexity, will be better then our desired $O(\kappa \cdot (n+m))$.
+  This way we only have to consider the cases where $\kappa < \sqrt{\nu(G)}$.
+  Then we look at out function $f(x)$ and when it equals a particular value $\kappa$ and solve for $x$.
+  Because we have already established $\kappa < \sqrt{\nu(G)}$, all values of this function will repeat at least once,
+  and we don't have to worry about some of them getting missed because of the rounding.
+  \[ \frac{\nu(G)}{x'} = \kappa \]
+  \[ x' = \frac{\nu(G)}{\kappa} \]
+  So $x'$ becomes a particular value of $x$ at which the function $f(x)$ starts to return values $\geq \kappa$,
+  and for all $\forall x \geq x' : f(x) \leq \kappa$.
+  This way the number of unique values $f(x > x')$ can produce is exactly $\kappa$,
+  as every value must appear at least once and the lowest possible one is $1$.
+  The amount of unique inputs $f(x > x')$ can take is just $\max x - x' = \nu(G) - x'$.
+  %  = \nu(G) - \frac{\nu(G)}{\kappa}
+
+  This means that if we program our approximation algorithm to only take the first $\kappa$ steps,
+  it would have added $\nu(G) - x'$ matching edges, one for each input value $x$ to our function $f(x)$.
+  Considering the approximation inequality again:
+  \begin{align*}
+    |M| &\geq (1 - \epsilon) \cdot \nu(G) \\
+    |M| &\geq (1 - \frac{1}{\kappa}) \cdot \nu(G) \\
+    |M| &\geq \nu(G) - \frac{\nu(G)}{\kappa} \\
+    |M| &\geq \nu(G) - x'
+  \end{align*}
+  And we have already established that we have $\nu(G) - x'$ matching edges.
+  We can see that our new approximation algorithm satisfies the inequality and its runtime is $O(\kappa \cdot (n+m))$, as requested.
+  $\blacksquare$
+
+  \subsection{3-regular undirected graph}
+  \begin{centerframebox}
+    Let G be a 3-regular undirected graph.
+    \begin{enumerate}[label=(\alph*)]
+      \item Assume $G$ is simple. Show that there is a matching in $G$ covering at least
+      $(7/8) \cdot |V (G)|$ vertices.
+      \item Give an example to prove that the bound of item (a) is tight.
+      \item Show that the assumption that $G$ is simple in item (a) is necessary.
+    \end{enumerate}
+  \end{centerframebox}
+  (a) Let $G$ be a simple, $3$-regular graph. We first note that $$2\cdot |E(G)|=\sum_{v\in V(G)}\text{deg}(v)=3\cdot |V(G)|,$$hence $|V(G)|$ is even. By the Berge-Tutte formula, it suffices to show $q_G(X)-|X|\leq \frac{|V(G)|}{8}$ for all $X\subset V(G).$ To this end, fix $X\subset V(G).$ Since $G$ is $3$-regular, any connected components of $G$ \textit{not} containing vertices in $X$ are even by previous argument, and thus will not be counted by $q_G(X).$
+
+  Thus, it suffices to consider those odd components $C_i$ of $G-X$ where at least one edge joins a vertex in $C_i$ to a vertex in $X.$ When $|V(C_i)|=1$ or $3$, there must be exactly three edges joining vertices in $C_i$ to vertices in $X$, since $G$ is $3$-regular and simple. When $|V(C_i)|\geq 5,$ there is at least one such edge.
+  Let $m$ denote the number of $C_i$ containing exactly $1$ or $3$ vertices; let $n$ denote the number of $C_i$ containing $5$ or more vertices. Then $q_G(X)=n+m.$ It follows that
+  \begin{align*}
+      3\cdot |X|=|\{\text{edges leaving }X\}|=|\{\text{edges entering }C_i\text{ for all }i\}|\geq 3m+n
+  \end{align*}
+  and
+  \begin{align*}
+      |V(G)|-|X|\geq n+5m.
+  \end{align*}
+  Combining these two bounds, we discover
+  $$8\cdot(q_G(X)-|X|)\leq 8\cdot (n+m)-8\cdot \left(m+\frac{n}{3}\right)=\frac{16n}{3}\leq 2m+\frac{16n}{3}=\left(m+\frac{n}{3}\right)+(m+5n)\leq |X|+(|V(G)|-|X|)=|V(G)|.$$In short,
+  $$q_G(X)-|X|\leq \frac{|V(G)|}{8}.$$ Since $X\subset V(G)$ was arbitrary, it follows by the Berge-Tutte formula that,
+
+  $$2\nu(G)=|V(G)|-\underset{X\subset V(G)}{\text{max}}(q_G(X)-|X|)\geq |V(G)|-\frac{|V(G)|}{8}=\frac{7}{8}|V(G)|.$$
+  In other words, there exists a maximum matching of $G$ covering $2\nu(G)\geq \frac{7}{8}|V(G)|$ vertices. $\blacksquare$
+
+
+
+
+  \newpage
+  %It follows that $q_G(X)\leq 3\cdot |X|$ (since each vertex in $X$ induces at most $3$ odd connected components), and hence $q_G(X)-|X|\leq 2\cdot |X|.$ On the other hand,
+
+  (b) Consider the following simple graph $G$:
+
+  \begin{figure}[h]
+  \begin{center}
+    \input{graph}
+    \end{center}
+  \end{figure}
+  Notice that $q_G(\{v\})-|\{v\}|=2,$ and so by Berge-Tutte: $$2\nu(G)=|V(G)|-\underset{X\subset V(G)}{\text{max}}(q_G(X)-|X|)\leq 16-2=14$$which implies that $\nu(G)\leq 7.$ By part (a), there exists a maximum matching covering at least $$14=(7/8)\cdot 16=(7/8)\cdot |V(G)|$$vertices of $G,$ and so it must happen that $\nu(G)=7,$ i.e. the bound demonstrated in (a) is tight at this particular $G$. $\blacksquare$
+
+  (c) Consider the following non-simple graph $G$:
+
+  \begin{figure}[h]
+  \begin{center}
+    \input{graph2}
+    \end{center}
+  \end{figure}
+
+  As in part (b), notice that $q_G(\{v\})-|\{v\}|=2,$ and so by Berge-Tutte: $$2\nu(G)=|V(G)|-\underset{X\subset V(G)}{\text{max}}(q_G(X)-|X|)\leq 10-2=8$$which implies that $\nu(G)\leq 4,$ i.e. any maximum matching covers at most $8$ vertices. However, the result from part (a) would guarantee a matching covering at least $ (7/8)\cdot 10>8$ vertices. Hence the assumption that $G$ is simple in (a) is necessary. $\blacksquare$
+
+  \subsection{Gallai-Edmonds decompositions}
+  \begin{centerframebox}
+    Let $G$ be any graph and denote by $Y,\, X,\, W$ its Gallai-Edmonds decomposition.
+    Let $v \in X$ and denote by $Y',\, X',\, W'$ the Gallai-Edmonds decomposition of $G - v$.
+    Show that $Y' = Y,\, X' = X \setminus \{v\},\, W' = W$.
+  \end{centerframebox}
+  As $v\in X$ it is covered by every maximum matching in $G$, removing this edge leads to a matching in $G-v$. If there was a larger matching in $G-v$ it would be a maximum matching in $G$ exposing $v$ which is a contradiction to $v\in X$. Thus $\nu(G)=\nu(G-v)+1$.
+
+  For every $y\in Y$ there is a maximum matching $M$ in $G$ exposing $y$. Let $w$ be the vertex with $\{v,w\}\in M$, by Theorem 1.52 $w\in Y$. $M\setminus \{\{v,w\}\}$ is a matching in $G-v$  of size $\nu(G)-1$, thus a maximum matching exposing $y$. As there is such a maximum  matching in $G-v$ for every $y\in Y$ it is $Y\subseteq Y'$.
+
+  Suppose there is a vertex $a\in Y'\setminus Y$, then there is a maximum matching $M'$ in $G-v$ exposing $a$. If $a$ was a neighbour of $v$, then there is a maximum matching in $G$ containing $\{a,v\}$, so by Theorem 1.52 $a\in Y$ which is a contradiction, thus $\{a,v\}\notin E(G)$. As $|M'|=\nu(G)-1$, $a\notin Y$ and $v\in X$ there is an shortest $M'$-augmenting path $P$ in $G$ going from $a$ to $v$. %If $a\in W$ there is a maximum matching in $G$ with an edge from $X$ to $W$ which is a contradiction to Theorem 1.52. As $a\notin Y\cup W$ it is $a\in X$.
+  $P$ can only use edges between $X$ and $Y$ and within $Y$, as otherwise the resulting maximum matching in $G$ contains an edge within $X$ or between $X$ and $W$ which is a contradiction to Theorem 1.52. As $a$ is no neighbour of $v$, $P$ must contain at least one vertex of $Y$. As all connected components of $G[Y]$ are factor-critical, $P$ has an even number of edges within each connected component of $G[Y]$ and thus even length from one vertex in $X$ to an other vertex in $X$. As every augmenting path has odd length, it must contain an edge within $X$ which is a contradiction to Theorem 1.52. Thus there is no $M'$-augmenting path in $G$ between $a$ and $v$, which is a contradiction to $M'$ being a matching of size $\nu(G)-1$. Therefore there is no vertex in $Y'\setminus Y$, so $Y=Y'$.
+
+  From $Y=Y'$ it follows that $X=\Gamma_{G}(Y)=\Gamma_{G-v}(Y)\cup \{v\}=X' \cup \{v\} \Rightarrow X' = X \setminus \{v\}$ and $W=V(G)\setminus (Y\cup X)=V(G)\setminus (Y'\cup X'\cup \{v\})=W'$.
+\end{document}
+
