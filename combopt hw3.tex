@@ -9,18 +9,11 @@
 \usepackage[margin=0.5in]{geometry}
 \usepackage[hidelinks]{hyperref}
 
-\usepackage{tkz-berge}
-
 \let\oldemptyset\emptyset
 \let\emptyset\varnothing
 
 \usepackage{environ}
 \NewEnviron{centerframebox}{\begin{center}\fbox{\parbox{0.92\textwidth}{\BODY}}\end{center}}
-
-\usepackage[many]{tcolorbox}
-\newtcolorbox{cross}{blank,breakable,parbox=false,
-  overlay={\draw[red,line width=5pt] (interior.south west)--(interior.north east);
-    \draw[red,line width=5pt] (interior.north west)--(interior.south east);}}
 
 \newcommand{\N}{\mathbb{N}}
 
@@ -152,26 +145,26 @@
   $\blacksquare$
   \subsection{Bipartite matching algorithm}
   \begin{centerframebox}
-  Let $G$ be a graph and $M$ a matching in $G$ that is not maximum. In this exercise we use the terminology \textit{disjoint subgraphs/paths/circuits} and mean it
-quite literally: Two subgraphs are \textit{disjoint} if they have no edges and no vertices
-in common. (Note that the term \textit{vertex-disjoint paths} is often used to mean that
-two paths have no \textit{inner}-vertices in common, but possibly endpoints.)
+    Let $G$ be a graph and $M$ a matching in $G$ that is not maximum. In this exercise we use the terminology \textit{disjoint subgraphs/paths/circuits} and mean it quite literally:
+    Two subgraphs are \textit{disjoint} if they have no edges and no vertices in common.
+    (Note that the term \textit{vertex-disjoint paths} is often used to mean that
+    two paths have no \textit{inner}-vertices in common, but possibly endpoints.)
     \begin{enumerate}
-        \item Let $M$ be a non-maximum matching of $G.$ Show that there are $\nu(G)-|M|$ disjoint $M$-augmenting paths.
-        \item Let $M$ be a non-maximum matching of $G.$ Show the existence of an $M$-augmenting path of length at most $\frac{\nu(G)+|M|}{\nu(G)-|M|}.$
-        \item Let $M$ be a non-maximum matching of $G.$ Let $P$ be a shortest $M$-augmenting path in $G$ and $P'$ an $(M\Delta E(P))$-augmenting path. Prove $|E(P')|\geq |E(P)|+2\cdot |E(P)\cap E(P')|.$
+      \item Let $M$ be a non-maximum matching of $G.$ Show that there are $\nu(G)-|M|$ disjoint $M$-augmenting paths.
+      \item Let $M$ be a non-maximum matching of $G.$ Show the existence of an $M$-augmenting path of length at most $\frac{\nu(G)+|M|}{\nu(G)-|M|}.$
+      \item Let $M$ be a non-maximum matching of $G.$ Let $P$ be a shortest $M$-augmenting path in $G$ and $P'$ an $(M\Delta E(P))$-augmenting path. Prove $|E(P')|\geq |E(P)|+2\cdot |E(P)\cap E(P')|.$
     \end{enumerate}
- Consider the following algorithm: We start with the empty matching and in each iteration augment the matching along a shortest augmenting path. Let $P_1,P_2,\dots$ be the sequence of augmenting paths chosen.
+    Consider the following algorithm: We start with the empty matching and in each iteration augment the matching along a shortest augmenting path. Let $P_1,P_2,\dots$ be the sequence of augmenting paths chosen.
     \begin{enumerate}[resume]
-        \item Show that if $|E(P_i)|=|E(P_j)|$ for all $i\neq j,$ then $P_i$ and $P_j$ are disjoint.
-        \item Show that the sequence $|E(P_1)|,|E(P_2)|,\dots$ contains less than $2\sqrt{\nu(G)}+1$ different numbers.
+      \item Show that if $|E(P_i)|=|E(P_j)|$ for all $i\neq j,$ then $P_i$ and $P_j$ are disjoint.
+      \item Show that the sequence $|E(P_1)|,|E(P_2)|,\dots$ contains less than $2\sqrt{\nu(G)}+1$ different numbers.
     \end{enumerate}
     From now on, let $G$ be bipartite and set $n := |V (G)|$ and $m := |E(G)|$.
     \begin{enumerate}[resume]
-        \item Given a non-maximum matching $M$ in $G$ show that we can find in $O(n+m)$-time a family $\mathcal{P}$ of disjoint shortest $M$-augmenting paths such that if $M'$ is the matching obtained by augmenting $M$ over every path in $\mathcal{P}$, then
-        $$ \min\{|E(P)| : P\textrm{ is an }M'\textrm{-augmenting path}\} > \min\{|E(P)| : P\textrm{ is an }M\textrm{-augmenting path}\} $$
+      \item Given a non-maximum matching $M$ in $G$ show that we can find in $O(n+m)$-time a family $\mathcal{P}$ of disjoint shortest $M$-augmenting paths such that if $M'$ is the matching obtained by augmenting $M$ over every path in $\mathcal{P}$, then
+      $$ \min\{|E(P)| : P\textrm{ is an }M'\textrm{-augmenting path}\} > \min\{|E(P)| : P\textrm{ is an }M\textrm{-augmenting path}\} $$
 
-        \item Describe an algorithm with runtime $O(\sqrt{n}(m + n))$ that solves the \textsc{Cardinality Matching Problem} in bipartite graphs.
+      \item Describe an algorithm with runtime $O(\sqrt{n}(m + n))$ that solves the \textsc{Cardinality Matching Problem} in bipartite graphs.
     \end{enumerate}
   \end{centerframebox}
 
@@ -247,11 +240,6 @@ two paths have no \textit{inner}-vertices in common, but possibly endpoints.)
   % It must happen that at least one of $|E(P_j^1)|+|E(P_i^1)|$ or $|E(P_j^1)|+|E(P_i^2)|$ is strictly larger than $|E(P_i)|-1,$ which implies one of $|E(P_j^2)|+|E(P_i^1)|$ or $|E(P_j^2)|+|E(P_i^2)|$ is strictly smaller than $|E(P_i)|-1.$ Without loss of generality, let $|E(P_j^2)|+|E(P_i^1)|<|E(P_i)|-1.$
   % But then $P_j^2\cup P_i^1$ is a path of odd length
 
-
-
-
-
-
   \subsubsection*{(5)} Let $|E(P_1)|,|E(P_2)|,\dots$ be the sequence of augmenting paths chosen for fixed $G.$ Recall that for $M$ a non-maximum matching in $G,$ there exists an $M$-augmenting path of length at most $\frac{\nu(G)+|M|}{\nu(G)-|M|}.$
 
   Thus we can put an upper bound on the number of unique values in our sequence of path lengths, by considering the following function and its integer values:
@@ -261,14 +249,13 @@ two paths have no \textit{inner}-vertices in common, but possibly endpoints.)
   \[ f'(|M|) = \left\lfloor\frac{f(|M|)-1}{2}\right\rfloor+1
     = \left\lfloor\frac{\nu(G)+|M|-(\nu(G)-|M|)}{2(\nu(G)-|M|)}\right\rfloor+1
     = \left\lfloor\frac{|M|}{\nu(G)-|M|}\right\rfloor+1 \]
-
   Now we have to turn our function into a simple $\frac{N}{x}$ form, so it will be easier to reason about the unique values.
   \begin{align*}
     \frac{|M|}{\nu(G)-|M|} &= \frac{|M| + (\nu(G)-|M|) - (\nu(G)-|M|)}{\nu(G)-|M|} \\
     &= \frac{|M| + (\nu(G)-|M|)}{\nu(G)-|M|} - 1 \\
     &= \frac{\nu(G)}{\nu(G)-|M|} - 1 \\
     &= \frac{N}{N-|M|} - 1 \qquad (N := \nu(G)) \\
-    &= \frac{N}{x} - 1 \qquad\qquad (x := N-|M|) \\
+    &= \frac{N}{x} - 1 \qquad\qquad (x := N-|M|)
   \end{align*}
   Here we replaced $\nu(G)$ with $N$, which is also a constant, and replaced $\nu(G)-|M|$ with $x$, because that just reverses the order in which we iterate over the values of our function.
   We can also get rid of the $+1$ and $-1$ on the ends, because it will not affect the amount of unique values.
@@ -278,35 +265,32 @@ two paths have no \textit{inner}-vertices in common, but possibly endpoints.)
   Now, when $k:=\left\lfloor \frac{N}{x}\right\rfloor \leq \sqrt{N},$ it follows that $$k\cdot \left\lfloor \frac{N}{k}\right\rfloor\leq N<\left(\left\lfloor \frac{N}{k}\right\rfloor+1\right)k\leq \left\lfloor \frac{N}{k}\right\rfloor\cdot (k+1)\implies k\leq N/\left\lfloor \frac{N}{k}\right\rfloor<k+1\implies k=\left\lfloor N/\left\lfloor \frac{N}{k}\right\rfloor\right\rfloor.$$In other words, the value $k$ is achieved on the interval $\left[\frac{N}{x},\frac{N}{x}+1\right)$ when $0\leq k\leq \sqrt{N}.$ Moreover, we have
   $$\frac{N}{k-1}-\frac{N}{k}=\frac{N}{k(k-1)}>\frac{N}{N-\sqrt{N}}>1,$$i.e. $\left\lfloor \frac{N}{k-1}\right\rfloor >\left\lfloor \frac{N}{k}\right\rfloor$ and so each $0\leq k\leq \sqrt{N}$ generates  a \textit{different} value of $\left\lfloor \frac{N}{k}\right\rfloor.$ This gives $\lfloor \sqrt{N}\rfloor$ different values for $k$. On the other hand, when $k>\sqrt{N},$ it happens that $x\leq \sqrt{N}.$ In this situation, there are at most $\sqrt{N}$ different possible values for $\left\lfloor \frac{N}{x}\right\rfloor=k.$ Therefore, over all possible values of $k,$ we obtain a total of $$\lfloor \sqrt{N}\rfloor +\sqrt{N}\leq 2\sqrt{N}$$values for $\left\lfloor \frac{N}{x}\right\rfloor.$ Returning to our previous computations and substituting $N=\nu(G),$ this means our sequence of paths lengths contains strictly fewer than $2\sqrt{\nu(G)}+1$ different numbers. $\blacksquare$
 
-
-
   % https://math.stackexchange.com/questions/1069460/how-many-distinct-values-of-floorn-i-exists-for-i-1-to-n
 
   %We observe that augmenting any path $P_i$ requires ``spending'' one additional edge of $\nu(G).$ Moreover, the union of $k$ augmenting paths of length $\ell$ may give an augmenting path of length $k(\ell-1)+1.$ Now, iterate the algorithm until no more length $1$ augmenting paths may be chosen.
 
   %Moreover, $w\in P_i.$ Otherwise, we would either not  otherwise we would not have a valid matching after augmenting $P_i,$ since
 
-
   %Denote $M$ the matching after the $(i-1)^{th}$ iteration.
 
- % Since $P_i,P_j$ are augmenting paths, their inner-vertices must be covered, while their endpoints must be exposed. Thus, $v$ must either be an endpoint of both $P_i,P_j$, or a midpoint of both. If it is an endpoint of both, then augmenting $P_i$ will cover an endpoint of $P_j,$ contradicting that $P_j$ is an augmenting path after the $i$th iteration.
+  % Since $P_i,P_j$ are augmenting paths, their inner-vertices must be covered, while their endpoints must be exposed. Thus, $v$ must either be an endpoint of both $P_i,P_j$, or a midpoint of both. If it is an endpoint of both, then augmenting $P_i$ will cover an endpoint of $P_j,$ contradicting that $P_j$ is an augmenting path after the $i$th iteration.
 
-% Kotya's attempt: [this is probably nonsense]
- \subsubsection*{(6)} Let $k$ be the minimum length of the shortest $M$-augmenting path in $G$, i.e. the length of all paths in $\mathcal{P}$. Because of what we found in part (4) we know that all those paths are disjoint.
- Assume that $M'$ has an augmenting path $P'$ of length $k$ or smaller. Because all the paths in $\mathcal{P}$ are disjoint and have length $k$, we can use the condition we proved in part (3) to show that if $P'$ intersects one of theses paths, it must be longer then it by at least 2 edges, and not length $k$ anymore. Thus this path $P'$ must also be disjoint with all paths in $\mathcal{P}$.
- But then $P'$ will also be in $\mathcal{P}$ because none of its vertices were augmented by paths in $\mathcal{P}$, and it will also be a valid augmenting path for $M$. And all of them are already in $\mathcal{P}$, and we get a contradiction.
+  % Kotya's attempt: [this is probably nonsense]
+  \subsubsection*{(6)} Let $k$ be the minimum length of the shortest $M$-augmenting path in $G$, i.e. the length of all paths in $\mathcal{P}$. Because of what we found in part (4) we know that all those paths are disjoint.
+  Assume that $M'$ has an augmenting path $P'$ of length $k$ or smaller. Because all the paths in $\mathcal{P}$ are disjoint and have length $k$, we can use the condition we proved in part (3) to show that if $P'$ intersects one of theses paths, it must be longer then it by at least 2 edges, and not length $k$ anymore. Thus this path $P'$ must also be disjoint with all paths in $\mathcal{P}$.
+  But then $P'$ will also be in $\mathcal{P}$ because none of its vertices were augmented by paths in $\mathcal{P}$, and it will also be a valid augmenting path for $M$. And all of them are already in $\mathcal{P}$, and we get a contradiction.
 
- A naive algorithm for finding all the paths in $\mathcal{P}$ will take $O(n^2)$ time, by running at most $n$ consecutive depth first searches on the graph, each of which check all $n$ vertices, until there are no shortest disjoint paths left. But we have to do better, and find some way to look for them in linear time.
+  A naive algorithm for finding all the paths in $\mathcal{P}$ will take $O(n^2)$ time, by running at most $n$ consecutive depth first searches on the graph, each of which check all $n$ vertices, until there are no shortest disjoint paths left. But we have to do better, and find some way to look for them in linear time.
 
- % \textcolor{red}{i did what i could, but i don't have any ideas on how to do the algorithm (c) Kotya}
- % i think it works now...
- % now we have to prove the complexity of the algorithm
- % \\
-% \textcolor{red}{I think this should work in linear time:}
+  % \textcolor{red}{i did what i could, but i don't have any ideas on how to do the algorithm (c) Kotya}
+  % i think it works now...
+  % now we have to prove the complexity of the algorithm
+  % \\
+  % \textcolor{red}{I think this should work in linear time:}
 
- Let $V(G)=A\cup B$ be the bipartition of $G$, then every $M$-augmenting path has odd length, thus one endpoint is in $A$ and one in $B$. To find a family of shortest $M$-augmenting paths, let $L_1$ be the vertices in $A$ that are not covered by $M$. From this vertices we use the idea of BFS and take all neighbors of vertices in $L_1$ as $L_2$. If there is at least one vertex in $L_2$ which is not covered by $M$, all shortest $M$-augmenting paths are between $L_1$ and $L_2$. If all vertices in $L_2$ are covered by $M$, $L_3$ is defined as the matching-partners of the vertices in $L_2$. From $L_3$ continue with BFS the same way as with $L_1$ until there is a layer $L_i\subseteq B $ with a vertex not covered by $M$. All shortest $M$-augmenting paths are $L_1-L_i$-paths, let $\mathcal{P}$ be the set of such shortest $M$-augmenting paths, that can be found by greedily taking all $M$-augmenting $L_1-L_i$-paths which are disjoint.
- By construction there is no $M'$-augmenting path with the same length, and by (iv) there is no shorter $M'$-augmenting path, thus $\min\{|E(P)|:P \text{ is an $M'$-augmenting path}\}>\min\{|E(P)|:P \text{ is an $M$-augmenting path}\}$. This algorithm has the same runtime as BFS, thus it runs in $O(n+m)$.
+  Let $V(G)=A\cup B$ be the bipartition of $G$, then every $M$-augmenting path has odd length, thus one endpoint is in $A$ and one in $B$. To find a family of shortest $M$-augmenting paths, let $L_1$ be the vertices in $A$ that are not covered by $M$. From this vertices we use the idea of BFS and take all neighbors of vertices in $L_1$ as $L_2$. If there is at least one vertex in $L_2$ which is not covered by $M$, all shortest $M$-augmenting paths are between $L_1$ and $L_2$. If all vertices in $L_2$ are covered by $M$, $L_3$ is defined as the matching-partners of the vertices in $L_2$. From $L_3$ continue with BFS the same way as with $L_1$ until there is a layer $L_i\subseteq B $ with a vertex not covered by $M$. All shortest $M$-augmenting paths are $L_1-L_i$-paths, let $\mathcal{P}$ be the set of such shortest $M$-augmenting paths, that can be found by greedily taking all $M$-augmenting $L_1-L_i$-paths which are disjoint.
+  By construction there is no $M'$-augmenting path with the same length, and by (iv) there is no shorter $M'$-augmenting path, thus $\min\{|E(P)|:P \text{ is an $M'$-augmenting path}\}>\min\{|E(P)|:P \text{ is an $M$-augmenting path}\}$. This algorithm has the same runtime as BFS, thus it runs in $O(n+m)$.
 
-\subsubsection*{(7)} By (v) there are at most $2\sqrt{\nu(G)}+1$ different lengths of shortest $M$-augmenting paths, thus by running the algorithm from (vi) at most $2\sqrt{\nu(G)}+1$ times we can find a maximum matching. As $\nu(G)\leq \frac 12 n$ it is  $2\sqrt{\nu(G)}+1\in O(\sqrt n)$ and running the algorithm from (vi) until there is no $M$-augmenting path left, solves the Cardinality Matching Problem in bipartite graphs in $O(\sqrt n (n+m))$.
+  \subsubsection*{(7)} By (v) there are at most $2\sqrt{\nu(G)}+1$ different lengths of shortest $M$-augmenting paths, thus by running the algorithm from (vi) at most $2\sqrt{\nu(G)}+1$ times we can find a maximum matching. As $\nu(G)\leq \frac 12 n$ it is  $2\sqrt{\nu(G)}+1\in O(\sqrt n)$ and running the algorithm from (vi) until there is no $M$-augmenting path left, solves the Cardinality Matching Problem in bipartite graphs in $O(\sqrt n (n+m))$.
 
 \end{document}
