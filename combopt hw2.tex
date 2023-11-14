@@ -9,18 +9,11 @@
 \usepackage[margin=0.5in]{geometry}
 \usepackage[hidelinks]{hyperref}
 
-\usepackage{tkz-berge}
-
 \let\oldemptyset\emptyset
 \let\emptyset\varnothing
 
 \usepackage{environ}
 \NewEnviron{centerframebox}{\begin{center}\fbox{\parbox{0.92\textwidth}{\BODY}}\end{center}}
-
-\usepackage[many]{tcolorbox}
-\newtcolorbox{cross}{blank,breakable,parbox=false,
-  overlay={\draw[red,line width=5pt] (interior.south west)--(interior.north east);
-    \draw[red,line width=5pt] (interior.north west)--(interior.south east);}}
 
 \newcommand{\N}{\mathbb{N}}
 
