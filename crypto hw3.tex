@@ -1,0 +1,135 @@
+\documentclass{article}
+
+\usepackage{enumitem}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage{textcomp}
+\usepackage{gensymb}
+\usepackage[dvipsnames]{xcolor}
+\usepackage[margin=0.5in]{geometry}
+\usepackage[hidelinks,bookmarks=false]{hyperref}
+
+\usepackage{environ}
+\NewEnviron{centerframebox}{\begin{center}\fbox{\parbox{0.92\textwidth}{\BODY}}\end{center}}
+
+\hypersetup{
+  colorlinks=true,
+  urlcolor=MidnightBlue,
+  % pdfborderstyle={/S/U/W 2}
+}
+
+\usepackage[listings,many]{tcolorbox}
+\makeatletter
+\newtcblisting{mylisting}{
+  listing only,
+  breakable, enhanced jigsaw,
+  listing engine=listings,
+  colback=gray!20,
+  listing options={
+    language=python,
+    keywordstyle=\color{blue},
+    basicstyle=\ttfamily,
+    stringstyle=\color{ForestGreen},
+    commentstyle=\color{gray},
+    ndkeywordstyle={\color{orange}},
+    identifierstyle=\color{black},
+    numbers=none,
+    showstringspaces=false,
+    aboveskip={0\p@ \@plus 6\p@}, belowskip={0\p@ \@plus 6\p@},
+    columns=fullflexible, keepspaces=true,
+    breaklines=true, breakatwhitespace=true,
+    extendedchars=false,
+    inputencoding=utf8,
+    upquote=true,
+    xleftmargin=-25pt,
+  }
+}
+\makeatother
+
+\newtcolorbox{cross}{blank,breakable,parbox=false,
+  overlay={\draw[red,line width=5pt] (interior.south west)--(interior.north east);
+    \draw[red,line width=5pt] (interior.north west)--(interior.south east);}}
+
+\title{Cryptography \\ Exercise Sheet 3}
+\author{
+  AAAAAAAAAA AAAAAAA \\
+  \href{mailto:AAAAAAAAAAAAAAAAAAAA}{AAAAAAAAAAAAAAAAAAAA}
+}
+
+\begin{document}
+  \maketitle
+
+  \setcounter{section}{3}
+  \subsection{Another cipher}
+  \begin{centerframebox}
+    Let $G$ be a pseudorandom generator. Define $F_k(m) := G(k)_{0\dots\kappa-1} \oplus m$ for
+    $k,\, m \in \{0,\, 1\}^\kappa$.
+    Here, $s_0 \dots \kappa-1$ means the string consisting of the bits $0 \dots \kappa-1$
+    of the bitstring $s$. We ask whether we can use $F_k$ as the encryption of
+    some private-key encryption scheme $\Pi$. Assume that $\Pi$'s key generator
+    just picks a bit string in $\{0,\, 1\}^\kappa$
+    uniformly at random.
+  \end{centerframebox}
+  \subsubsection{Can $\Pi$ be OW-POA secure? (Attacker's task: Find $m$ from $F_k(m)$. Further means: None.)}
+  This follows form point \ref{sec:indpoasec}.
+  If two outputs can't be distinguished, then they definitely can't be decrypted by an attacker who doesn't know anything but the ciphertext, because otherwise you could just decrypt them to find which of your messages were encrypted.
+
+  \subsubsection{Can $\Pi$ be OW-CPA secure? (Attacker's task: Find $m$ from $F_k(m)$. Further means: Calls to $F_k$.)}
+  We can chose the message for the call to our $F_k(m)$ oracle to be all zeros $m_1 = 0^{\ell(\kappa)}$.
+  Then $F_k\left(0^{\ell(\kappa)}\right) = G(k)$ will just give us the generated pseudorandom key.
+  And we can compute the original message $m = F_k(m) \oplus F_k\left(0^{\ell(\kappa)}\right)$ just by XOR-ing the ciphertext with the key.
+  So our scheme $\Pi$ is not OW-CPA secure.
+
+  \subsubsection{Can $\Pi$ be IND-POA secure? (Attacker's task: Find $h$ from $F_k(m_h)$ with attacker chosen $m_0,\, m_1$ where $h \in \{0,\, 1\}$. Further means: None.)}
+  \label{sec:indpoasec}
+  We can show that this is equivalent to the game of distinguishing a truly random bitstring from a pseudorandom one.
+  For this the attacker just has to chose $m_0 = 0^{\ell(\kappa)}$ and $m_1$ to be uniformly random.
+  And then it can run the pseudorandom distinguisher $\mathcal{D}$ on the input $F_k(m_h)$,
+  and if it's random, then the secret bit $h = 1$.
+  This way this IND-POA game has the same advantage as the pseudorandom game, and we already assumed that it is negligible.
+
+  There's also a formal proof of this using the game hopping lemma on slide 102 of the lectures.
+
+  \subsection{AES amputated}
+  \begin{centerframebox}
+    As we have already seen during the lectures, AES is an extremely simple
+    cipher, its description is rather short. But still, can we make it even simpler,
+    by hacking out superfluous pieces without impacting its strength?
+    Considering the four steps (\texttt{SubBytes}, \texttt{ShiftRows}, \texttt{MixColumns} and
+    \texttt{AddRoundKey}) performed in each round, we want to see whether those
+    steps are essential or not to the security of the cipher.
+  \end{centerframebox}
+  \subsubsection{For instance, what would happen to AES should one remove the \texttt{SubBytes} step in each round?}
+  This means that the whole encryption scheme could be replaced with an algebraic function, because all the other steps are XOR or polynomials, so they can all be combined into one step, and all the repeated steps are going to be useless.
+
+  This is similar to the reason why neural networks need to use non-linear activation functions between their layers.
+  Because otherwise all the matrices will just multiply together and collapse into one matrix.
+
+  \subsubsection{What if one were to remove the \texttt{ShiftRows} step?}
+  All the other steps operate either on individual bytes, or on single columns.
+  If we remove \texttt{ShiftRows}, then all 4 columns would be encrypted completely independently.
+  And each column is only 32 bits, which is quite easy to brute force.
+
+  \subsubsection{What about the \texttt{MixColumns} step?}
+  This is the only step that combines multiple byte values.
+  All the others either operate on single bytes, or just permute them around.
+
+  \subsubsection{And the \texttt{AddRoundKey} step?}
+  Then the encryption algorithm will always use the same (zero) key, because it is the only step that uses the seed key.
+  So it's not even going to be an encryption scheme, but more of a code (remember the historical examples in the first lectures).
+
+  \subsubsection{Conclude}
+  All the AES are necessary.
+  Because it was designed by smart people.
+  I know this ahead of time, before solving all the previous subtasks.
+
+  \subsection{ECB for arbitrary fixed-length messages}
+  \begin{centerframebox}
+    Theorem (Arbitrary fixed-length length). Given an IND-CPA secure symmetric-key encryption scheme and fix a length $\mu$, then the `codebook mode' symmetric-key encryption scheme with
+    \[ Enc^{ECB}_k (m_0 \mid \dots \mid m_{\mu-1}) := Enc_k(m_0) \mid \dots \mid Enc_k(m_{\mu-1})\]
+    is also IND-CPA secure.
+  \end{centerframebox}
+  TODO
+
+\end{document}

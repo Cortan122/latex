@@ -1,0 +1,142 @@
+\documentclass{article}
+
+\usepackage{enumitem}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{xcolor}
+\usepackage{amssymb}
+\usepackage[margin=0.5in]{geometry}
+\usepackage[hidelinks]{hyperref}
+
+\let\oldemptyset\emptyset
+\let\emptyset\varnothing
+\let\oldepsilon\epsilon
+\let\epsilon\varepsilon
+\newcommand{\N}{\mathbb{N}}
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\Q}{\mathbb{Q}}
+
+\usepackage{environ}
+\NewEnviron{centerframebox}{\begin{center}\fbox{\parbox{0.92\textwidth}{\BODY}}\end{center}}
+
+\title{Combinatorial Optimization \\ Exercise Set 5 \\ Tuesday class}
+\author{
+  AAAAAAAAAA AAAAAAA \\
+  \href{mailto:AAAAAAAAAAAAAAAAAAAA}{AAAAAAAAAAAAAAAAAAAA}
+  \and
+  Carola Ley \\
+  \href{mailto:s6caleyy@uni-bonn.de}{s6caleyy@uni-bonn.de}
+  \and
+  Bailee Zacovic \\
+  \href{mailto:s38bzaco@uni-bonn.de}{s38bzaco@uni-bonn.de}
+}
+
+\begin{document}
+  \maketitle
+
+  \setcounter{section}{5}
+  \subsection{Vertices of Fractional perfect matching polytope are half-integral}
+  \begin{centerframebox}
+    Let $G = (V,\, E)$ be an undirected graph and $Q$ its fractional perfect
+    matching polytope, which is defined by
+    \[ Q = \{x \in \R^E : x_e \geq 0\; (e \in E),\, \sum_{e \in \delta(v)} x_e = 1\; (v \in V)\} \]
+
+    Prove that a vector $x \in Q$ is a vertex of $Q$ if and only if there exist vertex disjoint
+    odd circuits $C_1,\, \dots,\, C_k$ and a perfect matching $M$ in $G - (V(C_1) \cup\dots\cup V(C_k))$
+    such that
+    \[ x_e = \begin{cases}
+      \frac{1}{2} & \textrm{if } e \in E(C_1) \cup\dots\cup E(C_k) \\
+      1 & \textrm{if } e \in M \\
+      0 & \textrm{otherwise}
+    \end{cases} \]
+  \end{centerframebox}
+  $\Leftarrow$: Suppose there exist vertex disjoint
+    odd circuits $C_1,\, \dots,\, C_k$ and a perfect matching $M$ in $G - (V(C_1) \cup\dots\cup V(C_k))$ such that
+   $  x_e = \begin{cases}
+      \frac{1}{2} & \textrm{if } e \in E(C_1) \cup\dots\cup E(C_k) \\
+      1 & \textrm{if } e \in M \\
+      0 & \textrm{otherwise}
+    \end{cases} $
+    , then $\forall_{e\in E}~ x_e\geq 0$. For $v\in G - (V(C_1) \cup\dots\cup V(C_k))$ there is exactly one incident matching edge and for $v\in V(C_1) \cup\dots\cup V(C_k)$ there are exactly two incident circle  edges with $x_e=\frac 12$, thus $\forall_{v\in V} \sum_{e \in \delta(v)} x_e = 1$, so $x\in Q$.\\
+    $x$ is a vertex if there is a supporting hyperplane $\{y:cy=\delta\}$ with $c\neq 0$, $\delta:= \max \{cy:y\in Q\}<\infty$ and $\{x\}=Q\cap \{y:cy=\delta\}$. Let $c_e= \begin{cases}-1 & \text{if } x_e=0\\ 0& \text{else} \end{cases} $, then $cx=0$. There can't be a $y$ with $cy>0$. Suppose there is a $x\neq x'\in Q$ with $cx'=0$, then $x_e=0 \Rightarrow x'_e=0$. Now the vertices in the perfect matching $M$ have only one edge left, by $\sum_{e \in \delta(v)} x'_e = 1$ therefore $x_e=1 \Rightarrow x'_e=1$. As $x\neq x'$ there must be an odd circuit $C_i$ with an edge $e$ with $x'_e\neq \frac 12$. Following the circuit starting from this edge, we get alternating edge weights of $x'_e$ and $1-x_e'$, which leads to a contradiction when arriving at the first edge again as the circuit has odd length. Thus there is no such $x'\neq x$ and $\{x\}=Q\cap \{y:cy=\delta\}$ is a vertex of $Q$.\\
+  $\Rightarrow$:
+  Let $G'=(V',E')$ be a graph with $V'=\{(v,i):v\in V, i\in \{1,2\}\}, E'= \{\{(v,1),(w,2)\}: \{v,w\}\in E\}$. $G'$ is bipartite, so by Theorem 1.63 $Q_{G'}$ is integral. Every vector in $Q_{G'}$ corresponds to a vector in $Q$,  by $x_{\{v,w\}}=\frac 12 (x_{\{(v,1),(w,2)\}}+x_{\{(v,2),(w,1)\}})$. Let $x'$ be the values of the corresponding vertex to $x$ in $Q_{G'}$. If $x'_{\{(v,1),(w,2)\}}=x'_{\{(v,2),(w,1)\}}=1$, then $\{v,w\}$ is a matching edge in $x$ in $G$. If $x'_{\{(v,1),(w,2)\}}=x'_{\{(v,2),(w,1)\}}=0$ then $x_{\{v,w\}}=0$. If $x'_{\{(v,1),(w,2)\}}=1$ and $x'_{\{(v,2),(w,1)\}}=0$ then there is a cycle in $G'$ with alternating $x'$-values 1 and 0. By the construction of $G'$, this cycle corresponds to an odd cycle in $G$. On this odd cycle we get $x_e=\frac 12 (1+0)=\frac 12$ for every edge $e$. As $\forall_{v\in V}\sum_{e \in \delta(v)} x'_e = 1$, every vertex is covered by an edge of the matching or two edges of an odd cycle with $x_e=\frac 12$, thus $x$ is of the given form.
+
+  \subsection{Minimum Cost Edge Cover Problem}
+  \begin{centerframebox}
+    Consider the \textsc{Minimum Cost Edge Cover Problem}: Given a
+    graph $G$ with weights $c : E(G) \to \R_{\geq 0}$, find an edge cover $F \subseteq E(G)$ that minimizes $\sum_{e\in F} c(e)$.
+    Show that the \textsc{Minimum Cost Edge Cover Problem} can be linearly reduced to the \textsc{Minimum Weight Perfect Matching Problem}.
+  \end{centerframebox}
+  Let $G$ be a graph with weight $c:E(G)\to \R_{\geq 0},$ and for each $v\in V(G),$ let $c_v:=\underset{\{v,w\}\in E(G)}{\text{min}} c(\{v,w\}),$ and set $K:=\sum_{v\in V(G)}c_v.$ Define a new weight function $c':E(G)\to \R$ given by $$c'(\{v,w\})=c_v+c_w-c(\{v,w\}).$$ We claim that a maximum weight matching in $(G,c')$ yields a minimum cost edge cover. To this end, we note that for $M$ a matching contained in $F,$ we may write
+
+  $$\sum_{e\in F} c(e)=\sum_{v\text{ exposed by }M}c_v+\sum_{\{u,w\}\in M}c(\{u,w\})=\sum_{v\in V(G)}c_v+\sum_{\{u,w\}\in M}\left(c(\{u,w\})-c_v-c_w\right)=K+\sum_{\{u,w\}\in M}\left(c(\{u,w\})-c_v-c_w\right).$$
+  The problem of finding a minimum weight edge cover associated to $(G,c)$ reduces linearly to the \textsc{Maximum Weight Matching Problem} associated to $(G,c').$ By the argument in Lemma 1.4, we may linearly reduce this further to the \textsc{Minimum Weight Perfect Matching Problem}. $\blacksquare$
+  % To this end, we note that any such edge cover $F$ will contain paths of length at most $2$, by the non-negativity of $c$ (the inner edge of any length-$3$ path may always be removed from the cover).
+
+  \subsection{T-cuts and T-joins}
+  \begin{centerframebox}
+    Let $G$ be a graph and $T \subseteq V (G)$ with $|T|$ even. Prove:
+    \begin{enumerate}[label=(\roman*)]
+      \item A set $F \subseteq E(G)$ intersects every $T$-join if and only if it contains a $T$-cut.
+      \item A set $F \subseteq E(G)$ intersects every $T$-cut if and only if it contains a $T$-join.
+    \end{enumerate}
+  \end{centerframebox}
+  \subsubsection*{(i)}
+  $\Leftarrow$: If $F$ contains a $T$-cut, by proposition 2.13.1. for any $T$-join $J$ and any $T$-cut $C$ $J\cap C\neq\emptyset$, thus $J\cap F\neq \emptyset$, so $F$ intersects every $T$-join.\\
+  $\Rightarrow$: Let  $F \subseteq E(G)$ be a set that intersects every $T$-join. Assume $F$ contains no $T$-cut, then by definition for all $X\subseteq V(G)$ with $\delta(X)\subseteq F$, $X\cap T$ is even. Then every connected component of $G-F$ contains an even number of vertices in $T$, thus by proposition 2.3 there exists a $T$-join in $G-F$, which is a contradiction to $F$ intersecting every $T$-join, so $F$ contains a $T$-cut.
+
+  \subsubsection*{(ii)}
+  $\Leftarrow$: If $F$ contains a $T$-join, by proposition 2.13.1. for any $T$-join $J$ and any $T$-cut $C$ $J\cap C\neq\emptyset$, thus $C\cap F\neq \emptyset$, so $F$ intersects every $T$-cut.\\
+  $\Rightarrow$: Let $F \subseteq E(G)$  be a set that intersects every $T$-cut. Let $G'=(V(G),F)$ be the graph with only the edges in $F$. If $G'$ has a connected component $Z$ with $|V(Z)\cap T|$ odd, then $\delta(V(Z))$ is a $T$-cut not intersecting $F$, which is a contradiction. Thus for every connected component $Z$ of $G'$, $|V(Z)\cap T|$ is even, thus by proposition 2.3 there exists a $T$-join in $F$.
+
+  \subsection{Double weights matching}
+  \begin{centerframebox}
+    Let $G$ be an undirected graph and $c_1,\, c_2 : E(G) \to \R$ be two weight
+    functions. Let $\mathcal{M}$ be the set of all matchings that have maximum weight with
+    respect to $c_1$. How can we find, in polynomial time, a matching $M \in \mathcal{M}$ such
+    that $c_2(M)$ is maximum among all matchings in $\mathcal{M}$? Can you devise a strongly
+    polynomial algorithm?
+    (For this, in particular, the algorithm should work for arbitrary real numbers,
+    assuming that we can perform addition, subtraction and comparison.)
+
+    Note: You can use the fact that there exists a strongly polynomial algorithm for
+    the \textsc{Maximum Weight Matching Problem}.
+  \end{centerframebox}
+  The first thing that comes to mind is to iterate over the set $\mathcal{M}$ and pick the matching with the smallest $c_2(M)$ value,
+  but $\mathcal{M}$ is actually of exponential size, and isn't given to us as an input.
+
+  What we can do, is construct a third weight function $c_3$, such that all maximum $c_3$-weight matchings must be in $\mathcal{M}$,
+  and also (with a \textbf{lower priority}) have a maximum $c_2$-weight.
+  Define $c_3$ as a function from $E(G)$ to a set of ordered tuples $c_3 : E(G) \to (\R,\, \R)$, where $c_3(e) := (c_1(e)\, c_2(e))$.
+  These tuples\footnote{just like tuples in python} are comparable according to this formula:
+  \[ (a,\, b) < (c,\, d) \iff \begin{cases}
+    b < d & a = c \\
+    a < c & \textrm{otherwise}
+  \end{cases} \]
+  We also have to define how to add them: $(a,\, b) + (c,\, d) = (a+c,\, b+d)$.
+
+  Then we can theoretically run the \textsc{Maximum Weight Matching Problem} algorithm on the weights $c_3$,
+  and it \textit{theoretically} shouldn't have any problems with our weights not being $\R$,
+  but instead this random tuple group we just defined.
+  Because the second element of our tuples is considered only when the first elements are equal,
+  this algorithm will only pay attention to the $c_2$ weights after the $c_1$ are already maximal,
+  which is exactly what we want for our $\mathcal{M}$ set maximizing $c_2(M)$ afterwards.
+
+  If we aren't happy with these ``non-math-y'' tuples, we can replace them with
+  infinite ordinal numbers $c_3(e) := \omega \cdot c_1(e) + c_2(e)$, or try to concatenate them into a single real number.
+  Let's first consider the case where all of our weights are integers.
+  Then we can define $c_3(e) := c_1 \cdot 10^k + c_2$,
+  with a sufficiently large $k$ for those numbers to not ``overlap'' when written in base 10.
+  The value $k$ needs to be at least $\log_10 (\max c_2 \cdot |E(G)|) + 2$,
+  so the sum of all the biggest $c_2$-weight edges will still not reach the part of the number devoted to storing $c_1$.
+
+  The case where $c_1,\, c_2 : E(G) \to \Q$ can be easily converted into integers
+  by multiplying every fraction by the $\operatorname{lcm}$ (least common multiple) of all of them.
+  But in the case with irrational weights, we have to round them,
+  and calculate the precision required so all the possible sums of weights will retain the same order.
+  I had an idea to calculate the minimum difference between such sums, but that seems to be an NP-hard problem...
+
+  % TODO (Kotya)
+
+\end{document}
