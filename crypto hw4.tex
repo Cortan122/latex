@@ -1,0 +1,147 @@
+\documentclass{article}
+
+\usepackage{enumitem}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage{textcomp}
+\usepackage{gensymb}
+\usepackage[dvipsnames]{xcolor}
+\usepackage[margin=0.5in]{geometry}
+\usepackage[hidelinks,bookmarks=false]{hyperref}
+
+\usepackage{environ}
+\NewEnviron{centerframebox}{\begin{center}\fbox{\parbox{0.92\textwidth}{\BODY}}\end{center}}
+
+\hypersetup{
+  colorlinks=true,
+  urlcolor=MidnightBlue,
+  linkcolor=WildStrawberry,
+  % pdfborderstyle={/S/U/W 2}
+}
+
+\title{Cryptography \\ Exercise Sheet 4}
+\author{
+  AAAAAAAAAA AAAAAAA \\
+  \href{mailto:AAAAAAAAAAAAAAAAAAAA}{AAAAAAAAAAAAAAAAAAAA}
+}
+
+\begin{document}
+  \maketitle
+
+  \setcounter{section}{4}
+  \subsection{More encryption schemes: IND-CPA?}
+  \begin{centerframebox}
+    Let $F$ be a pseudorandom function and $G$ a pseudorandom generator with expansion factor $\ell(\kappa) = \kappa + 1$.
+    For each of the following encryption schemes, classify whether the scheme is insecure, IND-POA secure (but not IND-CPA) or IND-CPA secure.
+    In each case, the shared key $k$ is chosen uniformly random, $k \in \{0,\, 1\}^\kappa$.
+
+    % TODO: define a pseudorandom function
+  \end{centerframebox}
+  \subsubsection{To encrypt $m \in \{0,\, 1\}^{2\kappa+2}$ send $m \oplus (G(k) \mid G(k + 2))$}
+  This scheme is definitely not IND-CPA secure, because it is deterministic.
+  It looks like a variation on the pseudorandom one-time-pad, except we call the generator twice,
+  and concatenate the results.
+  But because the second time we use a different key $k + 2$,
+  there shouldn't be any significant corelation between $G(k)$ and $G(k + 2)$ that the attacker can exploit.
+
+  \textbf{Verdict}: IND-POA secure.
+
+  \subsubsection{To encrypt $m \in \{0,\, 1\}^{\kappa+1}$ choose a random $r \leftarrow \{0,\, 1\}^\kappa$ and send $[r,\, G(r) \oplus m]$}
+  This is not even an encryption scheme. It doesn't use the key. At all!
+  Anyone can decrypt it by grabbing the first half of the ciphertext, running it thru the generator, and XOR-ing that with the second half of the ciphertext.
+
+  \textbf{Verdict}: insecure.
+
+  \subsubsection{To encrypt $m \in \{0,\, 1\}^{\kappa}$ send $m \oplus F_k(0^\kappa)$}
+  This scheme is also deterministic, and not IND-CPA secure.
+  The function $F_k(0^\kappa)$ can be rewritten as just $G'(k)$,
+  by first swapping the arguments for the pseudorandom function $F_k(0^\kappa) \Rightarrow F_{0^\kappa}(k)$,
+  and then using the property\footnote{Literally the definition of a pseudorandom function},
+  that for all keys $\forall k : F_k(x) \equiv G'(x)$ where $G': \{0,\, 1\}^{\kappa} \to \{0,\, 1\}^{\kappa}$ cannot be distinguished from a truly random function.
+  %
+  After all those transformations we are left with just the pseudorandom one-time-pad again\footnote{Not even modified this time},
+  and we already know it is IND-POA secure.
+
+  \textbf{Verdict}: IND-POA secure.
+
+  \subsubsection{To encrypt $m \in \{0,\, 1\}^{2\kappa}$ choose a random $r \leftarrow \{0,\, 1\}^\kappa$ send $[r,\, m \oplus (F_k(r) \mid F_k(r + 1))]$}
+  This scheme is nondeterministic and has a chance of being IND-CPA secure.
+  We can assume that concatenating two separate outputs of a pseudorandom function doesn't lose us a significant amount of security.
+  This is literally the way we construct our key when using CTR\footnote{CTR is counter mode. It uses a counter and encrypts it with $F_k$ to generate an XOR key for every block of the message. $F_k$ can be AES, for example.} mode (see Exercise \ref{sec:ctr}).
+
+  For a more formal proof, we can use the hint from that exercise,
+  instead of just assuming it is true\footnote{If that exercise came \textit{before} this one, we could just get away with that}.
+  % TODO
+
+  \textbf{Verdict}: IND-CPA secure.
+
+  \subsection{PRF $\Rightarrow$ PRG}
+  \begin{centerframebox}
+    Let $F : \{0,\, 1\}^\kappa \to \{\{0,\, 1\}^\kappa \to \{0,\, 1\}^\kappa\}$, $k \mapsto F_k$
+    be a pseudorandom function. Fix $w_0, w_1, w_2 \in \{0,\, 1\}^\kappa$, all different.
+    Define $G(s) := F_s(w_0)|F_s(w_1)|F_s(w_2)$.
+    Prove that $G$ is a pseudorandom generator.
+  \end{centerframebox}
+  We build a reduction from the pseudorandom generator game to the pseudorandom function game.
+  This way, if the pseudorandom generator game has a big advantage,
+  the pseudorandom function game will also that same advantage, and that will lead to a contradiction.
+  If we can successfully build such a reduction,
+  then $G$ can't be distinguished from a truly random function,
+  because that will make $F$ not a pseudorandom function, which is a contradiction.
+
+  Calling the pseudorandom function oracle with $w_0, w_1, w_2$ and feeding it to the distinguisher for $G$,
+  and if it tells us that the value is pseudorandom,
+  we can conclude that the function we were givin was also pseudorandom, and vice versa.
+
+  \subsection{PRF argument swapping}
+  \begin{centerframebox}
+    Let $F$ be a keyed function. Define $H$ as the keyed function with `swapped arguments': $H_k(m) := F_m(k)$.
+    Prove or disprove: If $F$ is a PRF, then $H$ also is a PRF.
+  \end{centerframebox}
+  % So if $H$ is not a pseudorandom function, there must exists a value $k=k'$, such that $H_{k'}(x)$ is not indistinguishable from a random function.
+  % And when supplying $k'$ as an input to $F_k(k')$ there's some kind of correlation that between the values returned by all the different functions $F_k$
+  % This means there exists an attacker $\mathcal{A}$ that when given an oracle $\mathcal{O}(x) = H_{k'}(x) = F_x(k')$ can distinguish that from a truly random oracle.
+
+  Here we use the game hopping lemma, and a game $G_{HOF}$ that choses a hidden bit $h_{HOF}$ and supplies
+  the pseudorandom function attacker $\mathcal{A}$ with either the function $F_k$ or $H_k$.
+  This way we can bound the advantage of the $H$ game based on the advantage of the $F$ game,
+  which we already know is negligible, because $F$ is a pseudorandom function.
+  Thus $H$ will also be a pseudorandom function, as long as $\mathcal{A}$ cannot tell the difference between those two games.
+
+  But because the attacker always receives a random looking string from the oracle,
+  he can't tell if it came from the one or the other function.
+
+  % \textcolor{ForestGreen}{
+  %   i guess we can do some game hopping between the $H$ and $F$ games.
+  %   and like the random bit will swap the order.
+  %   but why would the advantage of the middle game be small?
+  % }
+  % TODO
+
+  \subsection{Security of $F$-CTR}
+  \begin{centerframebox}
+    \textbf{Theorem.} If $F$ is a pseudorandom function then $F$-CTR, namely CTR
+    mode with $F$ and the initial ctr is chosen randomly with the key, is IND-CPA secure.
+
+    Prove this.
+
+    \textit{Hint}: Combine the security proof for $\Pi^\textrm{rand}_F$
+    with the idea for proving equivalence of IND-CPA and LOR-CPA\footnotemark{} security.
+    Game hopping might be the nicest way to describe this.
+  \end{centerframebox}
+  \label{sec:ctr}
+  \footnotetext{I think the difference between LOR and IND, is that in LOR the attacker can call the oracle has many times as she wants}
+  The idea here is to use this ``equivalence of IND-CPA and LOR-CPA''
+  to compare the case where in $\Pi^\textrm{rand}_F$ we only use the pseudorandom function once,
+  to the case in $F$-CTR, where we can use it as many times as we want, or at least until the counter rolls over.
+  So if IND-CPA is equivalent to LOR-CPA, and not just a subset, it means that being indistinguishable once,
+  is the same as being indistinguishable with as many calls to the oracle as the attacker wants.
+
+  We can copy the LOR-CPA game for $\Pi^\textrm{rand}_F$, but here, instead of letting the attacker be in control,
+  we increase the counter each time he calls our oracle.
+  And we can make use the game hopping lemma,
+  because the attacker will not be able to tell whether he is dealing with a normal IND-CPA secure $\Pi^\textrm{rand}_F$ situation,
+  or with our incrementing counter.
+
+\end{document}

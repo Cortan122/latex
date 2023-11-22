@@ -16,40 +16,9 @@
 \hypersetup{
   colorlinks=true,
   urlcolor=MidnightBlue,
+  linkcolor=WildStrawberry,
   % pdfborderstyle={/S/U/W 2}
 }
-
-\usepackage[listings,many]{tcolorbox}
-\makeatletter
-\newtcblisting{mylisting}{
-  listing only,
-  breakable, enhanced jigsaw,
-  listing engine=listings,
-  colback=gray!20,
-  listing options={
-    language=python,
-    keywordstyle=\color{blue},
-    basicstyle=\ttfamily,
-    stringstyle=\color{ForestGreen},
-    commentstyle=\color{gray},
-    ndkeywordstyle={\color{orange}},
-    identifierstyle=\color{black},
-    numbers=none,
-    showstringspaces=false,
-    aboveskip={0\p@ \@plus 6\p@}, belowskip={0\p@ \@plus 6\p@},
-    columns=fullflexible, keepspaces=true,
-    breaklines=true, breakatwhitespace=true,
-    extendedchars=false,
-    inputencoding=utf8,
-    upquote=true,
-    xleftmargin=-25pt,
-  }
-}
-\makeatother
-
-\newtcolorbox{cross}{blank,breakable,parbox=false,
-  overlay={\draw[red,line width=5pt] (interior.south west)--(interior.north east);
-    \draw[red,line width=5pt] (interior.north west)--(interior.south east);}}
 
 \title{Cryptography \\ Exercise Sheet 2}
 \author{
