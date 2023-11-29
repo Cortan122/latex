@@ -1,0 +1,94 @@
+\documentclass{article}
+
+\usepackage{enumitem}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage{textcomp}
+\usepackage{gensymb}
+\usepackage[dvipsnames]{xcolor}
+\usepackage[margin=0.5in]{geometry}
+\usepackage[hidelinks,bookmarks=false]{hyperref}
+
+\usepackage{environ}
+\NewEnviron{centerframebox}{\begin{center}\fbox{\parbox{0.92\textwidth}{\BODY}}\end{center}}
+
+\hypersetup{
+  colorlinks=true,
+  urlcolor=MidnightBlue,
+  linkcolor=WildStrawberry,
+  % pdfborderstyle={/S/U/W 2}
+}
+
+\title{Cryptography \\ Exercise Sheet 5}
+\author{
+  AAAAAAAAAA AAAAAAA \\
+  \href{mailto:AAAAAAAAAAAAAAAAAAAA}{AAAAAAAAAAAAAAAAAAAA}
+}
+
+\begin{document}
+  \maketitle
+
+  \setcounter{section}{5}
+  \subsection{Dilemma}
+  \begin{centerframebox}
+    Let $\Pi_0$ and $\Pi_1$ be two encryption schemes for which it is known that at
+    least one of them is IND-CPA secure. The problem is that you don't know
+    which one is IND-CPA-secure and which one may not be. Show how to
+    construct an encryption scheme $\Pi$ that is guaranteed to be IND-CPA secure.
+
+    Provide a full proof of your answer.
+
+    You may assume that plaintext and ciphertext spaces are such that you can
+    combine the two ciphers.
+  \end{centerframebox}
+  The obvious solution is to simply combine the schemes by calling one with the output of the other: $c = \Pi_0(\Pi_1(m))$.
+  It looks good, and even works if one of the schemes is entirely insecure%
+  \footnote{Passing the message unaffected, for example. But the schemes do have to be reversible. And, I think, they are reversible just by virtue of being encryption schemes},
+  but there is a counterexample.
+  Imagine that $\Pi_0$ is the exact inverse of $\Pi_1$, i.e. $\operatorname{Enc}_{\Pi_0} = \operatorname{Dec}_{\Pi_1}$.
+  In this case our combined scheme will simply return the unaltered message, which is quite obviously not secure.
+
+  Because of this counterexample we must pass different keys to our schemes,
+  and the total key length of the combined scheme $\Pi_{01}$ must be twice as long.
+
+  Now to prove the IND-CPA security of $\Pi_{01}$, we assume the opposite:
+  an attacker $\mathcal{A}$ exists and has a non-negligible advantage in the IND-CPA game for $\Pi_{01}$.
+  But then the reduction $\mathcal{A} \circ \Pi_0$ will break the IND-CPA security of $\Pi_1$,
+  and it contradicts the case of $\Pi_1$ being the secure one of the pair.
+  We can use $\Pi_1$ in the reduction with a random key, because the keys are independent,
+  and will not affect the game's success probability.
+
+  For the second case, where $\Pi_0$ is IND-CPA secure, the reduction is a bit more tricky.
+  We have to modify the oracles to first run the attacker supplied message through $\Pi_1$,
+  again with a fixed random key, and then pass the result as a message to the attacked scheme.
+  Either way, we get a contradiction\footnote{I think actually the reductions work just by themselves, without needing to declare an explicit contradiction} in both cases, and $\Pi_{01}$ must be IND-CPA secure.
+
+  % XORing the outputs of the two schemes will also not work, because what if $\operatorname{Enc}_{\Pi_0} = \lnot \operatorname{Enc}_{\Pi_1}$ and will always result in a zero ciphertext (also you can't even decrypt that shit)
+  % TODO
+
+  \subsection{MAC cross over}
+  \begin{centerframebox}
+    Consider the simple, fixed-length CBC-MAC from the lecture.
+
+    Let's ignore the length restriction: Given a message $m = m^{(0)}|m^{(1)}$ of
+    double length $2\kappa \cdot \ell(\kappa)$. Construct a CBC-MAC tag for $m$ by calling $\mathcal{O}^\mathrm{Mac}$
+    twice for messages of length $\kappa \cdot \ell(\kappa)$.
+
+    Conclude that CBC-MAC without length restriction is not EUF-CMA secure.
+  \end{centerframebox}
+  The usual tag for CBC-MAC is based on the value of the previous tag XORed with the each block of the message.
+  If we obtain the first tag by calling $t^{(0)} = \mathcal{O}^\mathrm{Mac}\left(m^{(0)}\right)$, we can modify the first block of $m^{(1)}$,
+  such that the process of producing intermediate tags continues as normal.
+  For this we need to make sure that in the second call of the oracle the input to the pseudorandom function is exactly
+  $t^{(0)} \oplus m^{(1)}_0$.
+  But it is normally calculated as $\mathsf{IV} \oplus m^{(1)}_0$, and if we compute $m_0' = m^{(1)}_0 \oplus t^{(0)} \oplus \mathsf{IV}$
+  and replace the block $m^{(1)}_0$ with $m_0'$, then it will also be $\mathsf{IV} \oplus m^{(1)}_0 \oplus t^{(0)} \oplus \mathsf{IV} = t^{(0)} \oplus m^{(1)}_0$.
+  So we got the correct value and can break the scheme with:
+  \[ \operatorname{Mac}(m) = \mathcal{O}^\mathrm{Mac}\left(
+      \mathcal{O}^\mathrm{Mac}\left(m^{(0)}\right) \oplus m^{(1)}_0 \oplus \mathsf{IV}
+      \;\middle|\;
+      m^{(1)}_1 \dots m^{(1)}_{\ell(\kappa)}
+  \right) \]
+
+\end{document}

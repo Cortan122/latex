@@ -1,0 +1,159 @@
+\documentclass{article}
+
+\usepackage{enumitem}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{xcolor}
+\usepackage{amssymb}
+\usepackage[margin=0.5in]{geometry}
+\usepackage[hidelinks, bookmarks=false]{hyperref}
+
+\let\oldemptyset\emptyset
+\let\emptyset\varnothing
+\let\oldepsilon\epsilon
+\let\epsilon\varepsilon
+\newcommand{\N}{\mathbb{N}}
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\Q}{\mathbb{Q}}
+
+\usepackage{environ}
+\NewEnviron{centerframebox}{\begin{center}\fbox{\parbox{0.92\textwidth}{\BODY}}\end{center}}
+
+\title{Combinatorial Optimization \\ Exercise Set 6 \\ Tuesday class}
+\author{
+  AAAAAAAAAA AAAAAAA \\
+  \href{mailto:AAAAAAAAAAAAAAAAAAAA}{AAAAAAAAAAAAAAAAAAAA}
+  \and
+  Carola Ley \\
+  \href{mailto:s6caleyy@uni-bonn.de}{s6caleyy@uni-bonn.de}
+  \and
+  Bailee Zacovic \\
+  \href{mailto:s38bzaco@uni-bonn.de}{s38bzaco@uni-bonn.de}
+}
+
+\begin{document}
+  \maketitle
+
+  \setcounter{section}{6}
+  \subsection{Undirected Minimum Mean-Weight Cycle Algorithm}
+  \begin{centerframebox}
+    The \textsc{Undirected Minimum Mean-Weight Cycle Problem}
+    is the following: Given an undirected graph $G$ with edge-weights $c : E(G) \to \R$,
+    find a cycle $C$ whose mean-weight $c(E(C))/|E(C)|$ is minimum, or determine that
+    $G$ is acyclic.
+
+    Consider the following algorithm for the \textsc{Undirected Minimum Mean-Weight Cycle Problem}:
+    First determine with a linear search whether $G$ has cycles or not, and if not return with this information.
+    Let $\gamma := \max\{c(e) : e \in E(G)\}$ and define a new edge-weight function via $c'(e) := c(e) - \gamma$.
+    Let $T := \emptyset$.
+    Now iterate the following: Find a minimum $c'$-weight $T$-join $J$ with a polynomial (black-box) algorithm.
+    If $c'(J) = 0$, return any zero-$c'$-weight cycle.
+    Otherwise, let $\gamma':= c'(J)/|J|$, reset $c'$ via $c'(e) \rightarrow c'(e) - \gamma'$, and continue.
+
+    Show that this algorithm works correctly and runs in polynomial time.
+    Also, explain how to get the cycle to be returned in the case $c'(J) = 0$.
+  \end{centerframebox}
+  A subgraph $G[J]$ induced by a $T$-join with $T = \emptyset$ will have all of its vertices have an even degree.
+  This also means that $G[J]$ will be Eulerian and decomposable into a set edge-disjoint cycles.
+  As the first step of our algorithm we convert all the weights to being negative,
+  so all of our cycles can be considered as part of the minimum $T$-join.
+  The $T$-join will always have either a negative or zero weight, because picking the empty set is always an option.
+
+  At least one of thr desired minimum mean weight cycles $C$ must be in every one of our $T$-joins,
+  because all other cycles have a higher mean weight, and the $T$-joins is minimum and wants to gobble up as many cycles as possible.
+  The mean weight of $J$ will then be somewhere between $\frac{c'(C)}{|C|} \leq \frac{c'(J)}{|J|} < \frac{c'(A)}{|A|}$,
+  where $A$ is the maximum cycle with negative $c'$-weight.
+  Consider two cases: $A = C$ and $A \neq C$. If $A = C$ that means that $C$ is the only cycle in $J$,
+  and after the subtracting $\gamma'$ from the weights, it will end up having weight exactly zero.
+  In the second case, the inequality becomes strict $\frac{c'(C)}{|C|} < \frac{c'(J)}{|J|} < \frac{c'(A)}{|A|}$,
+  and, as a result, the cycle $A$ will end up having a positive mean weight after subtracting $\gamma'$.
+
+  This way at least one cycle is eliminated from being considered by the $T$-join in the next iteration,
+  because it will have non-negative weight.
+  The only cycles left at the end will be the minimum mean weight ones, and all of them will have exactly zero weight.
+  But we also have to prove that it will be done in polynomial time,
+  because what we have now will run in $O(|\textrm{number of cycles}| \cdot \textrm{complexity of T-join})$,
+  and the number of cycles is exponential.
+  On average, about half of the cycles in $J$ will have a mean weight above $\frac{c'(J)}{|J|}$,
+  so on each iteration the number of available cycles will be reduced by a factor of two, amortized.
+  Thus it will be a $\log_2$ of the number of cycles, which is exponential, so it will be linear.
+  % But we also know that on every iteration at least one edge becomes positive,
+  % because we cannot have a positive mean weight cycle without at lest one positive edge. (this is not true)
+
+  In our final state, where $c'(J) = 0$, our $T$-join must be either empty, or a union of zero-$c'$-weight cycles,
+  because a minimum $T$-join cannot contain a positive weight cycle.
+  And to get our cycle, we just have to pick one of those zero weight ones.
+  To achieve a zero mean weight, the cycle will have either all zero weight edges, or at least one negative weight edge.
+  In the first case we can just find it by a greedy depth first search in the subgraph of zero-$c'$-weight edges.
+
+  In the other case, where we have at least one negative edge,
+  we have to slightly modify the $T$-join finding algorithm to bias it towards always selecting the non-empty $T$-join.
+  As we recall from Theorem 2.4, the algorithm starts by adding all the negative weight edges,
+  but then removes them by finding a perfect matching in the complete graph of shortest paths.
+  In our case there will be two equals weight candidates for this shortest path:
+  going all the way around the cycle, or just through this one edge.
+  We can bias Dijkstra's algorithm to always prefer a path with a greater amount of edges,
+  in cases where there are two equal weight alternatives.
+  After such a modification our minimum mean weight cycle will always be included in the $T$-join,
+  and we can find it with a simple linear search.
+
+  \subsection{Minimum cardinality of a $T$-cut}
+  \begin{centerframebox}
+    Let $G$ be an undirected graph and $T \subseteq V (G)$ with $|T| = 2k$ even.
+    Prove that the minimum cardinality of a $T$-cut in $G$ equals the maximum
+    of $\min^k_{i=1} \lambda_{s_i, t_i}$ over all pairings $T = \{s_1,\, t_1,\, \dots,\, s_k,\, t_k\}$,
+    where $\lambda_{s,t}$ denotes the maximum number of pairwise edge-disjoint $s$-$t$-paths.
+  \end{centerframebox}
+  Let $m$ denote the minimum cardinality of a $T$-cut. Fix a Gomory-Hu tree $H$ of $G,$ where each edge $\{s,t\}\in E(H)$ may be labelled by $\lambda_{s,t}$ by Menger's theorem, and let $u:E(G)\rightarrow \mathbb{R}$ be given by $u(e)=1$ for all $e\in E(G).$ It follows from Theorem 2.25 that a minimum capacity (in our case, cardinality) $T$-cut can be found among all the fundamental cuts of $H.$
+
+  % First, we claim that $m\geq \underset{\text{pairings}}{\text{max}}\text{min}_{i=1}^k \lambda_{s_i,t_i}$. If not, then there would exist some pairing $\{s_1,t_1,\dots,s_k,t_k\}$ such that $\lambda_{s_i,t_i}>m$ for all $i=1,\dots,k,$ i.e. at least one $s_i$-$t_i$-path ``survives'' any minimum $T$-cut $\delta(X)$, hence $s_i,t_i$ appear in pairs in the connected components of $G-\delta(X).$ This contradicts $|X\cap T|$ odd.
+
+  Now, since $H$ is a tree (in which $s$-$t$-paths are unique), there exists a unique $T$-join $J\subset E(H)$ given by partitioning $T$ into pairs $(s,t)$ and taking the symmetric difference of the $s$-$t$-paths. Since $J$ is unique and therefore optimum, it follows from Lemma 12.9 in the textbook that $J$ is given by a disjoint union of paths whose endpoints lie in $T$. Thus, $J$ induces a pairing $\{s_1,t_1,\dots ,s_k,t_k\}$ given by taking the endpoints of each path. Moreover, $J$ intersects a minimum cardinality $T$-cut realized by a fundamental cut $\delta(C_{\{s,t\}})$ associated to $\{s,t\}\in E(H).$
+  % \textcolor{red}{Did not complete final details.}
+
+  \subsection{Odd and Even joins}
+  \begin{centerframebox}
+    Given an undirected graph $G$ and disjoint sets $S_e, S_o \subseteq V (G)$,
+    a partial $(S_e,\, S_o)$-join is a set $J \subseteq E(G)$ such that $|\delta(v) \cap J|$ is even for every
+    $v \in S_e$ and odd for every $v \in S_o$.
+    (In particular, a $T$-join is the same as a partial $(V (G) \setminus T,\, T)$-join.)
+    Consider the \textsc{Minimum Weight Partial $(S_e,\, S_o)$-Join Problem}:
+    Given an undirected graph $G$ with edge-weights $c : E(G) \to \R_{\geq 0}$
+    and disjoint sets $S_e,\, S_o \subseteq V (G)$, find a partial $(S_e,\, S_o)$-join of minimum weight, or
+    determine that none exists.
+    Show that this problem can be linearly reduced to the \textsc{Minimum Weight $T$-Join Problem}.
+  \end{centerframebox}
+  Given an undirected graph $G$ with edge-weights $c : E(G) \to \R_{\geq 0}$ and disjoint sets $S_e,\, S_o \subseteq V (G)$. Define a graph $G'=(V(G'),E(G'))$ where $V(G')=\{(v,1):v\in V(G)\}\cup \{(v,2):v\in V(G)\setminus S_o\}$ and$$E(G')=\{\{(v,1),(w,1)\}:\{v,w\}\in E(G)\}\cup \{\{(v,1),(v,2)\}:v\in V(G)\setminus S_o\}\cup \{\{(v,2),(v,2)\}:v\in V(G)\setminus (S_e\cup S_o)\}.$$We define a weight function $c':E(G')\rightarrow \mathbb{R}_{\geq 0}$ given by $c'(\{(v,1),(w,1)\})=c(\{v,w\})$ and zero otherwise.
+  Set $$T:=\{(v,1):v\in S_e\cup S_o\}\cup \{(v,2):v\in S_e\}.$$We claim that if a minimum weight $T$-join in $G'$ exists, it corresponds to a minimum weight partial $(S_e,S_o)$-join in $G$, otherwise no minimum weight partial $(S_e,S_o)$-join exists in $G.$ (Note that we attach zero-weight loops to all vertices $(v,2)$ for $v\in V(G)\setminus (S_e\cup S_o)$; this is a correction factor of ``dummy edges'' which may be used to ensure such $(v,2)$ are incident to an even number of edges in a minimum $T$-join $J$, in the case that edges of the form $\{(v,1),(v,2)\}$ for $v\in V(G)\setminus (S_e\cup S_o)$ appear in $J.$)
+
+  First, observe that since $\{(v,2):v\in S_e\}\subset T,$ and since each such $(v,2)$ is only adjacent to $(v,1)$, a minimum $T$-join $J$ of $G'$ will always contain the edge $\{(v,1),(v,2)\}$ for each $v\in S_e$. Any remaining edges in $J$ incident to such $(v,1)$ correspond to edges incident to $v\in S_e$ in $G$, and there will be an even number of such edges, by previous remark and $|J\cap \delta_{G'}((v,1))|\equiv 1 \pmod{2}$.
+  Additionally, since the only neighbors of $(v,1)$ for $v\in S_o$ are of the form $(w,1)$ by construction of $G'$, any edges in $J$ incident to such $(v,1)$ correspond to those edges in $G$ incident to $v\in S_o$. Thus, restricting any minimum $T$-join of $G'$ to edges of the form $\{(v,1),(w,1)\}$ gives rise to a partial $(S_e,S_o)$-join, which is necessarily minimum in $G$ since $c'$ assigns zero weight to those edges not of the form $\{(v,1),(w,1)\}$. Hence the \textsc{Minimum Weight Partial $(S_e,\, S_o)$-Join Problem} reduces linearly to the \textsc{Minimum Weight $T$-Join Problem}. $\blacksquare$
+
+  %   Define a graph $G'=(V(G'),E(G'))$ where $$V(G')=\{(v,i):v\in V(G), i=1,2\}$$and$$E(G')=\{\{(v,i),(w,i)\}:(v,w)\in E(G)\}\cup \{\{(v,1),(v,2)\}:v\in V(G)\}\cup \{\{(v,2),(v,2)\}:v\in V(G)\setminus S_o\}.$$We define a weight function $c':E(G')\rightarrow \mathbb{R}$ given by $$c'(\{(v,i),(w,i)\})=\begin{cases}c(\{v,w\}) & \text{ for }\{v,w\}\in E(G), \; i=1,\\ c(\{v,w\})+1 & \text{ for }\{v,w\}\in E(G), \; i=2\end{cases}$$
+  %  $$c'(\{(v,1),(v,2)\})=\begin{cases}
+  %      -1 & \text{ for }v\in S_e,\\
+  %      K & \text{ for }v\in S_o, \\
+  %      0 & \text { else }
+  %  \end{cases}$$
+  % We claim that if a minimum weight $T$-join in $G'$ exists, it corresponds to a minimum weight partial $(S_e,S_o)$-join in $G$, otherwise no minimum weight partial $(S_e,S_o)$-join exists in $G.$ First, observe that since $c$ is non-negative, a $T$-join $J$ of $G'$ will always contain $\{\{(v,1),(v,2)\}:v\in S_e\}$, if such a $T$-join exists.
+
+
+
+  \subsection{Minimum weight $T^*$-joins}
+  \begin{centerframebox}
+    Let $G$ be a connected graph, $c : E(G) \to R$ and $T \subseteq V (G)$.
+    Note that $|T|$ may be either even or odd.
+    Consider the problem of finding a $T^*$-join $J^*$ with $|T^* \Delta T| \leq 2$ such that $c(J^*)$ is minimum among all such $J^*$.
+    Show that this problem can be linearly reduced to the \textsc{Minimum Weight $T$-Join Problem}.
+
+    Remark: This problem arises when adapting Christofides' algorithm to the problem
+    of finding a shortest Hamiltonian path with up to one endpoint of the path given
+    in the input.
+  \end{centerframebox}
+  If $|T|$ is odd, then $T^*$ with $|T^*\Delta T|\leq 2$ and $|T^*|$ even has either one vertex more or less than $T$. We can model this two cases by two copies of $G$, after computing a minimum $T'$-join in the new graph consisting of these two copies, we can compare which of the two computed $T$-joins has less weight and take it as our solution. For the case that $T^*$ has one vertex less than $T$, we add a new vertex $v$ to our graph and connect it to all vertices of $T$ with edge weight $m:=\max_{e\in E(G)}c(e)+1$ higher than the maximum edge weight in $G$ and define $T':=T\cup\{v\}$. Now every minimal $T'$-join uses one of these two edges, thus when removing the endpoint of this edge which is not $v$ from $T$ we get a set $T^*$ and a minimal $T^*$-join. In the second copy of our graph we have to model the case that $T^*$ has one vertex more than $T$. We add a new vertex $v'$ to our graph that is connected to all vertices that are not in $T$ in this copy of $G$ with edges of weight $m$ and define $T'':=T\cup\{v'\}$. In a minimum weight $T''$-join there is one edge incident to $v$, when we add the other endpoint $u$ of this edge to $T$ we get a minimum $T\cup\{u\}$-join in the original graph. Thus we reduced the problem if $|T|$ is odd linearly to computing a Minimum weight $T'\cup T''$-join.
+
+  If $|T|$ is even, there are four cases: $T=T^*$, $T^*=T\setminus\{v,w\}$, $T^*=T\cup\{v,w\}$ and $T^*=T\setminus\{v\}\cup\{w\}$, so analogue to the odd case we use four copies of our original graph G. The first copy for the case $T=T^*$ not needs to be modified. For the case $T^*=T\setminus\{v,w\}$ we add two vertices to the copy of $G$, which are connected to every vertex from $T$ with edge weight $m$ and add these two vertices to $T$.
+  For the case $T^*=T\cup\{v,w\}$ we add two vertices to the copy of $G$, which are connected to every vertex from $V(G)\setminus T$ with edge weight $m$ and add these two vertices to $T$. For the case $T^*=T\setminus\{v\}\cup\{w\}$ we add one vertex which is connected to every vertex in $T$ and one which is connected to every vertex in $V(G)\setminus T$ with edge weight $m$ and add both new vertices to $T$.
+  A minimum weight $T$-join in the new graph consisting of these four modified copies of $G$ gives us 4 joins, by comparing this 4 joins we find a minimum $T^*$-join $J^*$. Thus we  also reduced the problem if $|T|$ is even linearly to computing a Minimum weight $T$-join.
+
+\end{document}
