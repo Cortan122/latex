@@ -1,0 +1,257 @@
+\documentclass{article}
+
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage{graphicx}
+\usepackage[dvipsnames]{xcolor}
+\usepackage[margin=0.5in]{geometry}
+\usepackage[hidelinks]{hyperref}
+\usepackage{enumitem}
+
+\usepackage{array}
+
+\graphicspath{{.}{./img/}}
+
+\let\oldemptyset\emptyset
+\let\emptyset\varnothing
+\newcommand{\inc}{\operatorname{inc}}
+
+\usepackage{environ}
+\NewEnviron{centerframebox}{\begin{center}\fbox{\parbox{0.92\textwidth}{\BODY}}\end{center}}
+
+\title{Algorithms for Data Science \\ Exercise Sheet 5}
+\author{
+  Vladislav Imashev \\ \href{mailto:s05vimas@uni-bonn.de}{s05vimas@uni-bonn.de} \and
+  AAAAAAAAAA AAAAAAA \\ \href{mailto:AAAAAAAAAAAAAAAAAAAA}{AAAAAAAAAAAAAAAAAAAA} \and
+  German Mikhelson \\ \href{mailto:s17gmikh@uni-bonn.de}{s17gmikh@uni-bonn.de} \and
+  Aleksandra Volynets \\ \href{mailto:s02avoly@uni-bonn.de}{s02avoly@uni-bonn.de} \and
+  Nikita Morev \\ \href{mailto:s99nmore@uni-bonn.de}{s99nmore@uni-bonn.de}
+}
+
+\begin{document}
+  \maketitle
+
+  \setcounter{section}{5}
+  \subsection{Total order}
+  \begin{centerframebox}
+    Prove the proposition on Slide 21 of 2023-11-22.
+
+    \textbf{Definition}: for $(I,\, \leq)$ we define the order $\preceq$ on the powerset $2^I$ of $I$ by
+    \[ A \preceq B \iff A=B \textrm{ or } \max((A\cup B)\setminus(A\cap B))\in B \]
+    for all $A,\, B \subseteq I$
+
+    \textbf{Proposition}: $\preceq$ is a total order on $2^I$
+  \end{centerframebox}
+  This order is very similar to the Lexicographic Order we are all familiar with.
+  Except the sequences are read backwards, starting with the maximum element.
+  This arrangement is actually called the Colexicographic Order!
+
+  For the total order property we have to show that the element $x = \max((A\cup B)\setminus(A\cap B))$
+  is either in $B$ or in $A$, and can't be in both at the same time.
+  More specifically $A \preceq B \lor B \preceq A$.
+  Because we subtract $A\cap B$, the element $x$ can't be in both sets at once,
+  and because we start with $A\cup B$, it has to come from at lest one of them.
+  So $A \preceq B$ is mutually exclusive with $B \preceq A$ and they can't be both false at the same time.
+  Thus $\preceq$ is a total order.
+  $\blacksquare$
+
+  \subsection{Total order properties}
+  \begin{centerframebox}
+    Prove the claim on Slide 22 of 2023-11-22.
+
+    \textbf{Claim}: the following facts hold for all $A,B,C \subseteq I$:
+    \begin{enumerate}[label=(\roman*)]
+      \item $A \subseteq B ~\Longrightarrow~ A \preceq B$
+      \item $A \prec B \preceq C ~\Longrightarrow~ \max(B \setminus A) \leq \max(C \setminus A)$
+      \item $A \prec \inc(A,\, i) \textrm{ for all } i \in I \setminus A$
+      \item $A \prec B \textrm{ and } j = \max(B \setminus A) ~\Longrightarrow~ \inc(A,\, j) \subseteq B$
+    \end{enumerate}
+  \end{centerframebox}
+  \subsubsection*{(i) $A \subseteq B ~\Longrightarrow~ A \preceq B$}
+  \textbf{Proof:} \\
+  Let us write down the definition of $A\preceq B$
+  \[ A \preceq B \iff A = B \textrm{ or } \max((A\cup B) \setminus(A\cap B)) \in B\]
+  Since A can be equal to B, this satisfies our definition. \\
+  Let us show that if $A \subseteq B$, then $A \preceq B$. So, from the condition $A \subseteq B$ it follows that $A \cup B \in B$ and $A \cap B \in A$, so that
+  \[\max((A \cup B) \setminus (A \cap B)) = \max(B \setminus A) \in B,\]
+  therefore, this property is correct. $\blacksquare$
+
+  \subsubsection*{(ii) $A \prec B \preceq C ~\Longrightarrow~ \max(B \setminus A) \leq \max(C \setminus A)$}
+  \textbf{Proof:} \\
+  Let us write in more detail the following expression:
+
+  \begin{equation}
+    (X \cup Y) \setminus (X \cap Y) = (Y \setminus X) \cup (X \setminus Y) = \max(\max(Y \setminus X), \max(X \setminus Y))
+    \tag{*}
+  \end{equation}
+
+  So, let us write our expressions $A \prec B$, $B \preceq C$, $A \prec C$ using \textbf{(*)}:
+  \[1.\text{  } A \prec B \iff \max(\max(B \setminus A), \max(A \setminus B)) \in B ~\Longrightarrow~ \max(\max(B \setminus A), \max(A \setminus B)) = \max(B \setminus A) \in B\]
+  \[2.\text{  } B \preceq C \iff B = C \text{ or } \max(\max(C \setminus B), \max(B \setminus C)) \in C ~\Longrightarrow~ B = C \text{ or } \max(\max(C \setminus B), \max(B \setminus C)) = \max(C \setminus B) \in C\]
+  \[3.\text{  } A \prec C \iff \max(\max(C \setminus A), \max(A \setminus C)) \in C ~\Longrightarrow~ \max(\max(C \setminus A), \max(A \setminus C)) = \max(C \setminus A) \in C\]
+
+  So, since
+  \[1. \text{   } \max(B \setminus A) \in B\]
+  \[2. \text{   } \max(C \setminus A) \in C \]
+  \[3. \text{   from } \max(C \setminus B) \in C \text{ and } B = C ~\Longrightarrow~ B \subseteq C \]
+
+  From 1., 2., 3. hence $B \setminus A \subseteq C \setminus A ~\Longrightarrow~ \max(B \setminus A) \leq \max(C \setminus A)$. $\blacksquare$
+
+  \subsubsection*{(iii) $A \prec \inc(A,\, i) \textrm{ for all } i \in I \setminus A$}
+  \textbf{Proof:} \\
+  Let us remember the definition $\inc(A, i)$:
+  \[\inc(A, i) := (A \cup {i}) \setminus \{j \in I: j < i\} \text{ for } A \subseteq I \text{ and } i \in I\]
+
+  So, let us write the expression $A \prec \inc(A,\, i)$:
+  \[A \prec \inc(A,\, i) \iff \max( (\inc(A, i) \cup A) \setminus (\inc(A, i) \cap A) )\]
+
+  Let us write $(\inc(A, i) \cup A)$ and $(\inc(A, i) \cap A)$:
+  \[1. \text{  } \inc(A, i) \cup A = (A \cup {i}) \setminus \{j \in I: j < i\} \cup A = A \cup \{i\}\]
+  \[2. \text{  } \inc(A, i) \cap A = (A \cup {i}) \setminus \{j \in I: j < i\} \cap A = \{j \in A: j > i\}\]
+
+  So let us paste new expression in our general:
+  \[\max( (\inc(A, i) \cup A) \setminus (\inc(A, i) \cap A) ) = \max((A \cup {i}) \setminus \{j \in A: j > i\}) = \max(\{j \in A: j \leq i\}) = \{i\} \in \inc(A, i) \text{  } \blacksquare\]
+
+  \textbf{(iv)} $A \prec B \textrm{ and } j = \max(B \setminus A) ~\Longrightarrow~ \inc(A,\, j) \subseteq B$ \\
+  \textbf{Proof:}\\
+  Let us use expression \textbf{(*)} from \textbf{(ii)} for $A \prec B$:
+
+  \[A \prec B \iff \max(\max(B \setminus A), \max(A \setminus B)) \in B ~\Longrightarrow~ \max(\max(B \setminus A), \max(A \setminus B)) = \max(B \setminus A) = j \in B\]
+  \[~\Longrightarrow~ A \in B \text{ and } j \in B ~\Longrightarrow~ (A \cup j) \subseteq B,\]
+  \[(A \cup j) = B\text{ because there may be a case when } B \setminus A = \max(B \setminus A)\]
+
+  Let us write $\inc(A, j)$:
+  \[\inc(A, j) = (A \cup j) \setminus \{i \in I: i < j\} ~\Longrightarrow~ \inc(A, j) \subseteq (A \cup j),\]
+  \[\inc(A, j) = (A \cup j) \text{ because there may be a case where }j{ is the smallest element}\]
+  \[~\Longrightarrow~ \inc(A, j) \subseteq (A \cup j) \subseteq B \text{  }\blacksquare\]
+
+  \subsection{Ganter-Reuter algorithm}
+  \begin{centerframebox}
+    A database has the following five transactions:
+
+    \begin{center}
+      \begin{tabular}{|c|c|}
+        \hline
+        TID & items bought \\ \hline
+        1 & M, O, N, K, E, Y \\ \hline
+        2 & D, O, N, K, E, Y \\ \hline
+        3 & M, A, K, E \\ \hline
+        4 & M, U, C, K, Y \\ \hline
+        5 & C, O, K, E \\ \hline
+      \end{tabular}
+    \end{center}
+
+    List the family of closed frequent itemsets with a (relative) minimum support of $0.6$ by the Ganter-Reuter algorithm.
+    Give all computational details similarly to the example used in the lecture.
+  \end{centerframebox}
+  $support(X) = 0.6 = \frac{|D[x]|}{|D|=5}  ~\Longrightarrow~ |D[x]| = t =0.6 \cdot 5 = 3$
+
+  Firstly we should delete all infrequent items so we have:
+  \[ \left\{ {M, O, K, E, Y} \right\} \]
+  Let's sort in alphabetical order
+  \[ E < K < M < O < Y \]
+  Then
+  \begin{center}
+    \begin{tabular}{|c|c|}
+      \hline
+      TID & items bought \\ \hline
+      1 & M, O, K, E, Y \\ \hline
+      2 & O, K, E, Y \\ \hline
+      3 & M, K, E \\ \hline
+      4 & M, K, Y \\ \hline
+      5 & O, K, E \\ \hline
+    \end{tabular}
+  \end{center}
+
+  \begin{enumerate}
+    \item apply the GR Th to $A = \emptyset$
+    \begin{center}
+      $\max(\rho(\inc(\emptyset, E))\setminus\emptyset) = \max(g(E)\setminus\emptyset) = \max(\rho(E)) = \max(EK) = K \nleqslant E$
+      $\max(\rho(\inc(\emptyset, K))\setminus\emptyset) = \max(\rho(K)) = \max(K) = K = K ~\Longrightarrow~$ \\
+      $K$ is the next closed frequent set generated \\
+      $\textcolor{red}{\emptyset} \prec \textcolor{blue}{E} \prec \textcolor{red}{K}$
+    \end{center}
+
+    \item apply the GR Th to $A = K$
+    \begin{center}
+      $\max(\rho(\inc(K,E))\setminus K) = \max(\rho(EK)\setminus K) = \max(EK\setminus K) = E ~\Longrightarrow~$ \\
+      $EK$ is the next closed frequent set generated \\
+      $\textcolor{red}{\emptyset} \prec \textcolor{blue}{E} \prec \textcolor{red}{K} \prec \textcolor{red}{EK}$
+    \end{center}
+
+    \item apply the GR Th to $A = EK ~\Longrightarrow~  i \in I \setminus A = \left\{ {M, O, Y} \right\}$
+    \begin{center}
+      $\max(\rho\inc(EK, M))\setminus EK) = \max(\rho(M)\setminus EK) = $ \\
+      using $(EK \cup M)\setminus \left\{ {j \in I: j < M}\right\} = \left\{ {E, K} \right\} ~\Longrightarrow~ \left\{ {M}\right\}$
+      $= \max(MK\setminus EK) = \max(M\setminus E) = M  \leqslant M ~\Longrightarrow~$ \\
+      $M$ is the next closed frequent set generated \\
+      $\textcolor{red}{\emptyset} \prec \textcolor{blue}{E} \prec \textcolor{red}{K} \prec \textcolor{red}{EK} \prec \textcolor{blue}{M} \prec \textcolor{blue}{ME} \prec \textcolor{red}{MK}$
+    \end{center}
+
+    \item apply the GR Th to $A = MK ~\Longrightarrow~  i \in I \setminus A = \left\{ {E, O, Y} \right\}$
+    \begin{center}
+      $\max(\rho(\inc(MK, E))\setminus M) = \max(\rho(EKM)\setminus M) = \max(MKE \setminus M) = K \nleqslant E$
+      $\max(\rho(\inc(MKO))\setminus M) = \max(\rho(O)\setminus M) = \max(OKE\setminus M) = O \leqslant O ~\Longrightarrow~$ \\
+      $OKE$ is the next closed frequent set generated \\
+       $\textcolor{red}{\emptyset} \prec \textcolor{blue}{E} \prec \textcolor{red}{K} \prec \textcolor{red}{EK} \prec \textcolor{blue}{M} \prec \textcolor{blue}{EM} \prec \textcolor{red}{KM} \prec \dots \prec \textcolor{red}{OKE}$
+    \end{center}
+
+    \item apply the GR Th to $A = OKE ~\Longrightarrow~  i \in I \setminus A = \left\{ {M, Y} \right\}$
+    \begin{center}
+      $\max(\rho(\inc(OKE, M)) \setminus OKE) \max(\rho(OM)\setminus OKE) =\max(KEOMY\setminus OKE) = \max(MY) = Y \nleqslant M$
+      $\max(\rho(\inc(OKE, Y))\setminus OKE) \max(\rho(Y)\setminus OKE) = \max(KY\setminus OKE) = Y \leqslant Y ~\Longrightarrow~$ \\
+      $KY$ is the next closed frequent set generated \\
+    \end{center}
+
+  \end{enumerate}
+  Answer: $\left\{ {K, EK, KM, EKO, KY} \right\}$
+
+  \subsection{Two missing numbers}
+  \begin{centerframebox}
+    Let $a,\, b \in [n]$ be distinct numbers and suppose somebody
+    shows all elements of $[n] \setminus \{a,\, b\}$ in some arbitrary order to you;
+    each element exactly once.
+    Your task is to find out the missing numbers $a$ and $b$ using $O(\log n)$ space.
+    (See also, Slide 8 of 2023-11-29.)
+  \end{centerframebox}
+  We can keep track of the sum of the numbers being called out by adding each one in turn to our accumulator:
+  $\sum_{x_i \in [n] \setminus \{a, b\}}x_i$.
+  The total sum of the sequence is defined by the following formula: $1 + 2 + 3 + ... + n = \frac{n \dot (n+1)}{2}$ \\
+  One missing number can be found by subtracting the accumulated sum from the total sum calculated with the formula.
+
+  In order to find two missing numbers, we can as well define a second accumulator: $\sum_{x_i \in [n] \setminus{\,} \{a, b\}}x_i^2$. The total sum of squares is denoted by the formula:
+  $1^2 + 2^2 + 3^2 + ... + n^2 = \frac{n \cdot (n+1) \cdot (2n+1)}{6}$.
+
+  Therefore, to find $a$ and $b$, we solve the following system of equations:
+  \begin{equation*}
+    \left\{\begin{array}{@{}l@{}}
+      a+b=\frac{n \cdot (n+1)}{2} - \sum_{x_i \in [n] \setminus{\,} \{a, b\}}x_i \\
+      a^2 + b^2 = \frac{n \cdot (n+1) \cdot (2n+1)}{6} - \sum_{x_i \in [n] \setminus{\,} \{a, b\}}x_i^2
+    \end{array}\right.
+  \end{equation*}
+
+  \subsection{Identifying the Majority}
+  \begin{centerframebox}
+    Solve the puzzle on Slide 9 of 2023-11-29.
+
+    \textbf{Problem}: From a long list of names read out, some of them many times, return the name which was called the majority of the time, if there is such a name.
+
+    \textbf{Resources available}: one counter + ability to keep just one name at a time in your mind
+  \end{centerframebox}
+  To solve this puzzle, we can use The Misra-Gries Algorithm with $k = 2$.
+  At the very start we memorize the first name received and add 1 to the counter.
+  If the next name is not the same, we subtract 1 from our counter, otherwise we add 1 to our counter.
+  When our counter reaches 0, we remove the name from memory and go back to the beginning on the next step (we memorize a new name and set the counter to 1).
+
+  This algorithm will result in the majority element being in the memory at the end since it has to occur in the data stream more than $\frac{n}{2}$ times in order to be the majority, therefore even if there is another element in the data stream that is present in $\frac{n}{2}-1$ cases its counter will reach 0 at some point because the longest possible sequence for this element is $\frac{n}{2}-1$.
+
+  % TODO (Sasha she/her)
+  % я уже знаю решение 0_0
+  % мы используем Misra-Gries Algorithm c k=2
+  % то есть мы запоминаем какое то имя, и если видим его, то увеличиваем счётчик, а если не его, то уменьшаем
+  % и когда он станет нулём, заменяем на друге имя
+
+  % пусть тут ещё будет эта ссылка
+  % https://cortan122.tk/latex_pdfs/сложность%20hw4.pdf
+\end{document}

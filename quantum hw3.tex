@@ -1,0 +1,222 @@
+\documentclass{article}
+
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage[dvipsnames]{xcolor}
+\usepackage[margin=0.5in]{geometry}
+\usepackage[hidelinks]{hyperref}
+\usepackage{enumitem}
+
+\usepackage{environ}
+\NewEnviron{centerframebox}{\begin{center}\fbox{\parbox{0.92\textwidth}{\BODY}}\end{center}}
+
+\let\oldphi\phi
+\let\phi\varphi
+
+\newcommand{\N}{\mathbb{N}}
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\C}{\mathbb{C}}
+
+\title{Quantum Algorithms \\ Exercise 3}
+\author{
+  AAAAAAAAAA AAAAAAA \\ \href{mailto:AAAAAAAAAAAAAAAAAAAA}{AAAAAAAAAAAAAAAAAAAA} \and
+  Chuong Dinh Le \\ \href{mailto:s56dle@uni-bonn.de}{s56dle@uni-bonn.de} \and
+  Paul Berners \\ \href{mailto:s6plbern@uni-bonn.de}{s6plbern@uni-bonn.de} \and
+  Fynn Osterfeld \\ \href{mailto:s6fyoste@uni-bonn.de}{s6fyoste@uni-bonn.de}
+}
+
+\begin{document}
+  \maketitle
+
+  \setcounter{section}{3}
+  \subsection{Kronecker Product for Quantum States}
+  \begin{centerframebox}
+    Let $\mathbf{U}_1$ and $\mathbf{U}_2$ be the matrix representation of two quantum gates. Show that:
+    \[ (\mathbf{U}_{1}\otimes\mathbf{U}_{2})\; |s_{1}s_{2}\rangle = |\mathbf{U}_{1}s_{1}\mathbf{U}_{2}s_{2}\rangle \]
+  \end{centerframebox}
+
+  \begin{align*}
+      U_k :&= \left(u_{i, j}^{(k)}\right)_{1\leq i, j\leq n_k},\; k\in \{1, 2\}\\
+      |s_k\rangle :&= \left(s_i^{(k)}\right)_{1\leq i \leq n_k},\; k\in \{1, 2\}\\
+      (U_1 \otimes U_2)|s_1s_2\rangle &= (U_1 \otimes U_2)(|s_1\rangle \otimes |s_2\rangle)\\
+      &= \left(u_{i, j}^{(1)}U_2\right)_{1\leq i, j\leq n_1}  \left(s_h^{(1)}|s_2\rangle\right)_{1\leq h\leq n_1}\\
+      &= \left(\sum_{j=1}^{n_1}u_{i, j}^{(1)}s_j^{(1)}|U_2s_2\rangle\right)_{1\leq i\leq n_1}\\
+      &= |U_1s_1\rangle \otimes |U_2s_2\rangle\\
+      &= |U_1s_1U_2s_2\rangle
+  \end{align*}
+
+  \subsection{CNOT Gate}
+  \begin{centerframebox}
+    Calculate the result of the CNOT-gate onto the following states:
+    \begin{itemize}
+      \item $|++\rangle$
+      \item $|+-\rangle$
+      \item $|-+\rangle$
+      \item $|-+\rangle$
+    \end{itemize}
+  \end{centerframebox}
+
+  Let $|s_2\rangle, |s_1\rangle \in \{|+\rangle, |-\rangle\}$; Also let $\overline{\cdot}: \{|+\rangle, |-\rangle\} \rightarrow \{|+\rangle, |-\rangle\}$ be such that $\overline{|+\rangle} = |-\rangle$, and $\overline{|-\rangle} = |+\rangle$:
+  \begin{align*}
+    |+\rangle &= \frac{1}{\sqrt{2}}(|0\rangle + |1\rangle)\\
+    |-\rangle &= \frac{1}{\sqrt{2}}(|0\rangle - |1\rangle)
+  \end{align*}
+
+  \begin{align*}
+    |s_2s_1\rangle &= |s_2\rangle\otimes|s_1\rangle\\
+    &= \left(\frac{1}{\sqrt{2}}\left(|0\rangle + (-1)^{\delta_{s_2, -}}|1\rangle\right)\right)\otimes\left(\frac{1}{\sqrt{2}}\left(|0\rangle + (-1)^{\delta_{s_1, -}}|1\rangle\right)\right)\\
+    &= \frac{1}{2}\left(|0\rangle + (-1)^{\delta_{s_2, -}}|1\rangle\right)\otimes \left(|0\rangle + (-1)^{\delta_{s_1, -}}|1\rangle\right)\\
+    &= \frac{1}{2}\left(|00\rangle + (-1)^{\delta_{s_1, -}} |01\rangle + (-1)^{\delta_{s_2, -}} |10\rangle + (-1)^{\delta_{s_1, -} + \delta_{s_2, -}} |11\rangle\right)
+  \end{align*}
+
+  \begin{align*}
+    \text{CNOT}|s_2s_1\rangle &= \frac{1}{2}\left(\text{CNOT}|00\rangle + (-1)^{\delta_{s_1, -}} \text{CNOT}|01\rangle + (-1)^{\delta_{s_2, -}} \text{CNOT}|10\rangle + (-1)^{\delta_{s_1, -} + \delta_{s_2, -}} \text{CNOT}|11\rangle\right)\\
+    &= \frac{1}{2}\left(|00\rangle + (-1)^{\delta_{s_1, -}} |11\rangle + (-1)^{\delta_{s_2, -}} |10\rangle + (-1)^{\delta_{s_1, -} + \delta_{s_2, -}} |01\rangle\right)\\
+    &= \frac{1}{2}\left(|00\rangle + (-1)^{\delta_{s_1, -} + \delta_{s_2, -}} |01\rangle + (-1)^{\delta_{s_2, -}} |10\rangle + (-1)^{\delta_{s_1, -} + 2\delta_{s_1, -}} |11\rangle\right)\\
+    &= \begin{cases}
+      |s_2s_1\rangle & \text{if}\quad \delta_{s_1, -} = \delta_{s_1, -} + \delta_{s_2, -} \mod 2\\
+      |s_2\overline{s_1}\rangle & \text{if}\quad \delta_{s_1, -} \neq \delta_{s_1, -} + \delta_{s_2, -} \mod 2\\
+    \end{cases}\\
+    &= \begin{cases}
+      |s_2s_1\rangle & \text{if}\quad \delta_{s_2, -} = 0\\
+      |s_2\overline{s_1}\rangle & \text{if}\quad \delta_{s_2, -} = 1\\
+    \end{cases}\\
+    &= \begin{cases}
+        |++\rangle&\text{if}\quad|s_2s_1\rangle = |++\rangle\\
+        |+-\rangle&\text{if}\quad|s_2s_1\rangle = |+-\rangle\\
+        |--\rangle&\text{if}\quad|s_2s_1\rangle = |-+\rangle\\
+        |-+\rangle&\text{if}\quad|s_2s_1\rangle = |--\rangle
+    \end{cases}
+  \end{align*}
+
+  \subsection{CU Gate}
+  \begin{centerframebox}
+    Consider the phase shift gate given by
+    \[ U = \begin{pmatrix}
+      1 & \\
+      & e^{2\pi i\theta}
+    \end{pmatrix} \]
+    for some fixed $\theta \in [0,\, 1]$.
+    Calculate the matrix representation of the controlled $U$ ($CU$) gate and
+    give the results when applied to the standard basis
+
+    \begin{itemize}
+      \item $|00\rangle$
+      \item $|01\rangle$
+      \item $|10\rangle$
+      \item $|10\rangle$
+    \end{itemize}
+  \end{centerframebox}
+
+  Controlled means that we apply $U$ when the first qubit is $|1\rangle$:
+  \begin{align*}
+      \text{C}U|00\rangle &= |00\rangle\\
+      \text{C}U|01\rangle &= |(U0)1\rangle = |01\rangle\\
+      \text{C}U|10\rangle &= |10\rangle\\
+      \text{C}U|11\rangle &= |(U1)1\rangle = |(e^{2\pi i \theta}1)1\rangle
+  \end{align*}
+  Since $|00\rangle, |01\rangle, |10\rangle$ and $|11\rangle$ are the standard basis vectors, we instantly get the matrix form:
+  \begin{align*}
+      \text{C}U &= \begin{pmatrix}
+          |00\rangle & |01\rangle & |10\rangle & |(e^{2\pi i \theta}1)1\rangle
+      \end{pmatrix}\\
+      &= \begin{pmatrix}
+          1&0&0&0\\0&1&0&0\\0&0&1&0\\0&0&0&e^{2\pi i\theta}
+      \end{pmatrix}
+  \end{align*}
+
+  \subsection{Conditional Probability Density}
+  \begin{centerframebox}
+    The joint conditional \textit{probability density function} (pdf)  $p(\mathbf{x}_{0:k}|\mathcal{Z}^{k})$
+    represents the knowledge on the ``trajectory'' of states $\mathbf{x}_0, \dots, \mathbf{x}_k$ at time instances $t_l$
+    for $l = 0, \dots , k$ given the measurements $\mathcal{Z}^k = \{z_1, \dots, z_k\}$.
+    Show that the following formula for a recursive update from time step $k - 1$ to $k$ holds:
+
+    \[ p(\mathbf{x}_{0:k}|{\mathcal{Z}}^{k})=\frac{p({\bf z}_{k}|\mathbf{x}_{k})\,p(\mathbf{x}_{k}|\mathbf{x}_{k-1})}{p(\mathbf{x}_{k}|{\mathcal{Z}}^{k-1})}\,p(\mathbf{x}_{0:k-1}|{\mathcal{Z}}^{k-1}). \]
+
+    Use the following rules:
+    \begin{itemize}
+      \item Bayes theorem
+      \[ p(\mathbf{x}|y)={\frac{p(y|x)\,p(x)}{p(y)}} \]
+      \item Conditional density definition
+      \[ p(x|y)={\frac{p(y,x)}{p(y)}} \]
+      \item Markov property for the Markov process $\mathbf{x}_0, \mathbf{x}_1, \dots$
+      \[ p(\mathbf{x}_{k}|\mathbf{x}_{k-1},y)=p(\mathbf{x}_{k}|\mathbf{x}_{k-1}) \]
+      \item Sensor model
+      \[ p(\mathbf{z}_{k}|\mathbf{x}_{k},y)=p(\mathbf{z}_{k}|\mathbf{x}_{k}) \]
+    \end{itemize}
+  \end{centerframebox}
+
+  \begin{align*}
+      p(x_{0:k}|Z^k) =& p(x_{0:k}|z_k, Z^{k-1})\\
+      =& p(x_{0:k}|z_k| Z^{k-1})\\
+      =_\text{Bayes theorem}& \frac{p(z_k|x_{0:k}|Z^{k-1})}{p(z_k|Z^{k-1})}p(x_{0:k}|Z^{k-1})\\
+      =& \frac{p(z_k|x_k, x_{0:k-1}, Z^{k-1})}{p(z_k|z_{k-1}, Z^{k-2})}p(x_{0:k}|Z^{k-1})\\
+      =_\text{Sensor model}& \frac{p(z_k|x_k)}{p(z_k|z_{k-1})}p(x_{0:k}|Z^{k-1})\\
+      =& \frac{p(z_k|x_k)}{p(z_k|z_{k-1})}p(x_k, x_{0:k-1}|Z^{k-1})\\
+      =_\text{Conditional density definition}& \frac{p(z_k|x_k)}{p(z_k|z_{k-1})}p(x_k|x_{0:k-1}|Z^{k-1})p(x_{0:k-1}|Z^{k-1})\\
+      =& \frac{p(z_k|x_k)}{p(z_k|z_{k-1})}p(x_k|x_{k-1}, x_{0:k-2}, Z^{k-1})p(x_{0:k-1}|Z^{k-1})\\
+      =_\text{Markov property}& \frac{p(z_k|x_k)p(x_k|x_{k-1})}{p(z_k|z_{k-1})}p(x_{0:k-1}|Z^{k-1})\\
+  \end{align*}
+
+  \subsection{Slater Determinants}
+  \begin{centerframebox}
+    For two objects, an anti-symmetric wave function is given by a ``Slater determinant'':
+
+    \begin{align*}
+      \psi_{-}(x_{1},x_{2}) &= \varphi_{1}(x_{1})\varphi_{2}(x_{2})-\varphi_{1}(x_{2})\varphi_{2}(x_{1})   \\
+      &= \begin{vmatrix}
+        \phi_1(x_1) & \phi_2(x_1) \\
+        \phi_1(x_2) & \phi_2(x_2) \\
+      \end{vmatrix}
+    \end{align*}
+
+    with single-object wave functions $\phi_i (i \in \{1,\, 2\})$.
+    The probability density is given by $p(x_1, x_2) = c [\psi)_{-}(x_1, x_2)]^2$.
+
+    \begin{enumerate}[label=\underline{Task \arabic*:},itemindent=0.5cm]
+      \item show that $\psi_{-}(x_1, x_2)$ vanishes for $x_1 = x_2$ and for $\phi_1 = \phi_2$.
+      \item calculate the normalization constant $c$, assuming the single-object functions are orthonormal, i.e.:
+      \[ \langle i|j\rangle = \int\phi_i(x)\phi_j(x)\, dx = \delta_{i,j} \quad\textrm{ for } i,j \in \{1,\, 2\}. \]
+      \item calculate the ``particle density'' function:
+      \[ \rho(x) = 2\int p(x,x')\, dx'. \]
+    \end{enumerate}
+  \end{centerframebox}
+
+  \subsubsection{Task 1}
+  Let $x_1 = x_2$:
+  \begin{align*}
+      \psi_-(x_1, x_2) &= \psi_-(x_1, x_1)\\
+      &= \varphi_1(x_1)\varphi_2(x_1) - \varphi_1(x_1)\varphi_2(x_1)\\
+      &= 0
+  \end{align*}
+  Let $\varphi_1 = \varphi_2$:
+  \begin{align*}
+      \psi_-(x_1, x_2) &= \varphi_1(x_1)\varphi_2(x_2) - \varphi_1(x_2)\varphi_2(x_1)\\
+      &= \varphi_1(x_1)\varphi_1(x_2) - \varphi_1(x_2)\varphi_1(x_1)\\
+      &= 0
+  \end{align*}
+  \subsubsection{Task 2}
+  $c$ shall be such that $1 = \int_{-\infty}^\infty \int_{-\infty}^\infty p(x_1, x_2)dx_1dx_2$:
+  \begin{align*}
+      \int_{-\infty}^\infty \int_{-\infty}^\infty p(x_1, x_2)dx_1dx_2 &= \int_{-\infty}^\infty \int_{-\infty}^\infty c(\psi_-(x_1, x_2))^2dx_1dx_2\\
+      &= c\int_{-\infty}^\infty \int_{-\infty}^\infty (\varphi_1(x_1)\varphi_2(x_2) - \varphi_1(x_2)\varphi_2(x_1))^2dx_1dx_2\\
+      &= c\int_{-\infty}^\infty \int_{-\infty}^\infty (\varphi_1(x_1)\varphi_2(x_2))^2 - 2\varphi_1(x_1)\varphi_2(x_2)\varphi_1(x_2)\varphi_2(x_1) + (\varphi_1(x_2)\varphi_2(x_1))^2dx_1dx_2\\
+      &= c\left(\int_{-\infty}^\infty \int_{-\infty}^\infty \varphi_1^2(x_1)\varphi_2^2(x_2)dx_1dx_2 - 2\int_{-\infty}^\infty \int_{-\infty}^\infty\varphi_1(x_1)\varphi_2(x_2)\varphi_1(x_2)\varphi_2(x_1)dx_1dx_2\right.\\&\quad\quad\left. + \int_{-\infty}^\infty \int_{-\infty}^\infty\varphi_1^2(x_2)\varphi_2^2(x_1)dx_1dx_2\right)\\
+      &= c\left(\int_{-\infty}^\infty  \varphi_1^2(x_1)dx_1 \int_{-\infty}^\infty\varphi_2^2(x_2)dx_2 - 2\int_{-\infty}^\infty \varphi_1(x_1)\varphi_2(x_1)dx_1\int_{-\infty}^\infty\varphi_2(x_2)\varphi_1(x_2)dx_2\right.\\&\quad\quad\left. + \int_{-\infty}^\infty\varphi_2^2(x_1)dx_1 \int_{-\infty}^\infty\varphi_1^2(x_2)dx_2\right)\\
+      &= c\left(1\cdot 1 -2\cdot 0\cdot 0+ 1\cdot 1\right)\\
+      &= 2c
+  \end{align*}
+  This means that $c = \frac{1}{2}$.
+  \subsubsection{Task 3}
+  \begin{align*}
+      \rho(x) &= 2\int_{-\infty}^\infty p(x, x')dx'\\
+      &= 2\int_{-\infty}^\infty \frac{1}{2}(\psi_-(x, x'))^2dx'\\
+      &= \int_{-\infty}^\infty (\varphi_1(x)\varphi_2(x') - \varphi_1(x')\varphi_2(x))^2dx'\\
+      &= \int_{-\infty}^\infty \varphi_1^2(x)\varphi_2^2(x') dx' - 2 \int_{-\infty}^\infty \varphi_1(x)\varphi_2(x)\varphi_1(x')\varphi_2(x') dx' + \int_{-\infty}^\infty \varphi_1^2(x')\varphi_2^2(x) dx'\\
+      &= \varphi_1^2(x)\cdot 1 -2 \varphi_1(x)\varphi_2(x)\cdot 0 + \varphi_2^2(x)\cdot 1\\
+      &= \varphi_1^2(x) + \varphi_2^2(x)
+  \end{align*}
+
+\end{document}

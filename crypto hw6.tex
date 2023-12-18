@@ -1,0 +1,90 @@
+\documentclass{article}
+
+\usepackage{enumitem}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage{textcomp}
+\usepackage{gensymb}
+\usepackage[dvipsnames]{xcolor}
+\usepackage[margin=0.5in]{geometry}
+\usepackage[hidelinks,bookmarks=false]{hyperref}
+
+\usepackage{environ}
+\NewEnviron{centerframebox}{\begin{center}\fbox{\parbox{0.92\textwidth}{\BODY}}\end{center}}
+
+\hypersetup{
+  colorlinks=true,
+  urlcolor=MidnightBlue,
+  linkcolor=WildStrawberry,
+  % pdfborderstyle={/S/U/W 2}
+}
+
+\title{Cryptography \\ Exercise Sheet 6}
+\author{
+  AAAAAAAAAA AAAAAAA \\
+  \href{mailto:AAAAAAAAAAAAAAAAAAAA}{AAAAAAAAAAAAAAAAAAAA}
+}
+
+\begin{document}
+  \maketitle
+
+  \setcounter{section}{6}
+  \subsection{AtE and died: confidentially poisoned}
+  \begin{centerframebox}
+    Suppose we use an encryption scheme with encryption function $ENC_{K_e}$
+    and a message authentication scheme with tagging function $MAC_{K_a}$.
+
+    Now, suppose additionally that the encryption XORs something on the plaintext (like a one-time-pad),
+    and define a variant $ENC^*_{K_e}$ of this encryption function as follows:
+    first replace every 0-bit by two bits 00 and every 1-bit by two bits 01 or 10,
+    choose randomly each time, next encrypt with $ENC_{K_e}$.
+    For the decryption we translate 00 back to 0, 01, 10 and also 11 to 1. So we send $ENC^*_{K_e} (m| MAC_{K_a} (m))$.
+  \end{centerframebox}
+  \subsubsection{Prove (at least, argue) that $ENC^*_{K_e}$ is still IND-CPA secure.}
+  We can use Exercise 5.1, where we had two schemes and combined them,
+  and if one of them is IND-CPA, then the combined one is also IND-CPA.
+  The first scheme is our original $ENC_{K_e}$, and the second ``scheme'' is the bit replacing code we use to construct $ENC^*_{K_e}$.
+  So the combination, which is also $ENC^*_{K_e}$, is IND-CPA secure, because $ENC_{K_e}$ is IND-CPA secure.
+
+  \subsubsection{Ruthless attacker}
+  \begin{centerframebox}
+    Suppose that a ruthless person, called Rudiger, has overheard the
+    messages of your login to some server which was done by sending
+    the password. Of course, your password was authenticated and encrypted, as all messages. Now, Rudiger takes the transmission of
+    your password and resends it with a bit pair in the cipher text inverted.
+    \begin{enumerate}[label=(\alph*)]
+      \item How does the recipient react if the original bit was 0?
+      \item How does the recipient react if the original bit was 1?
+    \end{enumerate}
+    Conclude that Rudiger learns the bit from the reaction of the server
+    (and thus your passwords after enough trials).
+  \end{centerframebox}
+  If the original bit was zero, the bits 00 get inverted to 11, which translates to 1.
+  So the message changes, and the recipient will notice and throw an error.
+  But if the bit in one, then the bits 01 (or 10) get inverted to 10 (or 01), and this still remains 1.
+  The message doesn't change, and the recipient accepts it.
+  So the attacker, by changing one of the bit pairs at random, can figure out an arbitrary bit of the message,
+  and one by one, the whole password, which is just sent as part of the message.
+
+  \subsubsection{Show that the composed scheme is not IND-CCA secure.}
+  For IND-CCA we are given an oracle to decrypt any ciphertext, except for the exact one we need to distinguish.
+  But here we can flip one of the bit pairs, and with probability one half it's going to be a 1 bit,
+  and thus feeding that message to the oracle will successfully decrypt it, without triggering the loss condition.
+  And we get a non-negligible $\frac{1}{2}$ advantage.
+  That's all we need, but we can try calling the oracle more times, to get a 100\% win rate.
+
+  \subsubsection{Is SSH better?}
+  \begin{centerframebox}
+    In SSH we transmit $ENC_{K_e}(m) | MAC_{K_a} (m)$, so we authenticate and
+    encrypt (rather than first authenticating and second encrypting). Is
+    that better? [Try to use $ENC^*_{K_e}$ here.]
+  \end{centerframebox}
+  We can still recover all the bits of $m$, but now the bits of $MAC_{K_a} (m)$ are public.
+  Which doesn't really change anything.
+  Unless we don't authenticate with a password, but with some asymmetric key.
+
+  \subsection{All the papers and youtube videos...}
+  Yeah, I didn't read those...
+
+\end{document}

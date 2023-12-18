@@ -1,0 +1,168 @@
+\documentclass{article}
+
+\usepackage{enumitem}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage[dvipsnames]{xcolor}
+\usepackage{amssymb}
+\usepackage[margin=0.5in]{geometry}
+\usepackage[hidelinks, bookmarks=false]{hyperref}
+
+\usepackage{bbold}
+\usepackage{algorithm}
+\usepackage{algpseudocode}
+
+\let\oldemptyset\emptyset
+\let\emptyset\varnothing
+\let\oldepsilon\epsilon
+\let\epsilon\varepsilon
+\newcommand{\N}{\mathbb{N}}
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\Q}{\mathbb{Q}}
+\renewcommand{\algorithmicrequire}{\textbf{Instance:}}
+\renewcommand{\algorithmicensure}{\textbf{Output:}}
+
+\usepackage{environ}
+\NewEnviron{centerframebox}{\begin{center}\fbox{\parbox{0.92\textwidth}{\BODY}}\end{center}}
+
+\title{Combinatorial Optimization \\ Exercise Set 8 \\ Tuesday class}
+\author{
+  AAAAAAAAAA AAAAAAA \\
+  \href{mailto:AAAAAAAAAAAAAAAAAAAA}{AAAAAAAAAAAAAAAAAAAA}
+  \and
+  Carola Ley \\
+  \href{mailto:s6caleyy@uni-bonn.de}{s6caleyy@uni-bonn.de}
+  \and
+  Bailee Zacovic \\
+  \href{mailto:s38bzaco@uni-bonn.de}{s38bzaco@uni-bonn.de}
+}
+
+\begin{document}
+  \maketitle
+
+  \setcounter{section}{8}
+  \subsection{Metric TSP $s$-$t$-path approximation}
+  \begin{centerframebox}
+    Consider the metric $s$-$t$ path TSP: Given an instance of \textsc{Metric TSP}
+    and two vertices $s$ and $t$, we look for a Hamiltonian $s$-$t$ path of minimum
+    weight. Describe a $\frac{5}{3}$-factor approximation algorithm, generalizing Christofides'
+    Algorithm.
+  \end{centerframebox}
+  In Christofides' Algorithm  the minimum weight $W$-join is computed on the vertices that have a degree of the wrong parity, in the case of a Hamiltonian $s$-$t$-path the degree of $s$ and $t$ should be odd while all others even. Now in the resulting graph of the minimum weight spanning tree and the $W$-join every Eulerian path is an $s$-$t$-path and thus the resulting Hamiltonian path is also a $s$-$t$-path. Thus the resulting algorithm is given by:
+
+  \begin{algorithm}
+  \caption{Christofides' Algorithm for Hamiltonian $s$-$t$ path}\label{alg:cap}
+  \begin{algorithmic}[1]
+  \Require $(K_n, c, s, t)$
+  \Ensure a Hamiltonian $s$-$t$ path of minimum weight $c$
+  \State Find a minimum weight spanning tree $T$ in $(K_n,c)$
+  \State Let $W:=\{v\in V(K_n)\setminus \{s,t\}: v \text{ has odd degree in }T \}\cup \{v\in \{s,t\}: v \text{ has even degree in }T \}$
+  \State Find a minimum weight $W$-joint $J$ in $K_n$ w.r.t. $c$
+  \State Find an Eulerian $s$-$t$-walk in $(V(K_n), E(T)\cup J)$
+  \State Add vertices to the Hamiltonian $s$-$t$-path $P$ in order of the first appearance in the Eulerian $s$-$t$-walk
+  \end{algorithmic}
+  \end{algorithm}
+  Let $OPT$ be the minimal weight of a Hamiltonian $s$-$t$ path. Every Hamiltonian path in a metric TSP contains a spanning tree, thus  $c(T)\leq OPT$.\\
+  Let $P^*$ be the a minimum weight Hamiltonian $s$-$t$ path. The number of odd degree vertices in a graph is even, thus $|W|$ is even. As $P^*$ visits all vertices, it visits all vertices in $W$ and therefore contains a $W$-join $J'$. The graph $(V(K_n), T\cup (W\setminus J'))$ is connected as $T$ is a spanning tree and every vertex has even degree (for $v\in V(K_n)\setminus\{s,t\}$ if it had even degree in $T$, then $v\notin W$, so it has even degree in $W\setminus J'$; if $v$ had odd degree in $T$, it is in $W$ and therefore has odd degree in $W\setminus J'$. For $v\in \{s,t\}$ if $v$ had odd degree in $T$, then $v\notin W$, so the edge incident to $v$ in $P*$ is not in $J'$; else $v\in W$, so it has degree 0 in $W\setminus J'$). So $(V(K_n), T\cup (W\setminus J'))$ is Eulerian and can be decomposed in 2 disjoint $W$-joins.
+  In total $P^*\cup T$ can be decomposed into 3 $W$-joins.
+  Thus $c(J)\leq \frac 13 (c(P^*)+c(T))\leq\frac 23 OPT$.\\
+  As the given instance is metric: $c(P)\leq c(T)+c(J)\leq \frac53 OPT$, thus the given algorithm is a  $\frac{5}{3}$-factor approximation algorithm.
+
+  \subsection{Flow polymatroid}
+  \begin{centerframebox}
+    Let $(G,\, u,\, s,\, t)$ be a network and $U := \delta^+(s)$. Let
+    \[ P := \left\{x\in\R_{+}^{U}:
+    \textrm{ there is an }s\textrm{-}t\textrm{ flow } f \textrm{ in } (G,\, u)
+    \textrm{ with } f(e) = x_e \textrm{ for all }
+    e\in U \right\}. \]
+
+    Prove that P is a polymatroid.
+  \end{centerframebox}
+  For a polytope to count as a polymatroid it need to be expressed in the form:
+  \[ P(g) = \left\{x \in \R_+^U \mid x(A) \leq g(A),\, \forall A \subseteq U\right\} \]
+  where $g$ is some submodular function.
+
+  If we define $g(A) : 2^U \to \R$ to be the maximal $s$-$t$ flow value in the subgraph $G'(A) := (V(G),\, A \cup (E(G) \setminus U))$,
+  i.e. the graph with only the edges in $A$ leaving $s$.
+  By definition of a flow, this value also equals the sum of the flow leaving $s$,
+  and in the $P$ polytope, $x(A)$ is also the sum of the flow leaving $s$, so it fits.
+
+  We can easily prove the equivalence of the two statements: $\forall A \subseteq U : x(A) \leq g(A)$ and ``there is an $s$-$t$ flow $f$ in $(G,\, u)$ with $f(e) = x_e$ for all $e\in U$''.
+  \begin{itemize}
+    \item[``$\Leftarrow$''] If a flow exists, it is clearly smaller then (or equal to) the maximal flow,
+    and for the subsets $A$ we can decrease the flow such that the values of $x_e$ will be zero for all $e \not\in A$.
+    This flow will use only the edges in $G'(A)$ and be a valid flow (not exceeding the maximum),
+    because we got it by decreasing another existing flow.
+
+    \item[``$\Rightarrow$''] Here we can use induction on the number of edges in $A$.
+    For that base case where $A = \{e\}$, we can see that a flow with $f(e) = x_e$ for the only edge we have can be easily obtained by reducing the maximal flow.
+    When $|A| \geq 2$ and we already know that the corresponding flows exist for all proper subsets of $A$,
+    we assume that there exists an edge $e \in A$ with $x_e > f(x)$ for all maximal flows $f$ in $G'(A)$.
+
+    But we know that a flow exists for $A \setminus \{e\}$, because it is a proper subset of $A$,
+    and the residual capacities it leaves behind must be enough to allow for a $g(A)$ flow,
+    and we can use this, in addition to the fact that for every subset that includes $e$ a flow is also possible,
+    to conclude that $f$ must not be a maximal flow, and receive a contradiction.
+    % todo: more details (i'm not sure about this part)
+  \end{itemize}
+  Thus $P = P(g)$.
+
+  Now we have to prove $g$ is a submodular function.
+  For this we use an alternative equivalent definition:
+  \[ g(X\cup \{x\}) - g(X) \geq g(Y\cup \{x\}) - g(Y) \qquad \forall X \subseteq Y \subseteq U \]
+  i.e. if $g$ is submodular adding an element $x$ to $X$ will result in a larger increase than adding it to $Y$.
+  But for a maximal flow it's easy to see that the $Y$ set will have less residual capacity left over to make use of the new edge $x$
+  then any of its subsets.
+  $\blacksquare$
+
+  \subsection{Monotone $f$ for any polymatroid}
+  \begin{centerframebox}
+    Let $E$ be a finite set and $P \subseteq \R^E$ be a polymatroid.
+    Show that there is some submodular set function $f$ with $f(\emptyset) = 0$, $f$ monotone, i.e. $f(X) \leq f(Y)$
+    for all $X \subseteq Y \subseteq E$ and $P = P(f)$.
+  \end{centerframebox}
+  Let $P =P(f)\subseteq \R^E$ be a polymatroid for some submodular set function $f :\mathbb{2}^E\rightarrow \mathbb{R}_+$. First, consider the function $g:\mathbb{2}^E\rightarrow \mathbb{R}_+$, given by $$g(X)=\begin{cases}\underset{E\supseteq Y\supseteq X}{\text{min}}f(Y)& \text{ if }X\neq \emptyset \\ 0 & \text{ if }X=\emptyset\end{cases},$$where we observe that $g(X)\geq 0$ for all $X\subseteq E$ by $f$ non-negative. Since $E$ is finite, this minimum value is achieved by some subset which we call $X_{\text{min}}\supseteq X$ for each $X\subset E.$ Notice that for all $X\subseteq Y\subseteq E,$ $$g(Y)-g(X)=\underset{E\supseteq Z\supseteq Y}{\text{min}}f(Z)-\underset{E\supseteq Z\supseteq X}{\text{min}}f(Z)\geq 0$$since $Y\subseteq Z\implies X\subseteq Z.$ In other words, $g(X)\leq g(Y),$ hence $g$ is monotone. It remains to show that $g$ is submodular. To this end, fix $\emptyset\neq X,Y\subseteq E.$ Then,
+  \begin{align*}
+    g(X)+g(Y)&=f(X_{\text{min}})+f(Y_{\text{min}})\\
+    &\geq f(X_{\text{min}}\cup Y_{\text{min}})+f(X_{\text{min}}\cap Y_{\text{min}})\\
+    &\geq f(X_{\text{min}}\cup Y_{\text{min}})+f(X_{\text{min}}\cap Y_{\text{min}})\\
+    &\geq f((X\cup Y)_{\text{min}})+f((X\cap Y)_{\text{min}})\; \text{ since }X\cup Y\subseteq(X\cup Y)_{\text{min}}, X\cap Y\subseteq(X\cap Y)_{\text{min}}\\
+    &=g(X\cup Y)+g(X\cap Y).
+  \end{align*}Submodularity is trivial when either $X=\emptyset$ or $Y=\emptyset.$ Finally, we claim that $P=P(f)=P(g).$ Since $g(X)\leq f(X)$ for all $X\subseteq E,$ it is clear that $P(g)\subseteq P(f).$ For the reverse inclusion, let $x\in P(f)$ and fix some $\emptyset \neq A\subseteq E.$ Then $\sum_{e\in A}x_e\leq f(A)$. We simultaneously have $\sum_{e\in A_{\text{min}}}x_e\leq f(A_{\text{min}})\leq f(A)$. Since $x\geq 0,$ this in fact imposes the condition $\sum_{e\in A}x_e\leq f(A_{\text{min}})=g(A).$ Hence $P(f)\subseteq  P(g).$ This completes the proof. $\blacksquare$
+
+  \subsection{Compact set polymatroid}
+  \begin{centerframebox}
+    Prove that a nonempty compact set $P\subseteq \mathbb{R}^n_+$ is a polymatroid if and only if
+    \begin{enumerate}
+      \item For all $0\leq x\leq y\in P$ we have $x\in P$.
+      \item For all $x\in \mathbb{R}^n_+$ and all $y,z\leq x$ with $y,z\in P$ that are maximal with this property (i.e. $y\leq w\leq x$ and $w\in P$ implies $w=y$, and $z\leq w\leq x$ and $w\in P$ implies $w=z$) we have $\mathbb{1}y=\mathbb{1}z,$ where $\mathbb{1}$ is the vector whose entries are all $1.$
+    \end{enumerate}
+  \end{centerframebox}
+
+  Let a nonempty compact set $P\subseteq \R^n_+$ be a polymatroid associated to the submodular function $f:\mathbb{2}^{[n]}\rightarrow \R_+$, and $y\in P.$ Then for all $0\leq x\leq y$ and any $I\subseteq [n],$ it follows that $0\leq \sum_{i\in I}x_i \leq \sum_{i\in I} y_i\leq f(I),$ hence $x\in P.$ Fix $x\in \R^n_+$ and $y,z\leq x$ with $y,z\in P$ maximal with this property. Toward a contradiction, suppose without loss of generality that $\mathbb{1}(y-z)>0.$ Then there exists some index $j$ where $z_j<y_j.$ Consider $w\in \R^n_+$ given by
+  $$w_i=\begin{cases}
+      z_i & \text{ for }i\neq j; \\
+      z_i+\frac{y_i-z_i}{2} & \text{ for }i=j,
+  \end{cases}$$where we note $$x_j=z_j+(x_j-z_j)\geq z_j+(y_j-z_j)>z_j+\frac{y_j-z_j}{2}=w_j>z_j,$$hence $z\leq w <x$ and $w\in P,$ but $w\neq z$, contradicting maximality of $z.$ This concludes the forward direction.
+
+  Now, let $P\subseteq \R^n_+$ be a nonempty compact satisfying (1.) and (2.) given in the problem statement. We claim that $P=P(f)$ for $f:\mathbb{2}^{[n]}\rightarrow \R_+$ given by $f(I)=\underset{x\in P}{\text{max}} \sum_{i\in I}x_i$ for all $I\subseteq [n]$ (note that taking a maximum makes sense by compactness of $P$). First, we show that $f$ is submodular. Then for all $I,J\subseteq [n],$
+  \begin{align*}f(I)+f(J)-f(I\cap J)&=\left(\underset{x\in P}{\text{max}} \sum_{i\in I}x_i\right)+\left(\underset{x\in P}{\text{max}} \sum_{i\in J}x_i \right)- \left(\underset{x\in P}{\text{max}} \sum_{i\in I\cap J}x_i \right)\\&\geq \left(\underset{x\in P}{\text{max}} \sum_{i\in I\setminus J}x_i\right)+\left(\underset{x\in P}{\text{max}} \sum_{i\in J\setminus I}x_i\right)- \left(\underset{x\in P}{\text{max}} \sum_{i\in I\cap J}x_i\right)\\&\geq \sum_{i\in I\cup J} x_i\end{align*}
+  hence $$f(I)+f(J)-f(I\cap J)\geq f(I\cup J)\implies f(I)+f(J)\geq f(I\cup J)+f(I\cap J),$$from which it follows that $f$ is submodular.
+
+  Now, it is clear that $P\subseteq P(f)$ since for all $x\in P,$ $x\geq 0,$ and $\sum_{i\in I}x_i\leq \underset{x\in P}{\text{max}} \sum_{i\in I}x_i=f(I)$ for all $I.$ It remains to show $P(f)\subseteq P,$ and we proceed by induction on the dimension $n\in \mathbb{N}$.
+
+  When $n=1,$ we have $w\leq f(\{1\})=\underset{x\in P}{\text{max}}\; x$ implies $w\in P$ by (1.), so the claim holds. Let $n>1,$ and assume the claim holds for $n-1.$ For each $v\in P(f),$ we consider the subregion, or $(n-1)$-dimensional ``slice'', $$P(f)|_{x_1=v_1}:=P(f)\cap \{x\in\mathbb{R}^n_+:x_1=v_1\}\subseteq \{v_1\}\times \mathbb{R}^{n-1}_+.$$Similarly, denote $$P|_{x_1=v_1}:=P\cap \{x\in\mathbb{R}^n_+:x_1=v_1\}\subseteq \{v_1\}\times \mathbb{R}^{n-1}_+.$$By the induction hypothesis, $P(f)|_{x_1=v_1}\subseteq P|_{x_1=v_1}.$ Since $\cup_{v\in P(f)} P(f)|_{x_1=v_1} =P(f),$ it follows that $P(f)\subseteq P,$ and thus we conclude that $P(f)=P.$ This completes the proof. $\blacksquare$
+
+  % We see that $P_v=P(f|_{v})$ for the function $f|_{v}:\mathbb{2}^{[n]\setminus \{1\}}\rightarrow \mathbb{R}_+$ given by $f|_{v}(I):=f(I\cup\{1\})-v_1$ for all $I\subseteq [n]\setminus \{1\}.$
+  % % Since all vectors are non-negative, this is equivalently the region in $\{v_1\}\times \mathbb{R}^{n-1}_+$ bounded by the hyperplane $\{x\in \{v_1\}\times \mathbb{R}^{n-1}_+:x_2+x_3+\dots x_n=f([n])-v_1\}.$
+  % We note that $f|_{v}$ is submodular, since for any $I,J\subseteq [n]\setminus \{1\},$ \begin{align*}f|_{v}(I)+f|_{v}(J)&=\left(f(I\cup \{1\})-v_1\right)+\left(f(J\cup \{1\})-v_1\right)\\&\geq \left(f((I\cup J)\cup \{1\})-v_1\right)+\left(f((I\cap J)\cup \{1\})-v_1\right)\\&=f|_{v}(I\cup J)+f|_{v}(I\cap J).\end{align*}
+
+  % Toward a contradiction, suppose there existed some $w\in \mathbb{R}^n_+,$ $w\geq 0,$ satisfying $\sum_{i\in I}w_i\leq f(I)$ for all $I,$ but $w\notin P.$ Then by (1.), $x\ngeq w$ for all $x\in P$.  By $P$ compact, there exists some open $\epsilon$-neighborhood (ball) $\R^n_+\supseteq U_{\epsilon}\ni w$, $U_{\epsilon}\cap P=\emptyset.$ Moreover, for each $i=1,2,\dots,n$, there exists some $x\in P$ such that $x_i\geq w_i$ by our choice of $f,$ at least two of which are distinct.
+
+  % If it happens that $\sum_{i\in [n]} y_i=\sum_{i\in [n]}z_i$ for all $y,z\in P$ maximal with respect to the property $y,z\leq w,$ then consider $w':=w-\delta e_1$ for $\delta>0$ sufficiently small such that $w'\in U_{\epsilon},$ and $e_1\in \R^n_+$ the standard basis vector. By our choice of $f,$ there exists some $x\in P$ satisfying $w'_1<w_1\leq x_1.$ Then we let $v\leq w,$ $v\in P,$ be maximal satisfying $v_1=w_1,$ and analogously let $v'\leq w',$ $v'\in P,$ be maximal satisfying $v'_1=w'_1=w_1-\delta<w_1.$ Denote $C:=\sum_{i=1}^n v_i,$ and $C':=\sum_{i=1}^n v'_i.$ By (2.), it follows that for all maximal $y\leq w$ and $y'\leq w',$ $$\sum_{i=1}^n y'_i=C'<C=\sum_{i=1}^n y_i.$$
+
+  % Now, consider also a maximal $u\leq w$, $u\in P$ satisfying $\sum_{i=2}^n u_i = \sum_{i=2}^n w_i.$ Such a vector exists by our choice of $f$ (as a maximum over a compact set) and (1.). This implies that $$\sum_{i=1}^n u_i=C.$$
+
+  % But because $\sum_{i=2} w'_i=\sum_{i=2} w_i,$ and because $\{x\in \mathbb{R}^n_+:x=w-\mu e_1, 0\leq \mu\leq \delta\}\subseteq \mathbb{R}^n_+\setminus P,$ $u$ is also maximal with the property $u\leq w'.$ In other words, $$\sum_{i=1}^n u_i=C'.$$Since $C'<C,$ we reach a contradiction. It follows that $P(f)\subseteq P,$ and therefore $P(f)=P.$ This completes the proof. $\blacksquare$
+
+\end{document}

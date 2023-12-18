@@ -1,0 +1,176 @@
+\documentclass{article}
+
+\usepackage{enumitem}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage[dvipsnames]{xcolor}
+\usepackage{amssymb}
+\usepackage{bbold}
+\usepackage[margin=0.5in]{geometry}
+\usepackage[hidelinks, bookmarks=false]{hyperref}
+
+\let\oldemptyset\emptyset
+\let\emptyset\varnothing
+\let\oldepsilon\epsilon
+\let\epsilon\varepsilon
+\newcommand{\N}{\mathbb{N}}
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\Q}{\mathbb{Q}}
+
+\usepackage{environ}
+\NewEnviron{centerframebox}{\begin{center}\fbox{\parbox{0.92\textwidth}{\BODY}}\end{center}}
+
+\title{Combinatorial Optimization \\ Exercise Set 9 \\ Tuesday class}
+\author{
+  AAAAAAAAAA AAAAAAA \\
+  \href{mailto:AAAAAAAAAAAAAAAAAAAA}{AAAAAAAAAAAAAAAAAAAA}
+  \and
+  Carola Ley \\
+  \href{mailto:s6caleyy@uni-bonn.de}{s6caleyy@uni-bonn.de}
+  \and
+  Bailee Zacovic \\
+  \href{mailto:s38bzaco@uni-bonn.de}{s38bzaco@uni-bonn.de}
+}
+
+\begin{document}
+  \maketitle
+
+  \setcounter{section}{9}
+  \subsection{Another alternative submodularity formulation}
+  \begin{centerframebox}
+    Let $U$ be a finite set and $f : 2^U \to \R$. Prove that $f$ is submodular
+    if and only if $f(X \cup \{y,\, z\}) - f(X \cup \{y\}) \leq f(X \cup \{z\}) - f(X)$ for all $X \subseteq U$ and
+    $y,\, z \in U$ with $y \neq z$.
+  \end{centerframebox}
+  For the forward direction, let $f$ be submodular. Then for $X\cup \{y\},X\cup \{z\}\subseteq U,$ $y\neq z,$ noting that $(X\cup \{y\})\cup (X\cup \{z\})=X\cup \{y,z\}$ and $(X\cup \{y\})\cap (X\cup \{z\})=X,$ we obtain
+  \begin{align*}
+      f(X\cup \{y\})+f(X\cup \{z\})\geq f(X\cup \{y,z\})+f(X)
+  \end{align*}
+  by submodularity of $f$. Subtracting $f(X)+f(X\cup \{y\})$ from both sides, we deduce
+  $$f(X \cup \{y,\, z\}) - f(X \cup \{y\}) \leq f(X \cup \{z\}) - f(X)$$as desired. Conversely, let
+  \begin{equation}f(X \cup \{y,\, z\}) - f(X \cup \{y\}) \leq f(X \cup \{z\}) - f(X)\end{equation} \text{for all }$X \subseteq U$ \text{ and
+}    $y,\, z \in U, y \neq z,$ and fix $A,B\subseteq U$. We aim to show that $f$ is submodular. If $A\subseteq B$ or $B\subseteq A,$ the result follows immediately. So suppose $A \not\subseteq B$ and $ B \not\subseteq A$ and denote $A\setminus B:=\{a_1,\dots,a_m\},$ $B\setminus A:=\{b_1,\dots,b_n\},$ and $X:=A\cap B.$ We proceed by strong double induction on $(m,n)\in \mathbb{N}\times \N.$ Observe that when $m\in \mathbb{N}$ and $n=1,$ we obtain
+
+\begin{align*}
+    f(B)=f(X\cup \{b_1\})&\overset{(1)}{\geq} \left(f(X\cup \{a_1,b_1\})-f(X\cup \{a_1\})\right)+f(X)\\&\overset{(1)}{\geq}\left(f(X\cup \{a_1,a_2,b_1\})-f(X\cup \{a_1,a_2\})\right)+f(X)\\& \;\; \vdots \\& \overset{(1)}{\geq}\left(f(X\cup \{a_1,a_2,\dots,a_m,b_1\})-f(X\cup \{a_1,a_2,\dots,a_m\})\right)+f(X)\\&=\left(f(A\cup B)-f(A)\right)+f(A\cap B).
+\end{align*}
+When $m=1$ and $n\in \mathbb{N},$ we similarly apply iterated applications of (1) to obtain
+\begin{align*}
+    f(A)=f(X\cup \{a_1\})&\overset{(1)}{\geq} \left(f(X\cup \{a_1,b_1\})-f(X\cup \{b_1\})\right)+f(X)\\&\overset{(1)}{\geq}\left(f(X\cup \{a_1,b_1,b_2\})-f(X\cup \{b_1,b_2\})\right)+f(X)\\& \;\; \vdots \\& \overset{(1)}{\geq}\left(f(X\cup \{a_1,b_1,b_2,\dots,b_n\})-f(X\cup \{b_1,b_2,\dots,b_n\})\right)+f(X)\\&=\left(f(A\cup B)-f(B)\right)+f(A\cap B).
+\end{align*}
+In both base cases, it follows that $f(A)+f(B)\geq f(A\cup B)+f(A\cap B).$ Fix $m,n\in \mathbb{N},$ and let submodularity hold for all pairs at most $(m+1,n),$ and all pairs at most $(m,n+1)$; we will show that submodularity holds for $(m+1,n+1).$ By induction hypothesis, we have
+
+\begin{align*}
+    f(A)+f(A\setminus \{a_{m+1}\}\cup B\setminus \{b_{n+1}\}) & \geq f(A\cup B\setminus \{b_{n+1}\})+f(A\setminus \{a_{m+1}\}) \\
+    f(B) +f(A\setminus \{a_{m+1}\}\cup B\setminus \{b_{n+1}\})& \geq f(A\setminus \{a_{m+1}\}\cup B)+f(B\setminus \{b_{n+1}\}) \\
+    f(A\setminus \{a_{m+1}\})+f(B\setminus \{b_{n+1}\})& \geq f(A\setminus \{a_{m+1}\}\cup B\setminus \{b_{n+1}\})+f(A\cap B).
+\end{align*}
+
+Summing the previous three inequalities and simplifying (a few lines have been omitted for brevity), we ultimately obtain:
+\begin{align*}
+    f(A)+f(B) &\geq f(A\cup B\setminus \{b_{n+1}\})-f(A\setminus \{a_{m+1}\}\cup B\setminus \{b_{n+1}\})+f(A\cup B\setminus \{b_{n+1}\})+f(A\cap B)\\& = \left(f(A\cup B\setminus \{b_{n+1}\})+f(A\cup B\setminus \{b_{n+1}\})\right)-f(A\setminus \{a_{m+1}\}\cup B\setminus \{b_{n+1}\})+f(A\cap B)\\& \geq \left(f(A\cup B)+f(A\setminus \{a_{m+1}\}\cup B\setminus \{b_{n+1}\})\right)-f(A\setminus \{a_{m+1}\}\cup B\setminus \{b_{n+1}\})+f(A\cap B)\\&=f(A\cup B)+f(A\cap B).
+\end{align*}
+
+Thus, the claim holds. $\blacksquare$
+
+
+
+% $m=n=1,$ i.e. $A=\{a\}$ and $B=\{b\},$ it follows directly from (1) with $X=\emptyset$ that
+% $$f(A)+f(B)=f(\{a\})+f(\{b\})\geq f(\{a,b\})+f(\emptyset)=f(A\cup B)+f(A\cap B).$$ Fix $m>1.$
+
+
+% Fix $(m,n)\neq (1,1)$, and assume the result holds for $(m-1,n).$ Then for any $a\in A,$
+
+% $$f(A\setminus \{a\})+f(B)\geq f(A\setminus \{a\}\cup B)+f(A\setminus \{a\}\cap B).$$
+
+% An application of (1) and a bit of rearranging yields,
+% $$f((A\cap B)\cup \{a_1\})+f((A\cap B)\cup \{b_1\})\geq f((A\cap B)\cup \{a_1,b_1\})+f(A\cap B).$$
+
+
+
+
+  \subsection{Lemma 4.26 and Theorem 4.27}
+  \begin{centerframebox}
+    Let $E$ be a finite set and $f : 2^E \to \R$ a function with $f(\emptyset) = 0$ and $f'$ its Lovász extension.
+    Prove Lemma 4.26 and Theorem 4.27 from the lecture, i.e. that
+    \begin{enumerate}[label=(\roman*)]
+      \item if $f$ is submodular, then for all $x \in [0,\, 1]^E$
+      \[ f'(x) = \max\{x^Ty : y \in P(f) \}; \]
+      \item $f$ is submodular if and only if $f'$ is convex.
+    \end{enumerate}
+  \end{centerframebox}
+  % Actually its Lemma 4.27 and Theorem 4.28
+
+      \begin{enumerate}
+          \item First, we provide a counter-example to original statement of the exercise: Let $E=\{1,2\},$ and let $f:\mathbb{2}^E\rightarrow \mathbb{R}$ be given by
+          $$\begin{cases}
+              f(\emptyset)=0\\
+              f(\{1\})=100\\
+              f(\{2\})=f(E)=1.
+          \end{cases}$$
+
+          In particular, for $x=\chi^{\{1\}}\in [0.1]^E,$ $f'(x)=f(\{1\})=100,$ and $\text{max}\{x^Ty:y\in P(f)\}=\text{max}\{y_2:y\in P(f)\}$. But $y\in P(f)$ implies that $y_1+y_2\leq 1,$ where $y_i\geq 0$ for $i=1,2.$ This condition renders its impossible to find a $y\in P(f)$ satisfying $y_2=100>1.$ Therefore, the original statement of the exercise is incorrect.
+
+          We now proceed to a proof of the corrected exercise. Let $f$ be submodular and $x\in [0,1]^E$. By Definition 4.26, there are unique $\lambda_1,\dots,\lambda_k$ and $\emptyset\subset T_1\subset\dots \subset T_k\subseteq E$ such that $x=\sum_{i=1}^k \lambda_i\chi^{T_i},$ and $f'(x)=\sum_{i=1}^k \lambda_if(T_i).$ Then
+          \begin{align*}
+              \max\left\{x^Ty : y \in P(f) \right\}   = \max\left\{\left(\sum_{i=1}^k \lambda_i\chi^{T_i}\right)^Ty : y \in P(f) \right\}  & = \max\left\{\sum_{i=1}^k \lambda_i \chi^{{T_i}^T}y : y \in P(f) \right\} \\& = \max\left\{\sum_{i=1}^k \lambda_i \left(\sum_{j\in T_i}y_j\right) : y \in P(f) \right\} \\ & \leq \sum_{i=1}^k \lambda_if(T_i) \text{ since }\sum_{j\in T_i}y_j\leq f(T_i) \; \forall i \\ & = f'(x).
+          \end{align*}
+
+          We assume $f$ is non-decreasing. In particular, $f(A)\geq f(\emptyset)=0$ for all $A\subseteq E.$ We will demonstrate that for each $x,$ there exists $y\in P(f)$ witnessing $\sum_{j\in T_i} y_j =f(T_i)$ for all $1\leq i\leq k,$ such that $$f'(x) \leq \max\{x^Ty : y \in P(f) \}.$$ We proceed by induction on $k\in \mathbb{N}.$ Let $k=1.$ We quickly show by induction on $|T_1|$ that \begin{equation}\sum_{j\in T_1} f(\{j\})\geq f(T_1)\geq 0.\end{equation} When $|T_1|=1$, this is clear. When $|T_1|=2$, this follows by submodularity of $f$. Let $|T_1|>2.$ Distinguishing some element $j'\in T_1$, and assuming the claim for $T_1\setminus \{j'\}$, $|T_1\setminus \{j'\}|=|T_1|-1,$ we obtain by induction hypothesis and submodularity:
+
+          $$\sum_{j\in T_1} f(\{j\})=\left(\sum_{j\in T_1\setminus \{j'\}} f(\{j\})\right)+f(\{j'\})\geq f(T_1\setminus \{j'\})+f(\{j'\})\geq f(T_1)\geq 0.$$
+
+          Now, return to the case $k=1.$ By (2), it follows that there exists $y\in P(f)$ whose $T_1$-coordinates satisfy $\sum_{j\in T_1} y_j=f(T_1)$, by simply ``augmenting'' $\vec{0}$ in the $T_1$-coordinates).
+
+          For the general case, let $k>1.$ By induction hypothesis, we may find $y'\in P(f)$ satisfying $\sum_{j \in T_i} y'_j=f(T_i)$ for $1\leq i\leq k-1.$ Since $T_{k-1}\subset T_k,$ it follows by submodularity:
+          $$f(T_{k}\setminus T_{k-1})+f(T_{k-1})\geq f(T_k).$$ Combining this with $f$ non-decreasing and (2), we obtain:
+
+          \begin{equation}\sum_{j\in T_k\setminus T_{k-1}} f(\{j\})\geq f(T_{k}\setminus T_{k-1})\geq f(T_k)-f(T_{k-1})\geq 0.\end{equation}By (3) and $T_k\setminus T_{k-1}\cap \left(\cup_{i=1}^{k-1} T_i\right)=\emptyset$, it is possible again to ``augment'' $y'$ in the $T_k\setminus T_{k-1}$-coordinates, since also $\sum_{j\in T_k\setminus T_{k-1}} y'_j\leq f(T_k\setminus T_{k-1})$. In other words, there exists $y\in P(f)$ satisfying $\sum_{j\in T_i} y_i=f(T_i)$ for all $1\leq i\leq k.$ We conclude that $f'(x) \leq \max\{x^Ty : y \in P(f) \}$, and therefore $f'(x) = \max\{x^Ty : y \in P(f) \}$. So we are done. $\blacksquare$
+
+
+
+
+
+
+
+
+          % When $k=0,$ we have $f'(x)=0.$ Since $x^Ty\geq 0$ for all $y\in P(f),$ it follows that $f'(x)=0\leq \max\left\{x^Ty : y \in P(f) \right\}$ and so indeed $f'(x) = \max\{x^Ty : y \in P(f) \}.$ When $k=1,$ we have $x=\lambda_$
+
+          \item Let $f$ be submodular and fix $x,y\in [0,1]^E$. By (i), we have $f'(x) = \max\{x^Ty : y \in P(f) \}$ for all $x\in [0,1]^E.$ Then for $0\leq t\leq 1$ and $z\in P(f),$ we observe
+
+          \begin{align*}
+              \left(t\cdot x+(1-t)\cdot y\right)^Tz & = t\cdot x^Tz+(1-t)\cdot (y^Tz) \\ & \leq t\cdot \max\{x^Tz : z \in P(f) \} + (1-t)\cdot \max\{y^Tz : z \in P(f) \} \\& = tf'(x)+(1-t)f'(y).
+          \end{align*}Taking the maximum of both sides over $z\in P(f)$ gives
+          $$f'(t\cdot x+(1-t)\cdot y)\leq t\cdot f'(x)+(1-t)\cdot f'(y),$$hence $f'$ is convex. For the reverse direction, let $f'$ be convex and fix $A,B\subseteq E.$ Taking $\chi^A,\chi^B\in [0,1]^E,$ it follows from Definition 4.26 that $$f'(x)=f(A) \text{ and } f'(y)=f(B).$$By convexity of $f',$ we also have
+          $$f'(t\cdot \chi^A+(1-t)\cdot \chi^B)\leq t\cdot f(A)+(1-t)\cdot f(B)$$for all $0\leq t\leq 1.$ In particular, at $t=\frac{1}{2},$ we obtain
+          $$f'\left(\frac{1}{2}\cdot \chi^A+\frac{1}{2}\cdot \chi^B\right)\leq \frac{1}{2}\cdot \left(f(A)+f(B)\right).$$Since $\frac{1}{2}\cdot \chi^A+\frac{1}{2}\cdot \chi^B=\frac{1}{2}\chi^{A\cap B}+\frac{1}{2}\chi^{A\cup B},$ it follows that
+          $$\frac{1}{2}\left(f(A\cup B)+f(A\cap B)\right)\overset{\text{Def. }4.26}{=}f'\left(\frac{1}{2}\cdot \chi^A+\frac{1}{2}\cdot \chi^B\right)\leq \frac{1}{2}\cdot \left(f(A)+f(B)\right).$$Multiplying both sides by two, we deduce
+          $$f(A\cup B)+f(A\cap B)\leq f(A)+f(B).$$Since $A,B$ were arbitrarily chosen, it follows that $f$ is submodular. $\blacksquare$
+      \end{enumerate}
+
+
+  \subsection{Base polyhedron}
+  \begin{centerframebox}
+    Let $f : 2^U \to \R$ be a submodular function with $f(\emptyset) = 0$.
+    Let the \textit{base polyhedron} of $f$ be defined as
+    \[ \left\{ x\in \R^{U} : x(A) \leq f(A) (A\subseteq U), x(U) = f(U)\right\} \]
+
+    Prove that the set of vertices of the base polyhedron of $f$ is precisely the set of
+    vectors $b^\prec$ for all total orders $\prec$ of $U$, where
+
+    \[ b^\prec(u) := f\left(\left\{v\in U: v\preceq u\right\}\right) - f\left(\left\{v\in U: v\prec u\right\}\right) \qquad\qquad (u\in U). \]
+  \end{centerframebox}
+Let $\prec$ be a total order of $U$, we have to show that $b^\prec$ is a vertex of the base polyhedron.
+By the definition of $b^\prec$ and because $f(\emptyset) = 0$ we get:
+\[b^\prec(U)=\sum_{u\in U}b^\prec(u)=\sum_{u\in U}f\left(\left\{v\in U: v\preceq u\right\}\right) - f\left(\left\{v\in U: v\prec u\right\}\right)=f(U)-f(\emptyset)=f(U).\]
+For $A\subseteq U$ we use induction on $|A|$ to show $b^\prec(A) \leq f(A)$. In the base case $A=\emptyset$ it is $b^\prec(\emptyset)=f(\emptyset)-f(\emptyset)=0=f(\emptyset)$. So now assume for $0\leq|B|<|A|$ we have $b^\prec(B) \leq f(B)$. Let $a\in A$ be the largest element of $A$ with respect to $\prec$, then as $A\subseteq \{v\in U: v\preceq a\}$
+\begin{align*}b^\prec(A)&=b^\prec(A\setminus\{a\})+b^\prec(a)\underset{\text{IH}}\leq f(A\setminus\{a\})+b^\prec(a)\\
+&=f(A\setminus\{a\})+f(\{v\in U: v\preceq a\}) - f(\{v\in U: v\prec a\})\\
+&= f(A\cap \{v\in U: v\prec a\})+f(A\cup \{v\in U: v\prec a\}) - f(\{v\in U: v\prec a\})\underset{f\text{ submodular}}{\leq} f(A).
+\end{align*}
+Thus $b^\prec\in\left\{ x\in \R^{U} : x(A) \leq f(A) (A\subseteq U), x(U) = f(U)\right\} $.
+If $U=\{u_1\prec u_2\prec....\prec u_n\}$, then for $A_i=\{u_1,u_2,...,u_i\}, i\in \{0,...,n\}$ we get \[b^\prec(A_i)=\sum_{u\in A_i}b^\prec(u)=\sum_{j=1}^i f\left(\left\{v\in U: v\preceq u_i\right\}\right) - f\left(\left\{v\in U: v\prec u_i\right\}\right)=f(A_i)-f(\emptyset)=f(A_i)\]
+thus $b^\prec$ is a vertex of the base polyhedron.
+
+For the other direction let $x$ be a vertex of the base polyhedron. In the Polymatroid greedy algorithm (Algorithm 8), $c$ can be negative. If $f$ is negative this would lead to an unbounded value for $c^Tx$, so we allow $f$ to be negative and $c\in\mathbb R_{\geq 0}^E$. Then for $x$ a vertex of the base polyhedron, there is a $c$ such that the Polymatroid greedy algorithm finds $x$. By the definition of $x(e_i)$ in the algorithm, $c$ describes a total order $\prec$ with $x=b^\prec$.
+\end{document}

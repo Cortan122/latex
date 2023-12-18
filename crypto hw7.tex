@@ -1,0 +1,309 @@
+\documentclass{article}
+
+\usepackage{enumitem}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage{textcomp}
+\usepackage{gensymb}
+\usepackage[dvipsnames]{xcolor}
+\usepackage[margin=0.5in]{geometry}
+\usepackage[hidelinks,bookmarks=false]{hyperref}
+
+\usepackage{environ}
+\NewEnviron{centerframebox}{\begin{center}\fbox{\parbox{0.92\textwidth}{\BODY}}\end{center}}
+
+\let\oldphi\phi
+\let\phi\varphi
+\newcommand{\Z}{\mathbb{Z}}
+
+\hypersetup{
+  colorlinks=true,
+  urlcolor=MidnightBlue,
+  linkcolor=WildStrawberry,
+  % pdfborderstyle={/S/U/W 2}
+}
+
+\title{Cryptography \\ Exercise Sheet 7}
+\author{
+  AAAAAAAAAA AAAAAAA \\
+  \href{mailto:AAAAAAAAAAAAAAAAAAAA}{AAAAAAAAAAAAAAAAAAAA}
+}
+
+\usepackage[listings,many]{tcolorbox}
+\makeatletter
+\newtcblisting{mylisting}{
+  listing only,
+  breakable, enhanced jigsaw,
+  listing engine=listings,
+  colback=gray!20,
+  listing options={
+    language=python,
+    keywordstyle=\color{blue},
+    basicstyle=\ttfamily,
+    stringstyle=\color{ForestGreen},
+    commentstyle=\color{gray},
+    ndkeywordstyle={\color{orange}},
+    identifierstyle=\color{black},
+    numbers=none,
+    showstringspaces=false,
+    aboveskip={0\p@ \@plus 6\p@}, belowskip={0\p@ \@plus 6\p@},
+    columns=fullflexible, keepspaces=true,
+    breaklines=true, breakatwhitespace=true,
+    extendedchars=false,
+    inputencoding=utf8,
+    upquote=true,
+    xleftmargin=-25pt,
+  }
+}
+\makeatother
+
+\begin{document}
+  \maketitle
+
+  \setcounter{section}{7}
+  \subsection{RSA example}
+  \begin{centerframebox}
+    Run RSA for $\kappa = 40$. Document your procedure.
+  \end{centerframebox}
+  The first step in the key generation process for RSA is the generation of two large random primes.
+  To that and we generate a cryptographically secure $\frac{\kappa}{2}$-bit random number,
+  and check if it's a prime.
+  The primality test used here is the probabilistic Miller-Rabin algorithm with $k=32$ iterations.
+  I used an implementation from \href{https://stackoverflow.com/a/36525088}{Stack Overflow},
+  which also added additional checks for small prime divisors.
+  \begin{mylisting}
+    from random import SystemRandom
+    crypto_rng = SystemRandom()
+
+    # Miller-Rabin primality test
+    def is_prime(n, k=32):
+        from random import randint
+        if n < 2: return False
+        for p in [2,3,5,7,11,13,17,19,23,29]:
+            if n % p == 0: return n == p
+        s, d = 0, n-1
+        while d % 2 == 0:
+            s, d = s+1, d//2
+        for i in range(k):
+            x = pow(randint(2, n-1), d, n)
+            if x == 1 or x == n-1: continue
+            for r in range(1, s):
+                x = (x * x) % n
+                if x == 1: return False
+                if x == n-1: break
+            else: return False
+        return True
+
+    def random_prime(kappa):
+        while True:
+            n = crypto_rng.getrandbits(kappa) + 2**kappa
+            if is_prime(n):
+                return n
+  \end{mylisting}
+
+  But we have to have another one of those random loops, because the length $\kappa$ is not for each of the primes,
+  but for their product $N = p\cdot q$, and despite us picking $\frac{\kappa}{2}$ as the length for each of them,
+  there's still a small chance it might fail the $2^{\kappa-1} \leq p\cdot q < 2^\kappa$ condition.
+  \begin{mylisting}
+    def generate_pq(kappa):
+        while True:
+            p = random_prime((kappa - 1) // 2)
+            q = random_prime((kappa - 1) // 2)
+            if 2 ** (kappa - 1) <= p * q <= 2**kappa:
+                return p, q
+  \end{mylisting}
+
+  The next few steps are much more straightforward, from a coding perspective.
+  We generate our primes $p = 969011,\, q = 895789$,
+  multiply them to get $N = p \cdot q = 868029394679$ and $L = \phi(N) = (p-1)\cdot(q-1) = 868027529880$,
+  pick $e = 2^{16} + 1 = 65537$, as it is the most commonly used value for this constant,
+  and compute the inverse $d = e^{-1} \mod L = 139163606153$.
+  Because we are using a modern version of Python 3,
+  the inverse con be computed in one line with the built in ``\texttt{pow(e, -1, L)}'' function.
+  Otherwise we would've had to use the Extended Euclidean algorithm.
+  \begin{mylisting}
+    kappa = 40
+    p, q = generate_pq(kappa)
+    N = p * q
+    L = (p - 1) * (q - 1)
+    e = 2**16 + 1
+    d = pow(e, -1, L)
+  \end{mylisting}
+
+  From this the public key becomes $(N,\, e) = (868029394679,\, 65537)$
+  and the private key $(N,\, d) = (868029394679,\, 139163606153)$.
+  We can try encrypting and decrypting a message.
+  It has to me a number from $0$ to $N$ (for larger messages we have to come up with some \textbf{padding scheme}).
+  I choose $m = 122$.
+
+  Encrypting gives us the ciphertext $c = m^e \mod N = 423023733710$,
+  and it can be successfully decrypted into $m' = c^d \mod N = 122$.
+  So we can conclude that our implementation works correctly!
+  \begin{mylisting}
+    message = 122
+    ciphertext = pow(message, e, N)
+    decrypted = pow(ciphertext, d, N)
+    print(message, ciphertext, decrypted)
+  \end{mylisting}
+
+  However, the choice of $\kappa=40$ is way too small. A modern machine can factor the number $N$ in less than a millisecond!!
+  But we can simply run the same code with a larger $\kappa$, and it will still be quite fast.
+  For example, with $\kappa = 2048$ the code takes about $2$ seconds to run, and most of it is spent on generating primes,
+  which isn't much of an issue, because the key only has to be generated once.
+
+  \subsection{Modular Arithmetic}
+  \begin{centerframebox}
+    Use paper and pencil for this exercise.
+  \end{centerframebox}
+  This means we can't use a programming language.
+  % Excuse me, what do you mean by that??
+  % What if I use a pen, instead of a pencil...?
+  % I choose to interpret this as ``don't just calculate this in python''!
+
+  \subsubsection{Calculate $2^{7654321} \mod 11$. Explain your reasoning.}
+  Here we can use the Euler's $\phi$ Function theorem (my favorite).
+  \[ a^{\phi(n)} \equiv 1 \mod n \]
+  And it can also be written as:
+  \[ a^b \equiv a^{(b \operatorname{mod} \phi(n))} \mod n \]
+  Because $11$ is a prime, $\phi(11) = 11 - 1 = 10$.
+  And $2^{7654321} \equiv 2^{7654321 \operatorname{mod} 10} \equiv 2^1 \equiv 2 \mod 11$.
+
+  \subsubsection{Compute $9^{(2^{7654321})} \in \Z_{23}$.}
+  \begin{centerframebox}
+    Hint: You need the Little Theorem of Fermat and $9 = 3^2$.
+    For a generalizable solution, you would need the Chinese Remainder Theorem.
+  \end{centerframebox}
+  I think we don't need the Chinese Remainder Theorem, nor Fermat's Little Theorem here.
+  We can just use Euler's $\phi$ Function theorem again!
+
+  Because $23$ is also a prime, $\phi(23) = 22$, and now we have to compute $\phi(22) = \phi(11)\phi(2) = 10 \cdot 1 = 10$.
+  Now we can apply those phi function on both levels:
+  \begin{align*}
+    9^{(2^{7654321})}
+    &\equiv 9^{2^{7654321} \operatorname{mod} 22} \equiv 9^{2^{7654321 \operatorname{mod} 10} \operatorname{mod} 22} \\
+    &\equiv 9^{2^1 \operatorname{mod} 22} \equiv 9^2 \equiv 81 \equiv 12 \\
+    &\mod 23\\
+  \end{align*}
+
+  \subsection{EEA examples}
+  \begin{centerframebox}
+    In each run of the algorithm, use the table to document it. Think of the cross-check. State the result.
+  \end{centerframebox}
+
+  \subsubsection{Run the Extended Euclidean Algorithm on $42$, $235$. (Do NOT swap the inputs!)}
+  \begin{center}
+    \begin{tabular}{c|cccc}
+      $i$ & $r_i$ & $q_i$ & $s_i$ & $t_i$ \\
+      \hline
+      $0$ & $42$ &  & $1$ & $0$ \\
+      $1$ & $235$ & $0$ & $0$ & $1$ \\
+      $2$ & $42$ & $5$ & $1$ & $0$ \\
+      $3$ & $25$ & $1$ & $-5$ & $1$ \\
+      $4$ & $17$ & $1$ & $6$ & $-1$ \\
+      $5$ & $8$ & $2$ & $-11$ & $2$ \\
+      $6$ & $1$ & $8$ & $28$ & $-5$ \\
+      $7$ & $0$ &  & $-235$ & $42$ \\
+    \end{tabular}
+  \end{center}
+  Check $r_i = s_ia + t_ib$ for $i = 7$.
+  \[ -235 \cdot 42 + 42 \cdot 235 = 0 \]
+
+  \subsubsection{Compute the inverse of $42 \in \Z_{1009}$.}
+  Run the Extended Euclidean Algorithm on $42$ and $1009$.
+  \begin{center}
+    \begin{tabular}{c|cccc}
+      $i$ & $r_i$ & $q_i$ & $s_i$ & $t_i$ \\
+      \hline
+      $0$ & $42$ &  & $1$ & $0$ \\
+      $1$ & $1009$ & $0$ & $0$ & $1$ \\
+      $2$ & $42$ & $24$ & $1$ & $0$ \\
+      $3$ & $1$ & $42$ & $-24$ & $1$ \\
+      $4$ & $0$ &  & $1009$ & $-42$ \\
+    \end{tabular}
+  \end{center}
+  Check $r_i = s_ia + t_ib$ for $i = 4$.
+  \[ 1009 \cdot 42 + -42 \cdot 1009 = 0 \]
+
+  If we get the last non-zero row with $i = 3$, you get:
+  \[ 1 = -24 \cdot 42 + 1 \cdot 1009 \]
+  \[ 1 \equiv -24 \cdot 42 \mod 1009 \]
+  \[ 42^{-1} \equiv -24 \mod 1009 \]
+  We can also compute the proper form for $-24 \equiv 985 \mod 1009$.
+
+  \subsubsection{Say $L = 28 \cdot 30$ and you choose $e = 26$. Is $e$ invertible? If so determine its inverse $d$.}
+  Run the Extended Euclidean Algorithm on $28 \cdot 30 = 840$ and $26$.
+
+  \begin{center}
+    \begin{tabular}{c|cccc}
+      $i$ & $r_i$ & $q_i$ & $s_i$ & $t_i$ \\
+      \hline
+      $0$ & $840$ &  & $1$ & $0$ \\
+      $1$ & $26$ & $32$ & $0$ & $1$ \\
+      $2$ & $8$ & $3$ & $1$ & $-32$ \\
+      $3$ & $2$ & $4$ & $-3$ & $97$ \\
+      $4$ & $0$ &  & $13$ & $-420$ \\
+    \end{tabular}
+  \end{center}
+  Check $r_i = s_ia + t_ib$ for $i = 4$.
+  \[ 13 \cdot 840 + -420 \cdot 26 = 0 \]
+
+  Because the value $\gcd(a,\, b) = r_3 = 2$ is not $1$, i.e. the numbers are not coprime, $e$ is not invertible.
+
+  \subsubsection{Say $L = 28 \cdot 30$ and you choose $e = 17$. Is $e$ invertible? If so determine its inverse $d$.}
+  Run the Extended Euclidean Algorithm on $28 \cdot 30 = 840$ and $17$.
+
+  \begin{center}
+    \begin{tabular}{c|cccc}
+      $i$ & $r_i$ & $q_i$ & $s_i$ & $t_i$ \\
+      \hline
+      $0$ & $840$ &  & $1$ & $0$ \\
+      $1$ & $17$ & $49$ & $0$ & $1$ \\
+      $2$ & $7$ & $2$ & $1$ & $-49$ \\
+      $3$ & $3$ & $2$ & $-2$ & $99$ \\
+      $4$ & $1$ & $3$ & $5$ & $-247$ \\
+      $5$ & $0$ &  & $-17$ & $840$ \\
+    \end{tabular}
+  \end{center}
+  Check $r_i = s_ia + t_ib$ for $i = 5$.
+  \[ -17 \cdot 840 + 840 \cdot 17 = 0 \]
+
+  Here the $\gcd(a,\, b) = r_4 = 1$, so $e$ is invertible, and we can use the same idea as in part 7.3.2 to get the inverse.
+  \[ 1 = 5 \cdot 840 - 247 \cdot 17 \]
+  \[ 1 \equiv -247 \cdot 17 \mod 840 \]
+  \[ 17^{-1} \equiv -247 \mod 840 \]
+  We can also compute the proper form for $-247 \equiv 593 \mod 840$.
+
+  \subsubsection{Determine $x \in \Z_{899}$ with $x \mod 29 = 7$ and $x \mod 31 = 13$.}
+  Note that $899 = 31 \cdot 29$.
+  TODO
+
+  \subsection{Cleptography}
+  \begin{centerframebox}
+    Note: this term is actually spelt ``Kleptography''.
+
+    Someone has replaced the key generation of an RSA implementation.
+
+    We may assume $q \leq \frac{N_1}{p} + c\kappa$ for some small c with high probability.
+    This is reasonable. (Namely, with the help of the Prime Number Theorem.)
+  \end{centerframebox}
+  \subsubsection{Prove that $0 < N - N_1 < 2^{\frac{\kappa}{2} + \log_2\kappa + \log_2 c + 7}$}
+  Let's do some algebraic transformations to $N - N_1$:
+  \begin{align*}
+    N - N_1 &= \frac{N - N_1}{p} \cdot p \\
+    &= \left(\frac{N}{p} - \frac{N_1}{p}\right) \cdot p \\
+    &= \left(q - \frac{N_1}{p}\right) \cdot p \\
+    &\leq \left(\frac{N_1}{p} + c\kappa - \frac{N_1}{p}\right) \cdot p \\
+    &\leq c\kappa p
+  \end{align*}
+  Now if we compare $c\kappa p$ with that large power of 2 expression:
+  \begin{align*}
+    c\kappa p &< 2^{\frac{\kappa}{2} + \log_2\kappa + \log_2 c + 7} \\
+    &< 2^\frac{\kappa}{2} \cdot 2^{\log_2\kappa} \cdot 2^{\log_2 c} \cdot 2^7 \\
+    &< 2^\frac{\kappa}{2} \cdot 2^7 \cdot \kappa \cdot c \\
+    p&< 2^\frac{\kappa}{2} \cdot 2^7
+  \end{align*}
+  The size of $p$ and $q$ is around $\frac{\kappa}{2}$ bits, and they can differ by at most 2 bits,
+  so, with the help of the extra $2^7$ factor, we can safely say that $p < 2^\frac{\kappa}{2} \cdot 2^7$.
+
+\end{document}
