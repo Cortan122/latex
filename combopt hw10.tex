@@ -1,0 +1,218 @@
+\documentclass{article}
+
+\usepackage{enumitem}
+\usepackage{amsmath}
+\usepackage{bbold}
+\usepackage{amsfonts}
+\usepackage[dvipsnames]{xcolor}
+\usepackage{amssymb}
+\usepackage[margin=0.5in]{geometry}
+\usepackage[hidelinks, bookmarks=false]{hyperref}
+
+\let\oldemptyset\emptyset
+\let\emptyset\varnothing
+\let\oldepsilon\epsilon
+\let\epsilon\varepsilon
+\newcommand{\N}{\mathbb{N}}
+\newcommand{\Z}{\mathbb{Z}}
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\Q}{\mathbb{Q}}
+
+\usepackage{environ}
+\NewEnviron{centerframebox}{\begin{center}\fbox{\parbox{0.92\textwidth}{\BODY}}\end{center}}
+
+\title{Combinatorial Optimization \\ Exercise Set 10 \\ Tuesday class}
+\author{
+  AAAAAAAAAA AAAAAAA \\
+  \href{mailto:AAAAAAAAAAAAAAAAAAAA}{AAAAAAAAAAAAAAAAAAAA}
+  \and
+  Carola Ley \\
+  \href{mailto:s6caleyy@uni-bonn.de}{s6caleyy@uni-bonn.de}
+  \and
+  Bailee Zacovic \\
+  \href{mailto:s38bzaco@uni-bonn.de}{s38bzaco@uni-bonn.de}
+}
+
+\begin{document}
+  \maketitle
+
+  \setcounter{section}{10}
+  \subsection{Submodular function constructions}
+  \begin{centerframebox}
+    Prove that the following constructions yield submodular functions $f$.
+
+    \begin{enumerate}[label=(\roman*)]
+      \item For $a \in \R^E$ and $a \in \R$, define $f(S) := a_0 + \sum_{i\in S} a_i$
+      \item Let $g: 2^E \to \R$ be non-decreasing submodular and $k \in \R$, define $f(S) := \min(g(S),\, k)$ for all $S \subseteq E$.
+      \item Let $g: 2^E \to \R$ be submodular, define $f(S) := g(E \setminus S)$ for all $S \subseteq E$.
+      \item Let $f_1,\, f_2 : 2^E \to \R$ be submodular, define $f := f_1 + f_2$.
+    \end{enumerate}
+  \end{centerframebox}
+  The submodularity criterion is:
+  \[ f(X) + f(Y) \geq f(X \cup Y) + f(X \cap Y) \]
+  % We can use the submodularity criterion from Exercise 9.1:
+  % $f$ is submodular if and only if
+  % \[ f(X \cup \{y,\, z\}) - f(X \cup \{y\}) \leq f(X \cup \{z\}) - f(X) \textrm{ for all } X \subseteq U \textrm{ and }
+  % y,\, z \in U \textrm{ with } y \neq z. \]
+
+  \begin{enumerate}[label=(\roman*)]
+    \item Here we can just expand every call to $f$:
+    % \begin{align*}
+    %   f(X \cup \{y,\, z\}) - f(X \cup \{y\}) &\leq f(X \cup \{z\}) - f(X) \\
+    %   a_0 + \sum_{i\in X} a_i + a_z + a_y - \left( a_0 + \sum_{i\in X} a_i + a_y \right) &\leq a_0 + \sum_{i\in X} a_i + a_z - \left( a_0 + \sum_{i\in X} a_i \right) \\
+    %   a_z + \left(a_0 + \sum_{i\in X} a_i + a_y \right) - \left( a_0 + \sum_{i\in X} a_i + a_y \right) &\leq a_z + \left( a_0 + \sum_{i\in X} a_i \right) - \left( a_0 + \sum_{i\in X} a_i \right) \\
+    %   a_z &\leq a_z \\
+    % \end{align*}
+    \begin{align*}
+      f(X) + f(Y) &\geq f(X \cup Y) + f(X \cap Y) \\
+      a_0 + \sum_{i\in X} a_i + a_0 + \sum_{i\in Y} a_i &\geq \left(a_0 + \sum_{i\in X} a_i + \sum_{i\in Y} a_i - \sum_{i\in X \cap Y} a_i \right) + a_0 + \sum_{i\in X \cap Y} a_i \\
+      a_0 + \sum_{i\in X} a_i + a_0 + \sum_{i\in Y} a_i &\geq a_0 + \sum_{i\in X} a_i + \sum_{i\in Y} a_i + a_0
+    \end{align*}
+    As we can see, both sides are always equal.
+    % As we can see, $a_z$ is always less then or equal to $a_z$.
+
+    \item Here we have to consider the cases where $g(S) < k$ separately.
+    \begin{enumerate}[label=Case \arabic*:]
+      \item $g(X \cup Y) \leq k$ \\
+      In this case, because $g$ is non-decreasing, it will be less than $k$ for all other sets we use
+      and all calls to $f(S)$ will just return $g(S)$, so the submodularity criterion holds.
+
+      \item $g(X \cap Y) \geq k$ \\
+      By the same non-decreasing logic, we can conclude that all calls to $f$ will just return $k$, and $2k \leq 2k$ always holds.
+
+      \item Both $g(X)$ and $g(Y)$ are $\geq k$ (and the previous cases are false, i.e. $g(X \cap Y) < k$ and $g(X \cup Y) > k$)
+      \begin{align*}
+        f(X) + f(Y) &\geq f(X \cup Y) + f(X \cap Y) \\
+        2k &\geq g(X \cap Y) + k \\
+        k &\geq g(X \cap Y)
+      \end{align*}
+      But we already assumed that $g(X \cap Y) < k$.
+
+      \item Both $g(X)$ and $g(Y)$ are $\leq k$ (and the previous cases are false, i.e. $g(X \cap Y) < k$ and $g(X \cup Y) > k$)
+      \begin{align*}
+        f(X) + f(Y) &\geq f(X \cup Y) + f(X \cap Y) \\
+        g(X) + g(Y) &\geq g(X \cap Y) + k
+      \end{align*}
+      By submodularity of $g$:
+      \begin{align*}
+        g(X) + g(Y) &\geq g(X \cup Y) + g(X \cap Y) \\
+        g(X) + g(Y) &\geq g(X \cap Y) + k
+      \end{align*}
+      Which is the thing we needed to show.
+
+      \item One of $g(X)$ or $g(Y)$ is $\geq k$ (but the other one isn't). \\
+      Without loss of generality, we can assume $g(X) \geq k$ and $g(Y) \leq k$.
+      \begin{align*}
+        f(X) + f(Y) &\geq f(X \cup Y) + f(X \cap Y) \\
+        k + g(Y) &\geq g(X \cap Y) + k \\
+        g(Y) &\geq g(X \cap Y)
+      \end{align*}
+      Which follows directly from $g$ being non-decreasing.
+    \end{enumerate}
+
+    \item We know that for all sets:
+    \[ (E \setminus X) \cup (E \setminus Y) = E \setminus (X \cap Y) \]
+    \[ (E \setminus X) \cap (E \setminus Y) = E \setminus (X \cup Y) \]
+    These are De Morgan's laws.
+
+    Let $X' = E \setminus X$ and $Y' = E \setminus Y$.
+    \begin{align*}
+      f(X) + f(Y) &\geq f(X \cup Y) + f(X \cap Y) \\
+      g(E \setminus X) + g(E \setminus Y) &\geq g(E \setminus (X \cup Y)) + g(E \setminus (X \cap Y)) \\
+      g(X') + g(Y') &\geq  g(X' \cap Y') + g(X' \cup Y')
+    \end{align*}
+    Then, because the submodularity criterion for $g$ holds for all $X'$ and $Y'$,
+    it will also hold for $f$.
+
+    \item Let $a_i = f_i(X) + f_i(Y)$ and $b_i = f_i(X \cup Y) + f_i(X \cap Y)$ for $i \in \{1,\, 2\}$.
+    This way, because both $f_1$ and $f_2$ are submodular, $a_i \geq b_i$.
+    \begin{align*}
+      f(X) + f(Y) &\geq f(X \cup Y) + f(X \cap Y) \\
+      f_1(X) + f_2(X) + f_1(Y) + f_2(Y) &\geq f_1(X \cup Y) + f_2(X \cup Y) + f_1(X \cap Y) + f_2(X \cap Y) \\
+      a_1 + a_2 &\geq b_1 + b_2 \\
+      (a_1 - b_1) + (a_2 - b_2) &\geq 0
+    \end{align*}
+    Which follows from $a_1 - b_1 \geq 0$ and $a_2 - b_2 \geq 0$.
+  \end{enumerate}
+
+  \subsection{Non-decreasing submodular functions}
+  \begin{centerframebox}
+    Let $f,\, g : 2^E \to \R$ be two submodular functions. Show:
+
+    \begin{enumerate}[label=(\roman*)]
+      \item If $f$ and $g$ are also non-decreasing with $f(\emptyset) = g(\emptyset) = 0$,
+      then $P(g+f) = P(f) + P(g) := \{x+y : x \in P(f),\, y \in P(g)\}$.
+      \item If $f - g$ is non-decreasing, then $\min\{f,g\}$ is submodular.
+    \end{enumerate}
+  \end{centerframebox}
+  \begin{enumerate}[label=(\roman*)]
+      \item
+
+      % Fix any $x+y\in P(f)+P(g).$ Since $\sum_{e\in A}x_e\leq f(A)$ and $\sum_{e\in A}y_e\leq f(A)$ for all $A\subseteq E,$ it follows that $$\sum_{e\in A}(x+y)_e=\sum_{e\in A}x_e+y_e\leq f(A)+g(A)=(f+g)(A)$$for all $A\subseteq E,$ hence $x+y\in P(f+g),$ and thus $P(f)+P(g)\subseteq P(f+g).$ Toward the reverse inclusion, fix $z\in P(f+g),$ and $x\in P(f)$ satisfying $\sum_{e\in E}x_e=f(E)$ and minimizing $\sum_{e\in E}|z_e-x_e|.$ Then $y:=z-x$ satisfies $$\sum_{e\in E}y_e=\sum_{e\in E}(z_e-x_e)=\sum_{e\in E}z_e-\sum_{e\in E}x_e\leq (f+g)(E)-f(E)=g(E)$$
+
+      \item Let $f-g$ be non-decreasing, and fix $X,Y\subseteq E.$ If $\min\{f,g\}=g$ at $X\cap Y,X,Y,$ and $X\cup Y$, or $\min\{f,g\}=f$ at $X\cap Y,X,Y,$ and $X\cup Y$, then the result follows by submodularity of $g$ and $f,$ respectively. Without loss of generality, suppose that $\min\{f,g\}(X\cap Y)=f(X\cap Y)$, $\min\{f,g\}(X)=f(X),\min\{f,g\}(Y)=g(Y),$ and $\min\{f,g\}(X\cup Y)=g(X\cup Y).$ It follows that
+
+      \begin{align*}
+          f(X)+g(Y)\geq g(X\cup Y)+f(X\cap Y) & \iff
+      \end{align*}
+
+      We aim to show that $f(X)+g(Y)\geq g(X\cup Y)+f(X\cap Y).$
+  \end{enumerate}
+
+  \subsection{Rank function construction}
+  \begin{centerframebox}
+    Let $f: 2^E \to \Z$ be submodular, non-decreasing with $f(\emptyset) = 0$, and let $r: 2^E \to \Z$ be defined as
+    \[ r(S) := \min\{f(Q)+|S\setminus Q| \;:\; Q\subseteq S\} \]
+    for $S \subseteq E$. Prove that r is the rank function of a matroid, i.e. it is submodular, non-decreasing, and $r(S) \leq |S|$.
+  \end{centerframebox}
+  First, we note that for all $S\subset E,$
+  $$r(S)=\min\{f(Q)+|S\setminus Q| \;:\; Q\subseteq S\}\leq f(\emptyset)+|S|=|S|$$since $\emptyset\subset S.$ Toward submodularity, fix $A,B\subset E.$ Since $E$ is finite, denote $Q_A$ and $Q_B$ subsets witnessing $r(A)$ and $r(B),$ respectively. We then obtain
+  \begin{align*}
+      r(A)+r(B)&=\left(f(Q_A)+|A\setminus Q_A|\right)+\left(f(Q_B)+|B\setminus Q_B|\right)\\&=\left(f(Q_A)+f(Q_B)\right)+\left(|A\setminus Q_A|+|B\setminus Q_B|\right)\\&\geq \left(f(Q_A\cup Q_B)+f(Q_A\cap Q_B)\right)+\left(|A\cup B\setminus Q_A\cup Q_B|+|A\cap B\setminus Q_A\cap Q_B|\right)\\&=\left(f(Q_A\cup Q_B)+|A\cup B\setminus Q_A\cup Q_B|\right)+\left(f(Q_A\cap Q_B)+|A\cap B\setminus Q_A\cap Q_B|\right)\\&\geq r(A\cup B)+r(A\cap B)
+  \end{align*}since $Q_A\cup Q_B\subseteq A\cup B,$ and $Q_A\cap Q_B\subseteq A\cap B.$ Hence $r$ is submodular. Finally, to show that $r$ is non-decreasing, fix $A\subseteq B\subseteq E.$ Let $Q_A,Q_B$ again denote subsets realizing the values $r(A),r(B).$ Also, set $$Q_B=(\underbrace{A\cap Q_B}_{=:P})\cup (\underbrace{B\setminus A\cap Q_B}_{=:P'}),$$where we note in particular that $P\cap P'=\emptyset.$ We then observe
+  \begin{align*}
+      r(B)&=f(Q_B)+|B\setminus Q_B|\\&=f(P\cup P')+|B\setminus P|+|B\setminus P'|\\&\geq f(P)+|B\setminus P| \text{ by }f\text{ non-decreasing}\\&=f(P)+|A\setminus P|\text{ since }P\subseteq A\\&\geq r(A).
+  \end{align*}This completes the proof. $\blacksquare$
+
+  \subsection{Base polyhedron min-max}
+  \begin{centerframebox}
+    Let $f: 2^U \to \R$ be a submodular function with $f(\emptyset) = 0$, and let $B(f)$ denote its base polyhedron. Prove that
+    \begin{align*}
+      &\min\{f(X):X\subseteq U\} \\
+      &= \max\left\{\sum_{u\in U}z_{u}:z\in\R^U \textrm{ with } \sum_{u\in A}z_{u} \leq \min\{0,f(A)\} \textrm{ for all } A\subseteq U\right\} \\
+      &=\max\left\{\sum_{u\in U} \min\{0, y_u\}: y\in B(f) \right\}.
+    \end{align*}
+  \end{centerframebox}
+  We begin by demonstrating the following equality:
+  \begin{equation}\max\left\{\sum_{u\in U}z_{u}:z\in\R^U \textrm{ with } \sum_{u\in A}z_{u} \leq \min\{0,f(A)\} \textrm{ for all } A\subseteq U\right\}=\max\left\{\sum_{u\in U} \min\{0, y_u\}: y\in B(f) \right\}.\end{equation}We will do so by showing both inequalities $(\geq)$ and $(\leq).$ Toward $(\geq),$ fix $y\in B(f),$ and let $z\in \mathbb{R}^U$ be given by
+  $$z_u=\begin{cases}
+      y_u & \text{ if }y_u\leq 0\\
+      0 & \text{ else }
+  \end{cases}.$$
+  Then it is clear that $$\sum_{u\in U}z_u=\sum_{u\in U}\min\{0,y_u\}.$$Moreover, for all $A\subseteq U,$ $$\sum_{u\in A}z_u\leq \sum_{u\in A}y_u\leq f(A)\text{ and }\sum_{u\in A}z_u\leq 0\text{ by construction},$$hence $$\sum_{u\in A}z_u\leq \min\{0,f(A)\}.$$Since such a $z_u\in \mathbb{R}^U$ can be found for each $y\in B(f),$ $(\geq)$ follows. For the reverse inequality $(\leq),$ fix $z\in \R^U$ such that $z_u\leq \min\{0,f(A)\}$ for all $A\subseteq U.$ We'd like to argue that there exists some $y\in B(f)$ satisfying $\sum_{u\in U}\min\{0,y_u\}\geq \sum_{u\in U}z_u.$ If it happens that $\sum_{u\in U}z_u=f(U)$, then $z\in B(f),$ hence we take $y=z.$ Otherwise, $\sum_{u\in U}z_u<f(U).$ \textcolor{red}{elaborate more here}
+
+
+  % \textcolor{red}{want $y\in B(f)$ maximizing $\mathbb{1}_{\{u\in U:f(\{u\})\leq 0\}}^T\cdot y$} Let $y$ be a maximizer of $\mathbb{1}_U^Ty$ given by the polymatroid greedy algorithm, where $\mathbb{1}_U^Ty=f(U)$ (by Lemma 4.27, some $y'\in P(f)$ must realize $f(U)=f'(\mathbb{1}_U)=\sum_{u\in U}y'_u,$ i.e. $B(f)\neq \emptyset$).
+
+  % It follows that $$\sum_{u\in U}\min\{0,y_u\}\geq \sum_{u\in U}z_u,$$hence $(\leq)$ follows.
+
+  % Since $f$ is submodular, it follows by $f(\emptyset)=0$ and a short inductive argument $(*)$ we wrote on the previous exercise sheet that $$\sum_{u\in U}z_u<f(U)\overset{(*)}{\leq} \sum_{u\in U}f(\{u\})\implies 0<\sum_{u\in U}(\underbrace{f(\{u\})-z_u}_{\geq 0}),$$hence there exists some collection of coordinates $\{u_i\}_{i\in I}$ such that $z_{u_i}<f(\{u_i\})$. It follows that there exists $y\in B(f)$ where $y$ may strictly exceed $z$ in coordinates $u_i$. \textcolor{red}{elaborate more here} Since $z_u\leq y_u$ \textit{and} $z_u\leq 0$ for all $u\in U$, it happens that
+  %
+
+  % Hence, (1).
+
+  We now demonstrate the equality,
+  \begin{equation}
+      \min\{f(X):X\subseteq U\} = \max\left\{\sum_{u\in U} \min\{0, y_u\}: y\in B(f) \right\}.
+  \end{equation}
+  It is easy to see $(\geq)$: let $X_0\subseteq U$ be such that $f(X_0)=\min\{f(X):X\subseteq U\}.$ Then for any $y\in B(f),$ it follows that $$\sum_{u\in U}\min\{0,y_u\}\leq \sum_{u\in X_0}y_u+\underbrace{\sum_{u\in U\setminus X_0}\min\{0,y_u\}}_{\leq 0}\leq f(X_0).$$Since $y\in B(f)$ was arbitrary, we obtain $(\geq)$. Toward equality, we take cases on $f(X_0).$
+
+  \begin{enumerate}[label=Case \arabic*:]
+    \item If $f(X_0)\geq 0,$ it follows that $y=\vec{0}\in B(f),$ and so $$\min\{f(X):X\subseteq U\}\leq f(\emptyset)=0=\sum_{u\in U}\min\{0,y_u\}\leq \max\left\{\sum_{u\in U} \min\{0, y_u\}: y\in B(f) \right\}$$which gives $(\leq),$ hence (2).
+    \item If $f(X_0)<0,$ we claim there exists $y^*\in B(f)$ satisfying $\sum_{u\in X_0} y*_u=f(X_0)$, $y^*_u\leq 0$ for all $u\in X_0$ and $y^*_u\geq 0$ for all $u\in U\setminus X_0.$ From this it would follow that $\sum_{u\in U}\min\{0,y^*_u\}=\sum_{u\in X_0} y^*_u=f(X_0),$ hence $$\min\{f(X):X\subseteq U\} =f(X_0)= \sum_{u\in U}\min\{0,y^*_u\}\leq\max\left\{\sum_{u\in U} \min\{0, y_u\}: y\in B(f) \right\}$$and therefore $(\leq)$, which implies (2). We first observe by submodularity of $f$ and minimality of $X_0$ that for all $u\in U\setminus X_0,$
+    $$f(X_0)+f(\{u\})\geq f(U)+f(\emptyset)=f(U)\implies f(\{u\})\geq 0.$$Moreover, if it were \textit{not} the case that there existed $y^*\in B(f)$ satisfying $\sum_{u\in X_0}y^*_u=f(X_0),$ then for all $y\in B(f)$, $$\sum_{u\in X_0}y_u<f(X_0)\leq f(U)\implies B(f)=\emptyset,$$a contradiction.
+  \end{enumerate}
+  % We may index the subsets $\emptyset\neq X\subseteq U$ in ascending order with respect to $f$. That is, let $\{\emptyset\neq X\subseteq U\}=\{\emptyset\neq X_i\subseteq U\}_{1\leq i\leq 2^{|U|}-1}$ where $f(X_1)\leq f(X_2)\leq \dots \leq f(X_k)\leq f(\emptyset)=0\leq f(X_{k+1})\leq \dots\leq f(X_n)$.
+
+  \textcolor{red}{finish by saying I can choose $y^*_u\leq 0$ by minimality of $f(X_0)$}
+\end{document}

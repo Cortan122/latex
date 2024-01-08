@@ -1,0 +1,317 @@
+\documentclass{article}
+
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage[dvipsnames]{xcolor}
+\usepackage[margin=0.5in]{geometry}
+\usepackage[hidelinks, bookmarks=false]{hyperref}
+\usepackage{enumitem}
+
+\let\oldemptyset\emptyset
+\let\emptyset\varnothing
+\let\oldphi\phi
+\let\phi\varphi
+
+\usepackage{multirow}
+\newcommand{\MGinc}[1]{\textcolor{LimeGreen}{#1}}
+\newcommand{\MGdec}[1]{\textcolor{Red}{#1}}
+
+\usepackage{environ}
+\NewEnviron{centerframebox}{\begin{center}\fbox{\parbox{0.92\textwidth}{\BODY}}\end{center}}
+
+\title{Algorithms for Data Science \\ Exercise Sheet 6}
+\author{
+  Vladislav Imashev \\ \href{mailto:s05vimas@uni-bonn.de}{s05vimas@uni-bonn.de} \and
+  AAAAAAAAAA AAAAAAA \\ \href{mailto:AAAAAAAAAAAAAAAAAAAA}{AAAAAAAAAAAAAAAAAAAA} \and
+  German Mikhelson \\ \href{mailto:s17gmikh@uni-bonn.de}{s17gmikh@uni-bonn.de} \and
+  Aleksandra Volynets \\ \href{mailto:s02avoly@uni-bonn.de}{s02avoly@uni-bonn.de} \and
+  Nikita Morev \\ \href{mailto:s99nmore@uni-bonn.de}{s99nmore@uni-bonn.de}
+}
+
+\begin{document}
+  \maketitle
+
+  \setcounter{section}{6}
+  \subsection{Reservoir Sampling I}
+  \begin{centerframebox}
+    Consider the algorithm on Slide 17 of 2023-11-29.
+
+    \textbf{Algorithm} for selecting one element of the data stream uniformly at random: \\
+    \textbf{initialization}: set $S := 0$ \\
+    \textbf{processing of $a_l$}: // $l$-th element of the data stream
+    \begin{enumerate}[topsep=0pt,itemsep=-1ex,partopsep=1ex,parsep=1ex]
+      \item \textbf{if} $l = 1$ then $S = \{a_1\}$
+      \item \textbf{else}
+      \item ~~flip a (biased) coin with $\Pr[\textsc{Head}] = 1/l$
+      \item ~~\textbf{if} outcome is \textsc{Head} \textbf{then} set $S = \{a_l\}$
+    \end{enumerate}
+    \textbf{output}: return $S$
+
+    \begin{enumerate}[label=(\roman*)]
+      \item Prove the theorem on Slide 17 of 2023-11-29. \\
+      \textit{You are not allowed to use the theorem stated on Slide 20 of 2023-11-29!}
+
+      \textbf{Theorem}: For any $m > 0$ integer and $l \in [m]: \Pr[S = \{a_l\}] = \frac{1}{m}$
+
+      \item For a data stream of length $m$, what is the expected number of updates of the item in $S$?
+    \end{enumerate}
+  \end{centerframebox}
+  \subsubsection*{(i) Uniformity}
+  TODO% (Vadim; Vlad)
+
+  \subsubsection*{(ii) Expected number of updates}
+  The expected number of updates is just the sum of the probabilities of rolling \textsc{Heads} each time,
+  because the expected value is linear.
+  So the sum of the harmonic series up to $m$:
+  \[ 1+\frac{1}{2}+\frac{1}{3} + \cdots + \frac{1}{m} = \sum_{i=1}^m \frac{1}{i} \approx O(\log m) \]
+
+  \subsection{Reservoir Sampling II}
+  \begin{centerframebox}
+    Prove the theorem on Slide 20 of 2023-11-29.
+
+    \textbf{Theorem}: after $I$ elements, $S$ has $\min\{s,\, l\}$ elements, each picked with probability $s/l$
+  \end{centerframebox}
+  The case where $l \leq s$ is obvious. The list $S$ will always include all the $l$ numbers it came across with probability $1$, i.e. with probability $s/l$, if we cap it at one.
+
+  Now we can do induction on $l$, with $l > s$. The size of $S$ will always be $s$, and we know that the probability to see each item in the previous iteration of the algorithm was $\frac{s}{l-1}$, so all the previous $l-1$ items have an equal probability of appearing in $S$.
+  Our new item $a_l$ will have a $s/l$ probability to replace one of the existing items,
+  and because the situation is symmetrical, all the previous items will have the same probability $\beta$ after this removal step.
+  Because there are $s$ items in total and each item can only be selected once, the sum of the probabilities for each item must equal $s$.
+  \begin{align*}
+    \beta &\cdot (l-1) + \frac{s}{l} = s \\
+    \beta &= \frac{s - \frac{s}{l}}{l-1} \\
+    \beta &= \frac{sl - s}{l \cdot (l-1)} \\
+    \beta &= \frac{s}{l}
+  \end{align*}
+  So the probabilities for every item, including the new one, will be $\frac{s}{l}$.
+
+  % But now the probability of the element will decrease, because there's a chance it will be replaced.
+  % The algorithm decides to replace each item with probability $s/l$ and then has a $1/s$ chance to replace our item.
+  % \[ \frac{s}{l-1} - \frac{s}{l}\frac{1}{s} = ... \]
+  % TODO (Kostya; Sasha he/him)
+
+  \subsection{The $\phi$-HH Problem: Lower Bounds}
+  \begin{centerframebox}
+    Prove the claim on Slide 25 of 2023-11-29.
+
+    Let $S_1,\, S_2 \in \mathcal{S}$ be distinct sets and let the state of the storage be $\Sigma_1$
+    (respectively $\Sigma_2$) after algorithm $\mathfrak{A}$ has processed the stream $\langle S_1\rangle$
+    (respectively $\langle S_2\rangle$) \\
+    \textbf{Claim}: $\Sigma_1 \neq \Sigma_2$
+  \end{centerframebox}
+
+  From the proof of this theorem, we know:
+  \begin{center}
+      let $n =2m$ and $S$ be the family of all $m$ subsets of $[n] = [2m]$
+  \end{center}
+
+  So, since $S_1,\,S_2\in \mathcal{S}$, this means that $S_1,\, S_2$ are m-subsets, i.e. they have the same cardinality, and they do not contain duplicate elements.
+
+  Let's prove the opposite, let $\Sigma_1 = \Sigma_2$, i.e. the algorithm gives the same results for both sets. Then, consider 2 approaches:
+  \begin{itemize}
+      \item\textbf{Degenerate}, that is, $\phi = \frac{1}{m}$ this means that each of the elements satisfies the inequality of $\phi$-Heavy-Hitter. From this we conclude that when passing $S_1$ and $S_2$ through the algorithm, we get the same sets $S_1$ and $S_2$, and they are conditionally different, i.e. $\Sigma_1\neq\Sigma_2$. And in another case, when $\phi = 1$, this means that no element satisfies the $\phi$-Heavy-Hitter inequality and the result of the $\mathfrak{A}$ algorithm for $S_1$ and $S_2$ is empty, but our $\Sigma_1$ and $\Sigma_2$ are abstract and can contain other information, so we cannot claim that $\Sigma_1 = \Sigma_2$
+
+      \item\textbf{Non-degenerate}, i.e. a certain threshold $\phi$ is set. Because $S_1$ and $S_2$ are distinct, they differ by at least 1 element. Let's copy one distinctive element $\beta\in S_1$ and $\beta\notin S_2$, and do it $x$ times in $S_1$ and $S_2$. Let's show what x is equal to:
+      \[\phi \cdot (m + x) - 1 = x \iff x = \frac{1 - m \cdot \phi}{\phi - 1}\]
+      Thus, we get the data streams: $\langle S_1, \alpha \rangle$ and $\langle S_2, \alpha \rangle$, where $\alpha$ is the letter $\beta$ copied $x$ times. It turns out that in $\langle S_1, \alpha \rangle$ the copied element occurs $x + 1$ times, which satisfies the original constraint and makes $\beta$ a $\phi$-Heavy-Hitter, while in $\langle S_2, \alpha \rangle$ this element occurs $x$ times, which does not satisfy, therefore the output results of $\mathfrak{A}$ must be different and different results can only be attained by different states $\Sigma_{1\alpha}\neq \Sigma_{2\alpha}$. But we sent the same $\alpha$ starting from $\Sigma_{1} = \Sigma_{2}$, so it should also be true $\Sigma_{1\alpha} = \Sigma_{2\alpha}$, and we get a contradiction.
+  \end{itemize}
+
+  In both task, we got a contradiction, hence $\Sigma_1\neq\Sigma_2$.
+
+  \subsection{The Misra-Gries Algorithm}
+  \begin{centerframebox}
+    Using the Misra-Gries algorithm, output a superset of the elements in $[10]$ that
+    have an absolute frequency greater than $10/3$ in the following data stream:
+    \[ 2, 1, 2, 2, 3, 3, 6, 6, 2, 5 \]
+    Give the state of the associative array for \textit{all} steps of the algorithm.
+  \end{centerframebox}
+  We need to find all items of frequency at least $\frac{10}{3}$. Given $m=10$, $k$ has to be greater than ${m}/{\frac{10}{3}}=\frac{3m}{10}=3$. Choose $k=4$.
+  \\Misra-Gries Algorithm:
+
+  \begin{center}
+    \begin{minipage}{0.45\textwidth}
+      \begin{center}
+        % первая колонка
+        \begin{tabular}{c|c|c|}
+          \cline{2-3}
+          \multirow{2}{*}{\textbf{\LARGE{$a_0=2$}}}
+          & Key & \MGinc{2} \\\cline{2-3}
+          & Counter & \MGinc{1} \\
+          \cline{2-3}
+        \end{tabular}\vspace{3mm}
+
+        \begin{tabular}{c|c|c|c|}
+          \cline{2-4}
+          \multirow{2}{*}{\textbf{\LARGE{$a_1=1$}}}
+          & Key & 2 & \MGinc{1} \\\cline{2-4}
+          & Counter & 1 & \MGinc{1} \\
+          \cline{2-4}
+        \end{tabular}\vspace{3mm}
+
+        \begin{tabular}{c|c|c|c|}
+          \cline{2-4}
+          \multirow{2}{*}{\textbf{\LARGE{$a_2=2$}}}
+          & Key & \MGinc{2} & 1 \\\cline{2-4}
+          & Counter & \MGinc{2} & 1 \\
+          \cline{2-4}
+        \end{tabular}\vspace{3mm}
+
+        \begin{tabular}{c|c|c|c|}
+          \cline{2-4}
+          \multirow{2}{*}{\textbf{\LARGE{$a_3=2$}}}
+          & Key & \MGinc{2} & 1 \\\cline{2-4}
+          & Counter & \MGinc{3} & 1 \\
+          \cline{2-4}
+        \end{tabular}\vspace{3mm}
+
+        \begin{tabular}{c|c|c|c|c|}
+          \cline{2-5}
+          \multirow{2}{*}{\textbf{\LARGE{$a_4=3$}}}
+          & Key & 2 & 1 & \MGinc{3} \\\cline{2-5}
+          & Counter & 3 & 1 & \MGinc{1} \\
+          \cline{2-5}
+        \end{tabular}
+
+      \end{center}
+    \end{minipage}
+    \begin{minipage}{0.45\textwidth}
+      \begin{center}
+        % вторая колонка
+        \begin{tabular}{c|c|c|c|c|}
+          \cline{2-5}
+          \multirow{2}{*}{\textbf{\LARGE{$a_5=3$}}}
+          & Key & 2 & 1 & \MGinc{3} \\\cline{2-5}
+          & Counter & 3 & 1 & \MGinc{2} \\
+          \cline{2-5}
+        \end{tabular}\vspace{3mm}
+
+        \begin{tabular}{c|c|c|c|c|}
+          \cline{2-4}
+          \multirow{2}{*}{\textbf{\LARGE{$a_6=6$}}}
+          & Key & \MGdec{2} & \MGdec{3} \\\cline{2-4}
+          & Counter & \MGdec{2} & \MGdec{1} \\
+          \cline{2-4}
+        \end{tabular}\vspace{3mm}
+
+        \begin{tabular}{c|c|c|c|c|}
+          \cline{2-5}
+          \multirow{2}{*}{\textbf{\LARGE{$a_7=6$}}}
+          & Key & 2 & 3 & \MGinc{6} \\\cline{2-5}
+          & Counter & 2 & 1 & \MGinc{1} \\
+          \cline{2-5}
+        \end{tabular}\vspace{3mm}
+
+        \begin{tabular}{c|c|c|c|c|}
+          \cline{2-5}
+          \multirow{2}{*}{\textbf{\LARGE{$a_8=2$}}}
+          & Key & \MGinc{2} & 3 & 6 \\\cline{2-5}
+          & Counter & \MGinc{3} & 1 & 1 \\
+          \cline{2-5}
+        \end{tabular}\vspace{3mm}
+
+        \begin{tabular}{c|c|c|c|c|c|}
+          \cline{2-3}
+          \multirow{2}{*}{\textbf{\LARGE{$a_9=5$}}}
+          & Key & \MGdec{2} \\\cline{2-3}
+          & Counter & \MGdec{2} \\
+          \cline{2-3}
+        \end{tabular}
+      \end{center}
+    \end{minipage}
+  \end{center}\vspace{3mm}
+
+  2nd pass to calculate the exact absolute frequencies:
+  \begin{center}
+    \begin{minipage}{0.45\textwidth}
+      \begin{center}
+        % первая колонка
+        \begin{tabular}{c|c|c|}
+          \cline{2-3}
+          \multirow{2}{*}{\textbf{\LARGE{$a_0=2$}}}
+          & Key & \MGinc{2} \\\cline{2-3}
+          & Counter & \MGinc{1} \\
+          \cline{2-3}
+        \end{tabular}\vspace{3mm}
+
+        \begin{tabular}{c|c|c|}
+          \cline{2-3}
+          \multirow{2}{*}{\textbf{\LARGE{$a_1=1$}}}
+          & Key & 2 \\\cline{2-3}
+          & Counter & 1 \\
+          \cline{2-3}
+        \end{tabular}\vspace{3mm}
+
+        \begin{tabular}{c|c|c|}
+          \cline{2-3}
+          \multirow{2}{*}{\textbf{\LARGE{$a_2=2$}}}
+          & Key & \MGinc{2} \\\cline{2-3}
+          & Counter & \MGinc{2} \\
+          \cline{2-3}
+        \end{tabular}\vspace{3mm}
+
+        \begin{tabular}{c|c|c|}
+          \cline{2-3}
+          \multirow{2}{*}{\textbf{\LARGE{$a_3=2$}}}
+          & Key & \MGinc{2} \\\cline{2-3}
+          & Counter & \MGinc{3} \\
+          \cline{2-3}
+        \end{tabular}\vspace{3mm}
+
+        \begin{tabular}{c|c|c|}
+          \cline{2-3}
+          \multirow{2}{*}{\textbf{\LARGE{$a_4=3$}}}
+          & Key & 2 \\\cline{2-3}
+          & Counter & 3 \\
+          \cline{2-3}
+        \end{tabular}\vspace{3mm}
+
+      \end{center}
+    \end{minipage}
+    \begin{minipage}{0.45\textwidth}
+      \begin{center}
+        % вторая колонка
+        \begin{tabular}{c|c|c|}
+          \cline{2-3}
+          \multirow{2}{*}{\textbf{\LARGE{$a_5=3$}}}
+          & Key & 2 \\\cline{2-3}
+          & Counter & 3 \\
+          \cline{2-3}
+        \end{tabular}\vspace{3mm}
+
+        \begin{tabular}{c|c|c|}
+          \cline{2-3}
+          \multirow{2}{*}{\textbf{\LARGE{$a_6=6$}}}
+          & Key & 2 \\\cline{2-3}
+          & Counter & 3 \\
+          \cline{2-3}
+        \end{tabular}\vspace{3mm}
+
+        \begin{tabular}{c|c|c|}
+          \cline{2-3}
+          \multirow{2}{*}{\textbf{\LARGE{$a_7=6$}}}
+          & Key & 2 \\\cline{2-3}
+          & Counter & 3 \\
+          \cline{2-3}
+        \end{tabular}\vspace{3mm}
+
+        \begin{tabular}{c|c|c|c|c|c|}
+          \cline{2-3}
+          \multirow{2}{*}{\textbf{\LARGE{$a_8=2$}}}
+          & Key & \MGinc{2} \\\cline{2-3}
+          & Counter & \MGinc{4} \\
+          \cline{2-3}
+        \end{tabular}\vspace{3mm}
+
+        \begin{tabular}{c|c|c|}
+          \cline{2-3}
+          \multirow{2}{*}{\textbf{\LARGE{$a_9=5$}}}
+          & Key & 2 \\\cline{2-3}
+          & Counter & 4 \\
+          \cline{2-3}
+        \end{tabular}
+      \end{center}
+    \end{minipage}
+  \end{center}\vspace{3mm}
+  \textbf{Result}: 2.
+\end{document}

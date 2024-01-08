@@ -1,0 +1,48 @@
+\documentclass[a4paper]{article}
+
+\usepackage[margin=0.3cm]{geometry}
+\usepackage{tikz}
+\usepackage{graphicx}
+\usepackage{alphalph}
+
+% \usepackage{fontspec}
+% \setmainfont{Arial}
+
+\def\numrows{7}
+\def\numcolumns{5}
+
+\newcommand{\gridpage}[1]{
+  \begin{center}
+    \begin{tikzpicture}[x=4cm,y=4cm]
+      \foreach \i in {0,...,\numcolumns}{
+        \draw[dotted] (\i,0) -- (\i,\numrows);
+      }
+      \foreach \i in {0,...,\numrows}{
+        \draw[dotted] (0,\i) -- (\numcolumns,\i);
+      }
+      \foreach \i in {1,...,\numrows}{
+        \foreach \j in {1,...,\numcolumns}{
+          \node at (\j-.5,\numrows-\i+.5) {
+            \scalebox{8}{#1}
+          };
+        }
+      }
+    \end{tikzpicture}
+  \end{center}
+}
+
+\makeatletter
+\def\@LatinPlusGreek#1{\ifcase#1\or
+  A\or B\or C\or D\or E\or F\or G\or H\or I\or J\or K\or L\or M\or N\or O\or P\or Q\or R\or S\or T\or U\or V\or W\or X\or Y\or Z\or
+  \ensuremath{\alpha}\or\ensuremath{\beta}\or\ensuremath{\gamma}\or\ensuremath{\Delta}
+  \or\ensuremath{\Theta}\or\ensuremath{\lambda}\or\ensuremath{\pi}\or\ensuremath{\Sigma}\or\ensuremath{\tau}\or
+  \ensuremath{\varphi}\or\ensuremath{\Psi}\or\ensuremath{\omega}\or\ensuremath{\Omega}\or\ensuremath{\aleph}
+  \else\AlPh@ctrerr\fi}
+\newalphalph{\LatinPlusGreek}[wrap]{\@LatinPlusGreek}{}
+\makeatother
+
+\begin{document}
+  \gridpage{$\AlphAlph{\j}_\i$}
+  \gridpage{$\LatinPlusGreek{\j+\numcolumns*(\i-1)}$}
+  \gridpage{$\AlphAlph{\i+\numcolumns}_\j$}
+\end{document}
