@@ -146,17 +146,43 @@
     \end{enumerate}
   \end{centerframebox}
   \begin{enumerate}[label=(\roman*)]
-      \item
+      \item It is clear that $P(f)+P(g)\subseteq P(f+g).$ It remains to show the reverse inclusion.
+
+      Let $a$ be a vertex of $P(g+f)$, then by the Polymatroid Greedy Algorithm, there is a order $E={e_1,...,e_n}$ and a $k\in \{0,...,n\}$ such that for $i>k$ : $a(e_i)=0$, $a(e_1)=(f+g)(e_1)$ and  for $1<i\leq k$ :  $a(e_i)=(f+g)(\{e_1,...,e_i\})-(f+g)(\{e_1,....,e_{i-1}\})$. With the same order and the same $k$ we can define vertices $x,y$ of $P(f), P(g)$  by
+      $$x(e_i):=\begin{cases}
+              0 & i>k\\
+              f(e_i) &i=1\\
+              f(\{e_1,...,e_i\})-f(\{e_1,....,e_{i-1}\})& 1<i\leq k
+        \end{cases}
+        \text{ and }
+       y(e_i):=\begin{cases}
+              0 & i>k\\
+              g(e_i) &i=1\\
+              g(\{e_1,...,e_i\})-g(\{e_1,....,e_{i-1}\})& 1<i\leq k
+        \end{cases}$$
+      then $a=x+y$ and thus $a\in P(f)+P(g)$. As all vertices of $P(f+g)$ are in $P(f)+P(g)$, by the definition of $P(f)+P(g)$ we get $P(f+g)\subseteq P(f)+P(g)$ and thus $P(g+f) = P(f) + P(g)$.
 
       % Fix any $x+y\in P(f)+P(g).$ Since $\sum_{e\in A}x_e\leq f(A)$ and $\sum_{e\in A}y_e\leq f(A)$ for all $A\subseteq E,$ it follows that $$\sum_{e\in A}(x+y)_e=\sum_{e\in A}x_e+y_e\leq f(A)+g(A)=(f+g)(A)$$for all $A\subseteq E,$ hence $x+y\in P(f+g),$ and thus $P(f)+P(g)\subseteq P(f+g).$ Toward the reverse inclusion, fix $z\in P(f+g),$ and $x\in P(f)$ satisfying $\sum_{e\in E}x_e=f(E)$ and minimizing $\sum_{e\in E}|z_e-x_e|.$ Then $y:=z-x$ satisfies $$\sum_{e\in E}y_e=\sum_{e\in E}(z_e-x_e)=\sum_{e\in E}z_e-\sum_{e\in E}x_e\leq (f+g)(E)-f(E)=g(E)$$
 
-      \item Let $f-g$ be non-decreasing, and fix $X,Y\subseteq E.$ If $\min\{f,g\}=g$ at $X\cap Y,X,Y,$ and $X\cup Y$, or $\min\{f,g\}=f$ at $X\cap Y,X,Y,$ and $X\cup Y$, then the result follows by submodularity of $g$ and $f,$ respectively. Without loss of generality, suppose that $\min\{f,g\}(X\cap Y)=f(X\cap Y)$, $\min\{f,g\}(X)=f(X),\min\{f,g\}(Y)=g(Y),$ and $\min\{f,g\}(X\cup Y)=g(X\cup Y).$ It follows that
+      \item Let $f-g$ be non-decreasing, and fix $X,Y\subseteq E.$ If $\min\{f,g\}=g$ at $X\cap Y,X,Y,$ and $X\cup Y$, or $\min\{f,g\}=f$ at $X\cap Y,X,Y,$ and $X\cup Y$, then the result follows by submodularity of $g$ and $f,$ respectively. We consider the following remaining cases:
 
+      \begin{enumerate}[label=Case \arabic*:]
+
+      \item Suppose that $\min\{f,g\}(X\cap Y)=f(X\cap Y)$, $\min\{f,g\}(X)=f(X),\min\{f,g\}(Y)=f(Y),$ and $\min\{f,g\}(X\cup Y)=g(X\cup Y).$ We aim to show that $$f(X)+f(Y)\geq g(X\cup Y)+f(X\cap Y).$$Since $f(X)+f(Y)\geq f(X\cup Y)+f(X\cap Y)$ by $f$ submodular, and $f(X\cup Y)\geq \min\{f,g\}(X\cup Y)=g(X\cup Y)$, it follows that
       \begin{align*}
-          f(X)+g(Y)\geq g(X\cup Y)+f(X\cap Y) & \iff
+           f(X)+f(Y)\geq f(X\cup Y)+f(X\cap Y)\geq g(X\cup Y)+f(X\cap Y).
       \end{align*}
+      \item Suppose that $\min\{f,g\}(X\cap Y)=f(X\cap Y)$, $\min\{f,g\}(X)=f(X),\min\{f,g\}(Y)=g(Y),$ and $\min\{f,g\}(X\cup Y)=g(X\cup Y).$ We aim to show that $$f(X)+g(Y)\geq g(X\cup Y)+f(X\cap Y).$$Since $f(X)+f(Y)\geq f(X\cup Y)+f(X\cap Y)$ by $f$ submodular, and $(f-g)(X\cup Y)\geq (f-g)(Y)$ by $f-g$ non-decreasing, it follows that
+      \begin{align*}
+           & (f(X)+f(Y))+(f(X\cup Y)-g(X\cup Y)) \geq (f(X\cup Y)+f(X\cap Y))+(f(Y)-g(Y)) \\& \implies f(X)+g(Y) \geq g(X\cup Y)+f(X\cap Y)
+      \end{align*}
+      \item Suppose that $\min\{f,g\}(X\cap Y)=f(X\cap Y)$, $\min\{f,g\}(X)=g(X),\min\{f,g\}(Y)=g(Y),$ and $\min\{f,g\}(X\cup Y)=g(X\cup Y).$ We aim to show that $$g(X)+g(Y)\geq g(X\cup Y)+f(X\cap Y).$$Since $g(X)+g(Y)\geq g(X\cup Y)+g(X\cap Y)$ by $g$ submodular, and $g(X\cup Y)\geq \min\{f,g\}(X\cap Y)=f(X\cap Y)$, it follows that
+      \begin{align*}
+           g(X)+g(Y)\geq g(X\cup Y)+g(X\cap Y)\geq g(X\cup Y)+f(X\cap Y).
+      \end{align*}
+      \end{enumerate}
 
-      We aim to show that $f(X)+g(Y)\geq g(X\cup Y)+f(X\cap Y).$
+      Since $f-g$ is non-decreasing, these constitute all possible cases, and thus we have completed the proof. $\blacksquare$
   \end{enumerate}
 
   \subsection{Rank function construction}
@@ -189,7 +215,8 @@
       y_u & \text{ if }y_u\leq 0\\
       0 & \text{ else }
   \end{cases}.$$
-  Then it is clear that $$\sum_{u\in U}z_u=\sum_{u\in U}\min\{0,y_u\}.$$Moreover, for all $A\subseteq U,$ $$\sum_{u\in A}z_u\leq \sum_{u\in A}y_u\leq f(A)\text{ and }\sum_{u\in A}z_u\leq 0\text{ by construction},$$hence $$\sum_{u\in A}z_u\leq \min\{0,f(A)\}.$$Since such a $z_u\in \mathbb{R}^U$ can be found for each $y\in B(f),$ $(\geq)$ follows. For the reverse inequality $(\leq),$ fix $z\in \R^U$ such that $z_u\leq \min\{0,f(A)\}$ for all $A\subseteq U.$ We'd like to argue that there exists some $y\in B(f)$ satisfying $\sum_{u\in U}\min\{0,y_u\}\geq \sum_{u\in U}z_u.$ If it happens that $\sum_{u\in U}z_u=f(U)$, then $z\in B(f),$ hence we take $y=z.$ Otherwise, $\sum_{u\in U}z_u<f(U).$ \textcolor{red}{elaborate more here}
+  Then it is clear that $$\sum_{u\in U}z_u=\sum_{u\in U}\min\{0,y_u\}.$$Moreover, for all $A\subseteq U,$ $$\sum_{u\in A}z_u\leq \sum_{u\in A}y_u\leq f(A)\text{ and }\sum_{u\in A}z_u\leq 0\text{ by construction},$$hence $$\sum_{u\in A}z_u\leq \min\{0,f(A)\}.$$Since such a $z_u\in \mathbb{R}^U$ can be found for each $y\in B(f),$ $(\geq)$ follows. For the reverse inequality $(\leq),$ fix $z\in \R^U$ such that $z_u\leq \min\{0,f(A)\}$ for all $A\subseteq U.$ We'd like to argue that there exists some $y\in B(f)$ satisfying $\sum_{u\in U}\min\{0,y_u\}\geq \sum_{u\in U}z_u.$ If it happens that $\sum_{u\in U}z_u=f(U)$, then $z\in B(f),$ hence we take $y=z.$ Otherwise, $\sum_{u\in U}z_u<f(U).$ %\textcolor{red}{elaborate more here}
+
 
 
   % \textcolor{red}{want $y\in B(f)$ maximizing $\mathbb{1}_{\{u\in U:f(\{u\})\leq 0\}}^T\cdot y$} Let $y$ be a maximizer of $\mathbb{1}_U^Ty$ given by the polymatroid greedy algorithm, where $\mathbb{1}_U^Ty=f(U)$ (by Lemma 4.27, some $y'\in P(f)$ must realize $f(U)=f'(\mathbb{1}_U)=\sum_{u\in U}y'_u,$ i.e. $B(f)\neq \emptyset$).
@@ -203,16 +230,27 @@
 
   We now demonstrate the equality,
   \begin{equation}
-      \min\{f(X):X\subseteq U\} = \max\left\{\sum_{u\in U} \min\{0, y_u\}: y\in B(f) \right\}.
+      \min\{f(X):X\subseteq U\}= \max\left\{\sum_{u\in U}z_{u}:z\in\R^U \textrm{ with } \sum_{u\in A}z_{u} \leq \min\{0,f(A)\} \textrm{ for all } A\subseteq U\right\}.
   \end{equation}
-  It is easy to see $(\geq)$: let $X_0\subseteq U$ be such that $f(X_0)=\min\{f(X):X\subseteq U\}.$ Then for any $y\in B(f),$ it follows that $$\sum_{u\in U}\min\{0,y_u\}\leq \sum_{u\in X_0}y_u+\underbrace{\sum_{u\in U\setminus X_0}\min\{0,y_u\}}_{\leq 0}\leq f(X_0).$$Since $y\in B(f)$ was arbitrary, we obtain $(\geq)$. Toward equality, we take cases on $f(X_0).$
+  It is easy to see $(\geq)$: let $X_0\subseteq U$ be such that $f(X_0)=\min\{f(X):X\subseteq U\}.$ Then for any $z\in \R^u$ such that $\sum_{u\in A}z_{u} \leq \min\{0,f(A)\}$ for all $A\subseteq U,$ we observe that
+  $$f(X_0)+f(U\setminus X_0)\geq f(U)\implies f(U\setminus X_0)\geq f(U)-f(X_0)\geq 0$$by minimality, hence
+  $$\sum_{u\in U}z_u= \sum_{u\in X_0}z_u+\sum_{u\in U\setminus X_0} z_U\leq f(X_0)+f(U\setminus X_0)\leq f(X_0).$$Since $z$ was arbitrary, we obtain $(\geq)$. To obtain equality, we invoke Corollary 4.24 by Edmonds, with $f$ as given and $g\equiv 0.$ From this result it follows that
+  $$\min\{f(X):X\subseteq U\}=\min\{f(X)+g(U\setminus X):X\subseteq U\}=\max\left\{\sum_{u\in U}z_{u}:z\in\R^U \textrm{ with } \sum_{u\in A}z_{u} \leq \min\{0,f(A)\} \textrm{ for all } A\subseteq U\right\}.$$
 
-  \begin{enumerate}[label=Case \arabic*:]
-    \item If $f(X_0)\geq 0,$ it follows that $y=\vec{0}\in B(f),$ and so $$\min\{f(X):X\subseteq U\}\leq f(\emptyset)=0=\sum_{u\in U}\min\{0,y_u\}\leq \max\left\{\sum_{u\in U} \min\{0, y_u\}: y\in B(f) \right\}$$which gives $(\leq),$ hence (2).
-    \item If $f(X_0)<0,$ we claim there exists $y^*\in B(f)$ satisfying $\sum_{u\in X_0} y*_u=f(X_0)$, $y^*_u\leq 0$ for all $u\in X_0$ and $y^*_u\geq 0$ for all $u\in U\setminus X_0.$ From this it would follow that $\sum_{u\in U}\min\{0,y^*_u\}=\sum_{u\in X_0} y^*_u=f(X_0),$ hence $$\min\{f(X):X\subseteq U\} =f(X_0)= \sum_{u\in U}\min\{0,y^*_u\}\leq\max\left\{\sum_{u\in U} \min\{0, y_u\}: y\in B(f) \right\}$$and therefore $(\leq)$, which implies (2). We first observe by submodularity of $f$ and minimality of $X_0$ that for all $u\in U\setminus X_0,$
-    $$f(X_0)+f(\{u\})\geq f(U)+f(\emptyset)=f(U)\implies f(\{u\})\geq 0.$$Moreover, if it were \textit{not} the case that there existed $y^*\in B(f)$ satisfying $\sum_{u\in X_0}y^*_u=f(X_0),$ then for all $y\in B(f)$, $$\sum_{u\in X_0}y_u<f(X_0)\leq f(U)\implies B(f)=\emptyset,$$a contradiction.
-  \end{enumerate}
+
+  % For the reverse direction,
+  % again let $X_0$ witness the minimum, and let $z$ be the output of the greedy algorithm when $c=\mathbb{1}_{X_0}.$ According to the algorithm, then, $z_u=0$ for all $u\in U\setminus X_0,$ $\sum_{u\in X_0} z_u=f(X_0),$ and $\sum_{u\in A}z_u\leq f(A)$ for all $A\subseteq U.$ Importantly,
+  % $$\sum_{u\in U}z_u=\sum_{u\in U}z_u=f(X_0).$$
+
+
+
+  % Toward equality, we take cases on $f(X_0).$
+
+  % \begin{enumerate}[label=Case \arabic*:]
+  %   \item If $f(X_0)\geq 0,$ it follows that $y=\vec{0}\in B(f),$ and so $$\min\{f(X):X\subseteq U\}\leq f(\emptyset)=0=\sum_{u\in U}\min\{0,y_u\}\leq \max\left\{\sum_{u\in U} \min\{0, y_u\}: y\in B(f) \right\}$$which gives $(\leq),$ hence (2).
+  %   \item If $f(X_0)<0,$ we claim there exists $y^*\in B(f)$ satisfying $\sum_{u\in X_0} y*_u=f(X_0)$, $y^*_u\leq 0$ for all $u\in X_0$ and $y^*_u\geq 0$ for all $u\in U\setminus X_0.$ From this it would follow that $\sum_{u\in U}\min\{0,y^*_u\}=\sum_{u\in X_0} y^*_u=f(X_0),$ hence $$\min\{f(X):X\subseteq U\} =f(X_0)= \sum_{u\in U}\min\{0,y^*_u\}\leq\max\left\{\sum_{u\in U} \min\{0, y_u\}: y\in B(f) \right\}$$and therefore $(\leq)$, which implies (2). We first observe by submodularity of $f$ and minimality of $X_0$ that for all $u\in U\setminus X_0,$
+  %   $$f(X_0)+f(\{u\})\geq f(X_0\cup \{u\})+f(\emptyset)=f(X_0\cup \{u\})\implies f(\{u\})\geq f(X_0\cup \{u\})-f(X_0)\geq 0.$$Moreover, if it were \textit{not} the case that there existed $y^*\in B(f)$ satisfying $\sum_{u\in X_0}y^*_u=f(X_0),$ then for all $y\in B(f)$, $$\sum_{u\in X_0}y_u<f(X_0)\leq f(U)\implies B(f)=\emptyset,$$a contradiction.
+  % \end{enumerate}
   % We may index the subsets $\emptyset\neq X\subseteq U$ in ascending order with respect to $f$. That is, let $\{\emptyset\neq X\subseteq U\}=\{\emptyset\neq X_i\subseteq U\}_{1\leq i\leq 2^{|U|}-1}$ where $f(X_1)\leq f(X_2)\leq \dots \leq f(X_k)\leq f(\emptyset)=0\leq f(X_{k+1})\leq \dots\leq f(X_n)$.
-
-  \textcolor{red}{finish by saying I can choose $y^*_u\leq 0$ by minimality of $f(X_0)$}
+  % \textcolor{red}{finish by saying I can choose $y^*_u\leq 0$ by minimality of $f(X_0)$}
 \end{document}

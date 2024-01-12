@@ -77,7 +77,7 @@
   and $M_i^{-1}$ is calculated in $\Z_{m_i}$.
   \[
     \begin{array}{c|c|c|c|c|c}
-      i & r_i & a_i & M_i & M_i^{-1} & r_i M_i M_i^{-1} \\
+      i & r_i & m_i & M_i & M_i^{-1} & r_i M_i M_i^{-1} \\
       \hline
       1 & 1 & 7 & 30 & 4 & 120 \\
       2 & 3 & 15 & 14 & 14 & 588 \\
@@ -152,7 +152,7 @@
     \end{enumerate}
   \end{centerframebox}
   \begin{mylisting}
-    # (iii) N = 41, a = 2    -> not prime
+    # (iii) N = 41, a = 2    -> maybe prime
     print((41, 2), miller_rabin_body(41, 2))
     # (iv) N = 57, a = 37    -> not prime
     print((57, 37), miller_rabin_body(57, 37))

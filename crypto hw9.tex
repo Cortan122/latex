@@ -1,0 +1,188 @@
+\documentclass{article}
+
+\usepackage{enumitem}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage{textcomp}
+\usepackage{gensymb}
+\usepackage[dvipsnames]{xcolor}
+\usepackage[margin=0.5in]{geometry}
+\usepackage[hidelinks,bookmarks=false]{hyperref}
+
+\usepackage{environ}
+\NewEnviron{centerframebox}{\begin{center}\fbox{\parbox{0.92\textwidth}{\BODY}}\end{center}}
+
+\let\oldphi\phi
+\let\phi\varphi
+\newcommand{\Z}{\mathbb{Z}}
+
+\hypersetup{
+  colorlinks=true,
+  urlcolor=MidnightBlue,
+  linkcolor=WildStrawberry,
+  % pdfborderstyle={/S/U/W 2}
+}
+
+\title{Cryptography \\ Exercise Sheet 9}
+\author{
+  AAAAAAAAAA AAAAAAA \\
+  \href{mailto:AAAAAAAAAAAAAAAAAAAA}{AAAAAAAAAAAAAAAAAAAA}
+}
+
+\usepackage[listings,many]{tcolorbox}
+\makeatletter
+\newtcblisting{mylisting}{
+  listing only,
+  breakable, enhanced jigsaw,
+  listing engine=listings,
+  colback=gray!20,
+  listing options={
+    language=python,
+    keywordstyle=\color{blue},
+    basicstyle=\ttfamily,
+    stringstyle=\color{ForestGreen},
+    commentstyle=\color{gray},
+    ndkeywordstyle={\color{orange}},
+    identifierstyle=\color{black},
+    numbers=none,
+    showstringspaces=false,
+    aboveskip={0\p@ \@plus 6\p@}, belowskip={0\p@ \@plus 6\p@},
+    columns=fullflexible, keepspaces=true,
+    breaklines=true, breakatwhitespace=true,
+    extendedchars=false,
+    inputencoding=utf8,
+    upquote=true,
+    xleftmargin=-25pt,
+  }
+}
+\makeatother
+
+\newcommand{\rem}{\,\operatorname{rem}\,}
+
+\begin{document}
+  \maketitle
+
+  \setcounter{section}{9}
+  \subsection{An example of Pollard's $\rho$ method}
+  \subsubsection{The table}
+  \begin{centerframebox}
+    Complete the table below, which represents a run of Pollard's $\rho$ algorithm for
+    $N = 100 181$ and the initial value $x_0 = 399$, up to $i = 6$. Use
+    the update function $F(x) = x^2 + 1$ in $\Z_N$
+  \end{centerframebox}
+  To get the next value of $x_i$ we use $F(x_{i-1})$,
+  and to get the next value of $x_{2i}$ we use $F(F(x_{2(i-1)}))$.
+
+  \begin{mylisting}
+    def pollard_rho(x, N):
+      y = x
+      d = 1
+
+      def F(x):
+        return (x*x + 1) % N
+
+      while d == 1:
+        x = F(x)
+        y = F(F(y))
+        d = gcd(abs(x - y), N)
+
+      return d
+  \end{mylisting}
+
+  \begin{center}
+    \begin{tabular}{c|rrrrr}
+      $i$ & $x_i \rem N$ & $x_i \rem 17$ & $x_{2i} \rem N$ & $x_{2i} \rem 17$ & $\gcd(x_i - x_{2i},\, N)$ \\\hline
+      0 & 399 & 8 & 399 & 8 & 1 \\
+      1 & 59021 & 14 & 84891 & 10 & 1 \\
+      2 & 84891 & 10 & 95168 & 2 & 1 \\
+      3 & 61828 & 16 & 77478 & 9 & 1 \\
+      4 & 95168 & 2 & 5433 & 10 & 1 \\
+      5 & 84920 & 5 & 39918 & 2 & 1 \\
+      6 & 77478 & 9 & 91894 & 9 & 17
+    \end{tabular}
+  \end{center}
+
+  \subsubsection{The idea}
+  \begin{centerframebox}
+    The smallest prime divisor of $N$ is $17$. Describe the idea of the algorithm by looking at
+    $x_i \rem 17$ and $x_{2i} \rem 17$ and in particular, why
+    we stopped at $i = 6$
+  \end{centerframebox}
+  % No Idea....
+  We stopped because $\gcd(x_i - x_{2i},\, N)$ stopped being $1$.
+  This happens when $x_i \rem 17$ equals $x_{2i} \rem 17$.
+  The logic here is that the repeated application of $F(x)$ will get stuck in a loop,
+  and the faster $x_{2i}$ value will eventually catch up to $x_i$ form behind.
+
+  \subsubsection{The factorization}
+  \begin{centerframebox}
+    Complete the factorization of $N$ using Pollard's $\rho$ algorithm.
+  \end{centerframebox}
+  We already know one of the factors of $N$ is $17$.
+  So we can just divide it by $17$ and try again.
+  And the new value of $N_1 = 100 181 / 17 = 5893$.
+
+  \begin{center}
+    \begin{tabular}{c|rrr}
+      $i$ & $x_i \rem N_1$ & $x_{2i} \rem N_1$ & $\gcd(x_i - x_{2i},\, N_1)$ \\\hline
+      0 & 399 & 399 & 1 \\
+      1 & 91 & 2389 & 1 \\
+      2 & 2389 & 880 & 1 \\
+      3 & 2898 & 869 & 1 \\
+      4 & 880 & 5433 & 1 \\
+      5 & 2418 & 4560 & 1 \\
+      6 & 869 & 3499 & 1 \\
+      7 & 858 & 2756 & 1 \\
+      8 & 5433 & 2844 & 1 \\
+      9 & 5346 & 1000 & 1 \\
+      10 & 4560 & 1867 & 1 \\
+      11 & 3097 & 4801 & 71 \\
+    \end{tabular}
+  \end{center}
+
+  Now we can divide again by $71$.
+  And make $N_2 = 100 181 / 17 / 71 = 83$.
+  But $83$ is already a prime number, so we're done.
+  We can try running the algorithm again for good measure.
+
+  \begin{center}
+    \begin{tabular}{c|rrr}
+      $i$ & $x_i \rem N_2$ & $x_{2i} \rem N_2$ & $\gcd(x_i - x_{2i},\, N_2)$ \\\hline
+      0 & 399 & 399 & 1 \\
+      1 & 8 & 65 & 1 \\
+      2 & 65 & 50 & 1 \\
+      3 & 76 & 39 & 1 \\
+      4 & 50 & 38 & 1 \\
+      5 & 11 & 78 & 1 \\
+      6 & 39 & 13 & 1 \\
+      7 & 28 & 17 & 1 \\
+      8 & 38 & 22 & 1 \\
+      9 & 34 & 4 & 1 \\
+      10 & 78 & 41 & 1 \\
+      11 & 26 & 70 & 1 \\
+      12 & 13 & 17 & 1 \\
+      13 & 4 & 22 & 1 \\
+      14 & 17 & 4 & 1 \\
+      15 & 41 & 41 & 83 \\
+    \end{tabular}
+  \end{center}
+
+  We got back our $83$, and that means we have to stop for good.
+  $N = 83 \cdot 71 \cdot 17$
+
+  \subsection{Discrete logarithm}
+  \begin{centerframebox}
+    Choose one of the presented discrete logarithm algorithms and determine
+    the discrete logarithm of $2$ with basis $g = 13$ in the group $Z^\times_p$ where $p$ is the
+    second smallest 42-bit prime (ie. $2^{41} \leq p < 2^{42}$).
+
+    Hint: For your choice the value $p - 1$ may be interesting!
+
+    Hint: Your implementation should also be fast with
+    \[p = 171 230 365 655 473 418 066 740 317 377 554 260 841\]
+    or
+    \[p = 191 131 368 170 409 106 437 186 478 244 810 374 001.\]
+  \end{centerframebox}
+
+\end{document}

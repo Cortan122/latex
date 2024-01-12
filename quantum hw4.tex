@@ -1,0 +1,188 @@
+\documentclass{article}
+
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage[dvipsnames]{xcolor}
+\usepackage[margin=0.5in]{geometry}
+\usepackage[hidelinks]{hyperref}
+\usepackage{enumitem}
+
+\usepackage{environ}
+\NewEnviron{centerframebox}{\begin{center}\fbox{\parbox{0.92\textwidth}{\BODY}}\end{center}}
+
+\usepackage{tikz}
+\usetikzlibrary{quantikz}
+
+\let\oldphi\phi
+\let\phi\varphi
+
+\newcommand{\N}{\mathbb{N}}
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\C}{\mathbb{C}}
+
+\title{Quantum Algorithms \\ Exercise 4}
+\author{
+  AAAAAAAAAA AAAAAAA \\ \href{mailto:AAAAAAAAAAAAAAAAAAAA}{AAAAAAAAAAAAAAAAAAAA} \and
+  Chuong Dinh Le \\ \href{mailto:s56dle@uni-bonn.de}{s56dle@uni-bonn.de} \and
+  Paul Berners \\ \href{mailto:s6plbern@uni-bonn.de}{s6plbern@uni-bonn.de} \and
+  Fynn Osterfeld \\ \href{mailto:s6fyoste@uni-bonn.de}{s6fyoste@uni-bonn.de}
+}
+
+\begin{document}
+  \maketitle
+
+  \setcounter{section}{4}
+  \subsection{Quantum Circuit 1}
+  \begin{centerframebox}
+    \begin{center}
+      \begin{quantikz}
+        \lstick{\ket{0}} & \gate{H} & \ctrl{1} & \meter{} \\
+        \lstick{\ket{\psi}} & \gate{X} & \targ{} & \meter{}
+      \end{quantikz}
+    \end{center}
+    Calculate the probabilities for measurements of the above shown circuit in the $Z$-basis for
+    the output of qubit 1 (upper) and 2 (lower) for $\psi = i|1\rangle$.
+  \end{centerframebox}
+  First we can apply the $H$ and $X$ gates separately to both qubit 1 and qubit 2.
+  The matrix representations of everything here are:
+  \[ H = \frac{1}{\sqrt{2}}\begin{bmatrix}
+    1 & 1 \\ -1 & 1
+  \end{bmatrix} \qquad
+  X = \begin{bmatrix}
+    0 & 1 \\ 1 & 0
+  \end{bmatrix} \qquad
+  |0\rangle = \begin{bmatrix}
+    1 \\ 0
+  \end{bmatrix} \qquad
+  |1\rangle = \begin{bmatrix}
+    0 \\ 1
+  \end{bmatrix}
+  \]
+  Call the intermediate values of those qubits $|a\rangle$ and $|b\rangle$:
+  \[ |a\rangle = H|0\rangle = \frac{1}{\sqrt{2}}\begin{bmatrix}
+    1 & 1 \\ -1 & 1
+  \end{bmatrix}\begin{bmatrix}
+    1 \\ 0
+  \end{bmatrix} = \frac{1}{\sqrt{2}}\begin{bmatrix}
+    1 \\ 1
+  \end{bmatrix} \qquad
+  |b\rangle = Xi|1\rangle = i\begin{bmatrix}
+    0 & 1 \\ 1 & 0
+  \end{bmatrix}\begin{bmatrix}
+    0 \\ 1
+  \end{bmatrix} = i\begin{bmatrix}
+    1 \\ 0
+  \end{bmatrix} = i|0\rangle
+  \]
+  Now we have to compute the shared state $|ba\rangle$ of those qubits using the Kronecker product.
+  \[ |ba\rangle = |b\rangle \otimes |a\rangle = \begin{bmatrix}
+    b_0 \cdot \begin{bmatrix}
+      a_0 \\ a_1
+    \end{bmatrix} \\[4mm]
+    b_1 \cdot \begin{bmatrix}
+      a_0 \\ a_1
+    \end{bmatrix}
+  \end{bmatrix} = \frac{1}{\sqrt{2}}\begin{bmatrix}
+    i \cdot \begin{bmatrix}
+      1 \\ 1
+    \end{bmatrix} \\[4mm]
+    0 \cdot \begin{bmatrix}
+      1 \\ 1
+    \end{bmatrix}
+  \end{bmatrix} = \frac{1}{\sqrt{2}}\begin{bmatrix}
+    i \\ i \\ 0 \\ 0
+  \end{bmatrix} \]
+  Now we can apply the $CNOT$ gate to the joined state.
+  \[ CNOT|ba\rangle = \begin{bmatrix}
+    1 & 0 & 0 & 0 \\
+    0 & 0 & 0 & 1 \\
+    0 & 0 & 1 & 0 \\
+    0 & 1 & 0 & 0
+  \end{bmatrix} \cdot \frac{1}{\sqrt{2}}\begin{bmatrix}
+    i \\ i \\ 0 \\ 0
+  \end{bmatrix} = \frac{1}{\sqrt{2}} \begin{bmatrix}
+    i \\ 0 \\ 0 \\ i
+  \end{bmatrix}\]
+  And now we can compte the measurement probabilities for each of the possible 4 states:
+  \[ P(|00\rangle) = \left|\frac{i}{\sqrt{2}}\right|^2 = \frac{1}{2}\qquad
+     P(|01\rangle) = 0\qquad
+     P(|10\rangle) = 0\qquad
+     P(|11\rangle) = \left|\frac{i}{\sqrt{2}}\right|^2 = \frac{1}{2}
+     \]
+  So both qubit 1 and qubit 2 have a $0.5$ probability of being either $|0\rangle$ or $|1\rangle$,
+  but they will always end up with the same value.
+
+  \subsection{Quantum Circuit 2}
+  \begin{centerframebox}
+    Draw the gate-based quantum computer circuit for the computation of the gate
+    \[ P\left(\frac{\pi}{2}\right)HX \]
+    applied to the initial state $|0\rangle$.
+  \end{centerframebox}
+  Because qubits are applied to gates from the right (in matrix multiplication), the order has to be reversed.
+  \begin{center}
+    \begin{quantikz}
+      \lstick{\ket{0}} & \gate{X} & \gate{H} & \gate{P\left(\frac{\pi}{2}\right)} \\
+    \end{quantikz}
+  \end{center}
+  Also the Phase Shift gate $P(\phi)$ is defined as:
+  \[ P(\phi) = \begin{bmatrix}
+    1 & 0\\ 0 & e^{i\phi}
+  \end{bmatrix} \qquad\qquad
+  P\left(\frac{\pi}{2}\right) = \begin{bmatrix}
+    1 & 0\\ 0 & e^{i\frac{\pi}{2}}
+  \end{bmatrix} = \begin{bmatrix}
+    1 & 0\\ 0 & i
+  \end{bmatrix} \]
+  which can also be written as $S$.
+  \begin{center}
+    \begin{quantikz}
+      \lstick{\ket{0}} & \gate{X} & \gate{H} & \gate{S} \\
+    \end{quantikz}
+  \end{center}
+  I think we should also add a Measurement gate, for good measure.
+  \begin{center}
+    \begin{quantikz}
+      \lstick{\ket{0}} & \gate{X} & \gate{H} & \gate{S} & \meter{} \\
+    \end{quantikz}
+  \end{center}
+
+  \subsection{Controlled U-Gate}
+  \begin{centerframebox}
+    For a given single qubit gate represented by the a matrix $U$ provide a decomposition of the
+    controlled $CU$ gate into single qubit gates and the controlled Not ($CNOT$).
+
+    Hint: Use a square root $S$ of $U$ and its inverse operation $S^H$.
+  \end{centerframebox}
+  We did not find a solution on our own to this exercise. Instead, we found an approach to this exercise in the book  Quantum Computation And Quantum Information 10th Anniversary Edition by Michael A. Nielsen and Isaac L. Chuang. Corollary 4.2 (page 176) states that any $U$ can be decomposed into a product of matrices with certain properties:
+  \begin{align*}
+      U &= e^{2\pi i \alpha}AXBXC\\
+      ABC &= I
+  \end{align*}
+  Considering that the CNOT gate applies $X$ if the control qubit is $\ket{1}$, the authors can now easily construct a quantum circuit mimicking CU only utilizing the CNOT gate and single qubit gates, even only rotation gates. The result is the following:
+  \begin{center}
+    \begin{quantikz}
+      \lstick{$\ket{\psi_0}$} &\qw& \ctrl{1} &\qw& \ctrl{1} & \gate{P\left(2\pi i \alpha\right)} &\qw\\
+      \lstick{$\ket{\psi_1}$} & \gate{C} & \targ{} & \gate{B} & \targ{} & \gate{A} &\qw
+    \end{quantikz}
+  \end{center}
+
+  \subsection{Inverse Fourier Transform}
+  \begin{centerframebox}
+    Give a quantum circuit to perform the \textit{Inverse Fourier Transform} (IFT)
+  \end{centerframebox}
+  One just has to invert the Quantum Fourier Transform circuit to get the Quantum Inverse Fourier Transform.\\
+  In order to do that we need inverses of the used quantum gates, which are the Hadamard gate and the rotation gates $R_k$; The inverse of the Hadamard gate is itself, and $R_k^{-1} = \left(P\left(\frac{2\pi i}{2^k}\right)\right)^{-1} = P\left(-\frac{2\pi i}{2^k}\right)$.\\
+  So we receive:
+  \begin{center}
+    \begin{quantikz}
+      && & &  & & &  & & \gate{R_{n-1}^{-1}} & \gate{R_{n-2}^{-1}} & \ \ldots\ & \gate{R_2^{-1}} & \gate{H}\\
+      && & &  & \gate{R_{n-1}^{-1}} & \gate{R_{n-2}^{-1}} & \ \ldots\ & \gate{H} & & &  & \ctrl{-1} &\\
+      \wave &&&& &&& &&&& &&\\
+      && \gate{R_2^{-1}} & \gate{H} &  & & \ctrl{-2} &  & & & \ctrl{-3} &  & &\\
+      &\gate{H} & \ctrl{-1} & &  & \ctrl{-3} & &  & & \ctrl{-4} & &  & &
+    \end{quantikz}
+  \end{center}
+  It is easy to see that this circuit inverts the Quantum Fourier Transform.
+
+\end{document}

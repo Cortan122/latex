@@ -1,0 +1,130 @@
+\documentclass{article}
+
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage[dvipsnames]{xcolor}
+\usepackage[margin=0.5in]{geometry}
+\usepackage[hidelinks, bookmarks=false]{hyperref}
+\usepackage{enumitem}
+
+\let\oldemptyset\emptyset
+\let\emptyset\varnothing
+\let\oldphi\phi
+\let\phi\varphi
+\let\oldepsilon\epsilon
+\let\epsilon\varepsilon
+
+\usepackage{environ}
+\NewEnviron{centerframebox}{\begin{center}\fbox{\parbox{0.92\textwidth}{\BODY}}\end{center}}
+
+\title{Algorithms for Data Science \\ Exercise Sheet 7}
+\author{
+  Vladislav Imashev \\ \href{mailto:s05vimas@uni-bonn.de}{s05vimas@uni-bonn.de} \and
+  AAAAAAAAAA AAAAAAA \\ \href{mailto:AAAAAAAAAAAAAAAAAAAA}{AAAAAAAAAAAAAAAAAAAA} \and
+  German Mikhelson \\ \href{mailto:s17gmikh@uni-bonn.de}{s17gmikh@uni-bonn.de} \and
+  Aleksandra Volynets \\ \href{mailto:s02avoly@uni-bonn.de}{s02avoly@uni-bonn.de} \and
+  Nikita Morev \\ \href{mailto:s99nmore@uni-bonn.de}{s99nmore@uni-bonn.de}
+}
+
+\begin{document}
+  \maketitle
+
+  \setcounter{section}{7}
+  \subsection{Merging Misra-Gries Synopses}
+  \begin{centerframebox}
+    Prove the theorem on Slide 6 of 2023-12-13.
+
+    \textbf{Theorem}: the previous algorithm calculates an estimation $\hat{f_i}$ of $f_i$ for all $i \in [n]$ such that
+    \[ f_i - \frac{m-m'}{k} \leq \hat{f_i} \leq f_i \]
+    where
+    \begin{itemize}
+      \item $m = |\sigma_1| + |\sigma_2|$ and
+      \item $m' = \sum_{l=1}^{k-1} A[l]$ after termination
+    \end{itemize}
+  \end{centerframebox}
+
+  \textbf{Proof:}
+
+  1) $\hat{f_i} \leq f_i$. \\
+  $f_i$ - number of repeating $i$ in $\sigma_1 + \sigma_2$. \\
+  $f^1_i$ ($f^2_i$) - number of repeating $i$ in $\sigma_1$ ($\sigma_2$). \\
+  $\hat{f_i}$ - number of repeating $i$ after running the Misra-Gries Synopses Merger algorithm. \\
+  $\hat{f^1_i}$ ($\hat{f^2_i}$) - number of repeating $i$ from $\sigma_1$ ($\sigma_2$) after running the Misra-Gries algorithm on $\sigma_1$ (or $\sigma_2$). \\
+
+  From the Misra-Gries Algorithm: \\
+  $A_1[i] = \hat{f^1_i} \leq f^1_i$ and $A_2[i] = \hat{f^2_i} \leq f^2_i$, hence $A_1[i] + A_2[i] = \hat{f^1_i} + \hat{f^2_i} = \hat{f_i} \leq f^1_i + f^2_i = f_i$, hence $\hat{f_i} \leq f_i$. \\
+
+  2) $f_i - \frac{m-m'}{k} \leq \hat{f_i}$.
+
+  We know that $m'$ is the sum of all frequencies after termination and in step 7 we decrement each counter by $c_k$, which means:
+  \[m' \leq m\]
+  So,
+  \[f_i - \frac{m-m'}{k} \leq f_i - \frac{m-m}{k} \leq f_i\]
+
+  \subsection{The Lossy Counting Algorithm}
+  \begin{centerframebox}
+    Prove Lemmata 1--4 on Slide 16 of 2023-12-13.
+
+    \textbf{Lemma 1}: whenever deletions occur, $b_\mathrm{current} \leq \epsilon m$ \\
+    \textbf{Lemma 2}: whenever an entry $(e, f, \Delta)$ gets deleted, $f_e \leq b_\mathrm{current}$ \\
+    \textbf{Lemma 3}: if there is no entry for $e$ in $\mathcal{D}$, then $f_e \leq \epsilon m$ \\
+    \textbf{Lemma 4}: if $(e, f, \Delta) \in \mathcal{D}$ then $f \leq f_e \leq f + \epsilon m$
+  \end{centerframebox}
+    \textbf{Lemma 1}:
+    Whenever deletions occurs, it is true that
+    $$ m = 0 \text{ mod } w $$
+    and this is equivalent to
+    $$ m = k \cdot w \text{ for some } k \in \mathbb N$$
+    This actually means that $b_{current}$ has been incremented $k-1$ times by the time a deletion occur, hence:
+    $$b_{current} = k - 1 + 1 = k$$
+    And thus we have that
+    $$b_{current} = k = \frac{m}{w} \leq \epsilon w$$
+
+    \textbf{Lemma 2}:
+    Since $(e, f, \Delta)$ gets deleted, we have incremented $b_{current}$ at least $f_{e} - 1$ times (counting the number of all increments from the very beginning), because we had to have decremented $f$ this many times, for it to be $f=1$ at the end.
+    Hence
+    $$b_{current} \geq f_{e} - 1 + 1 = f_{e}$$
+    and
+    $$f_{e} \leq b_{current}$$
+
+    \textbf{Lemma 3}: Prove this by considering two cases. First case: there is no entry for $e$ in $\mathcal{D}$ since it is got deleted. In this case, according to the Lemma 2 we have:
+    $$f_e \leq b_{current}$$
+    And applying then Lemma 1 we conclude:
+    $$f_e \leq b_{current} \leq \epsilon m$$
+
+    \textbf{Lemma 4}:
+    Note that $f$ cannot be greater than $f_e$ since we increment $f$ only when we process $e$ (i.e. whenever we came across $e$ in data stream). Hence,
+    $$f \leq f_e$$
+    Prove the second part of the inequality.
+    Before we add $(e, 1, b_{current} - 1)$ in $\mathcal{D}$ we have, according to the Lemma 3 (because the element was absent from $\mathcal{D}$), that
+    $$f'_{e} \leq \epsilon m$$
+    where $f'_{e}$ is the frequency at the moment before the element was added to $\mathcal{D}$.
+    Then, after we process $e$ for $f$ times:
+    $$f'_{e} + f \leq f + \epsilon m$$
+    Note that $f_e = f'_{e} + f$, therefore:
+    $$f_{e} \leq f + \epsilon m$$
+
+
+  \subsection{The Lossy Counting Algorithm}
+  \begin{centerframebox}
+    The following fact is stated on Slide 21 of 2023-12-13:
+
+    \textbf{Fact}: for every $j = 1,\dots,B: \quad \sum_{i=0}^j i \cdot d_i \leq jw$
+
+    Why is this fact true?
+    % кажется на том-же слайде есть примерное доказательство
+    % d_i всегда меньше w, и i всегда меньше j
+    % w это размер окна
+    % d_i определяется как-то через жопу...
+    % но это количество элементов которые появились i окн назад, и всё ещё тут
+  \end{centerframebox}
+  $jw$ is the total number of elements the algorithm has encountered so far.
+  To be counted among $d_i$ an element has to occur at least $i$ times,
+  because otherwise it would've been deleted from that bucket.
+  So when computing $\sum_{i=0}^j i \cdot d_i$
+  we are summing up the number of times those elements would've had to appear to show up in their corresponding buckets.
+  But that obviously cannot exceed the total number of elements read by the algorithm.
+  % TODO (Kostya; Sasha she/her)
+
+\end{document}
