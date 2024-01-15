@@ -12,6 +12,8 @@ clean() {
 
 [ -n "$1" ] && "$1" && exit
 
+git pull
+
 mkdir -p ../latex_pdfs/
 for i in *.tex; do
   f="$(basename "$i" .tex)"
