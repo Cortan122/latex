@@ -57,9 +57,12 @@
     inputencoding=utf8,
     upquote=true,
     xleftmargin=-25pt,
+    mathescape=true,
   }
 }
 \makeatother
+
+\newcommand{\Li}{\operatorname{Li}}
 
 \begin{document}
   \maketitle
@@ -230,7 +233,7 @@
     Use some programming system, eg. Sage, to generate a plot of the following functions to learn a bit about the prime counting function $\pi$ over the ranges $1..100$ and $1..1000$.
   \end{centerframebox}
   \begin{mylisting}
-    # naive primality test
+    # naive primality test $O(n^2\sqrt{n})$
     # it's fine to use it here, because all the numbers are under 1000
     def is_prime(n):
       if n < 2:
@@ -279,8 +282,80 @@
     namely an upper and a lower bound and $\pi$ You may choose the
     bounds of the Schoenfeld or the Dusart version. Or all in one plot.
   \end{centerframebox}
+  \paragraph*{Schoenfeld version}
+  \begin{centerframebox}
+    Schoenfeld (1976): Iff the Riemann hypothesis holds then
+    \[ \Li(x)-\frac{1}{8\pi}\sqrt{x}\ln x ~<~ \pi(x) ~<~ \Li(x)+\frac{1}{8\pi}\sqrt{x}\ln x \]
+    for $x > 1451$, where the logarithmic integral $\Li$ is given by
+    $\Li(x) = \int_2^x \frac{1}{\ln t} dt$ which behaves asymptotically like
+    $\frac{x}{\ln x} + \frac{x}{\ln^2 x} + 2\frac{x}{\ln^3 x}$
+  \end{centerframebox}
   \begin{mylisting}
-    def pi_plot(n, name=""):
+    def schoenfeld(n):
+      X = np.arange(1, n)
+      delta = 1/8/np.pi * np.sqrt(X) * np.log(X) # range $\frac{1}{8\pi}\sqrt{x}\ln x$
+      li = np.array([float(mp.li(i)) for i in X]) # base $\Li(x)$
+      HI = li - delta # upper bound $\Li(x)-\frac{1}{8\pi}\sqrt{x}\ln x$
+      LO = li + delta # lower bound $\Li(x)+\frac{1}{8\pi}\sqrt{x}\ln x$
+      PI = [prime_pi(i) for i in X]
+
+      plt.plot(X, PI, label=r"$\pi(x)$")
+      plt.plot(X, HI, label=r"$\Li(x)-\frac{1}{8\pi}\sqrt{x}\ln x$")
+      plt.plot(X, LO, label=r"$\Li(x)+\frac{1}{8\pi}\sqrt{x}\ln x$")
+      plt.legend()
+      plt.show()
+
+    schoenfeld(100)
+    schoenfeld(1000)
+  \end{mylisting}
+
+  \noindent
+  \includegraphics[width=0.5\textwidth]{schoenfeld100}%
+  \includegraphics[width=0.5\textwidth]{schoenfeld1000}
+
+  These bound are straight up wrong for our range of $x \in [1000]$.
+  Which can be expected, because it says right there that $x > 1451$ is a requirement.
+  We can also try running it for $x \in [2000]$ ($x \in [10000]$ will probably melt my machine).
+
+  \noindent
+  \includegraphics[width=\textwidth]{schoenfeld2000}
+
+  This looks a bit better, but is still a bit hard to see what's going on.
+
+  \paragraph*{Dusart version}
+  \begin{centerframebox}
+    Dusart (1998): Unconditionally, we have
+    \[ \frac{x}{\ln x} + \frac{x}{\ln^2 x} + 1.8\frac{x}{\ln^3 x} ~<~ \pi(x) ~<~ \frac{x}{\ln x} + \frac{x}{\ln^2 x} + 2.51\frac{x}{\ln^3 x} \]
+    for $x > 355991$.
+  \end{centerframebox}
+  \begin{mylisting}
+    def dusart(n):
+      X = np.arange(1, n)
+      delta = 1/8/np.pi * np.sqrt(X) * np.log(X) # range $\frac{1}{8\pi}\sqrt{x}\ln x$
+      li = np.array([float(mp.li(i)) for i in X]) # base $\Li(x)$
+      HI = li - delta # upper bound $\Li(x)-\frac{1}{8\pi}\sqrt{x}\ln x$
+      LO = li + delta # lower bound $\Li(x)+\frac{1}{8\pi}\sqrt{x}\ln x$
+      PI = [prime_pi(i) for i in X]
+
+      plt.plot(X, PI, label=r"$\pi(x)$")
+      plt.plot(X, HI, label=r"$\Li(x)-\frac{1}{8\pi}\sqrt{x}\ln x$")
+      plt.plot(X, LO, label=r"$\Li(x)+\frac{1}{8\pi}\sqrt{x}\ln x$")
+      plt.legend()
+      plt.show()
+
+    dusart(100)
+    dusart(1000)
+  \end{mylisting}
+
+  \noindent
+  \includegraphics[width=0.5\textwidth]{dusart100}%
+  \includegraphics[width=0.5\textwidth]{dusart1000}
+
+  This is just as bad as last time. Testing those bounds on $x \in [1000]$ makes no sense...
+
+  \paragraph*{Just $\frac{x}{\ln x}\vphantom{\dfrac{1}{2}}$ and $\Li(x)$}
+  \begin{mylisting}
+    def pi_plot(n):
       X = np.arange(1, n)
       LI = [float(mp.li(i)) for i in X] # upper bound
       LOG = X/np.log(X) # lower bound
@@ -295,9 +370,9 @@
     pi_plot(100)
     pi_plot(1000)
   \end{mylisting}
-  The upper bound is $\operatorname{Li}(x)$ and the lower bound is $\frac{x}{\ln x}$.
+  The upper bound is $\Li(x)$ and the lower bound is $\frac{x}{\ln x}$.
   People usually use just use the lower bound, because it's so much easier to compute.
-  Have any of you even seen this $\operatorname{Li}$ function before..?
+  Have any of you even seen this $\Li$ function before..?
 
   \noindent
   \includegraphics[width=0.5\textwidth]{bounds100}%
@@ -305,5 +380,45 @@
 
   The bounds do, in fact, work.
   If we ignore the small numbers around $\leq 20$.
+
+  \subsubsection{Solutions for $\frac{x}{\ln x}$}
+  \begin{centerframebox}
+    Draw in single plot the solutions $c(x)$ of $f(x) = \frac{x}{\ln x}\left(1+\frac{c(x)}{\ln x}\right)$
+    for $f = \pi$ and $f$ the lower and the upper bounds.
+  \end{centerframebox}
+  Rearranging this equation we get:
+  \[ c(x) = \ln x \left(\frac{f(x)\ln x}{x} - 1\right) \]
+  and we can just plot this function.
+  \begin{mylisting}
+    CPI = np.log(X) * (PI * np.log(X) / X - 1)
+    CLO = np.log(X) * (LO * np.log(X) / X - 1)
+    CHI = np.log(X) * (HI * np.log(X) / X - 1)
+  \end{mylisting}
+
+  \noindent
+  \includegraphics[width=0.5\textwidth]{dusart_c100}%
+  \includegraphics[width=0.5\textwidth]{dusart_c1000}
+
+  These look kinda like the plot of 8.5.1, where they approach some number close to $1$.
+
+  \subsubsection{Solutions for $\Li(x)$}
+  \begin{centerframebox}
+    Draw in single plot the solutions $c(x)$ of $f(x) = \Li(x) + c(x) \sqrt{x} \ln x$
+    for $f = \pi$ and $f$ the lower and the upper bounds.
+  \end{centerframebox}
+  Rearranging this equation we get:
+  \[ c(x) = \frac{f(x) - \Li(x)}{\sqrt{x} \ln x} \]
+  and we can just plot this function.
+  \begin{mylisting}
+    CPI = (PI - li) / np.sqrt(X) / np.log(X)
+    CLO = (LO - li) / np.sqrt(X) / np.log(X)
+    CHI = (HI - li) / np.sqrt(X) / np.log(X)
+  \end{mylisting}
+
+  \noindent
+  \includegraphics[width=0.5\textwidth]{dusart_2c100}%
+  \includegraphics[width=0.5\textwidth]{dusart_2c1000}
+
+  Now they approach some value a little less then zero.
 
 \end{document}
