@@ -1,0 +1,153 @@
+\documentclass{article}
+
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage[dvipsnames]{xcolor}
+\usepackage[margin=0.5in]{geometry}
+\usepackage[hidelinks, bookmarks=false]{hyperref}
+\usepackage{enumitem}
+
+\let\oldemptyset\emptyset
+\let\emptyset\varnothing
+\let\oldphi\phi
+\let\phi\varphi
+\let\oldepsilon\epsilon
+\let\epsilon\varepsilon
+
+\usepackage{environ}
+\NewEnviron{centerframebox}{\begin{center}\fbox{\parbox{0.92\textwidth}{\BODY}}\end{center}}
+
+\title{Algorithms for Data Science \\ Exercise Sheet 8}
+\author{
+  Vladislav Imashev \\ \href{mailto:s05vimas@uni-bonn.de}{s05vimas@uni-bonn.de} \and
+  AAAAAAAAAA AAAAAAA \\ \href{mailto:AAAAAAAAAAAAAAAAAAAA}{AAAAAAAAAAAAAAAAAAAA} \and
+  German Mikhelson \\ \href{mailto:s17gmikh@uni-bonn.de}{s17gmikh@uni-bonn.de} \and
+  Aleksandra Volynets \\ \href{mailto:s02avoly@uni-bonn.de}{s02avoly@uni-bonn.de} \and
+  Nikita Morev \\ \href{mailto:s99nmore@uni-bonn.de}{s99nmore@uni-bonn.de}
+}
+
+\begin{document}
+  \maketitle
+
+  \setcounter{section}{8}
+  \subsection{Count-Min Sketch for Heavy Hitters}
+  \begin{centerframebox}
+    Using the method presented on Slides 32--36 of 2023-12-13, compute the $\phi$-heavy
+    hitters for $\phi = 1/3$ for the following data stream:
+    $$\sigma = \langle2,\, 1,\, 2,\, 2,\, 3,\, 3,\, 6,\, 6,\, 2,\, 5\rangle.$$
+
+    In your solution, set the parameters of the Count-Min Sketch algorithm to $d = 3$
+    and $w = 3$. Applying the method on Slide 38 of 2023-12-13 with $p = 3$ and
+    $k = 2$, use the hash functions $h_{(1,2),1}, h_{(2,1),0}$, and $h_{(2,1),1}$.
+    Give the state of all count-min sketches (i.e., the matrices) after the processing
+    of the 1st, 2nd, 5th, and the last item. Give also all steps of the evaluation of
+    the binary tree for the entire data stream (cf. Slide 32 of 2023-12-13).
+  \end{centerframebox}
+  TODO (Veronika; German)
+
+  \subsection{The Median Trick}
+  \begin{centerframebox}
+    Prove Claim 4 on Slides 17--18 of 2023-12-20 for $s_1 = c \log\frac{1}{\delta}$ for some appropriate
+    constant $c$.
+
+    \textbf{Claim}: $\mathrm{Pr}\left[|\{i\in[s_1]:|Y_i-F_k| >\epsilon F_k\}| > \frac{s_1}{2}\right] \le \delta$
+
+    \textbf{Remark}:
+    The claim is stated for $c = 4$; the point is that $s_1 = O(\log\frac{1}{\delta})$ (cf. Slides 6 and 18 of 2023-12-20)
+
+    \textit{Hint}: To prove the claim, you may use one of the Chernoff bounds stated below.
+    In particular, one can show it for $c = 4$ by using (i).
+
+    \textbf{Theorem}:
+    Let $X_1,\, \dots,\, X_n$ be independent Poisson trials with
+    $\mathrm{Pr}(X_i) = p_i$ (i.e. $\mathrm{Pr}(X_i = 1) = p_i$ and $\mathrm{Pr}(X_i = 0) = 1 - p_i$ for all $i \in [n]$).
+    Let $X = \sum_{i=1}^n X_i$ and $\mu = \mathbb{E}[X]$.
+    Then the following bounds hold:
+    \begin{enumerate}[label=(\roman*)]
+      \item For any $\gamma > 0$:
+      \[ \mathrm{Pr}[X \geq (1+\gamma)\mu]  < \left(\frac{e^\gamma}{(1+\gamma)^{(1+\gamma)}}\right)^\mu\]
+
+      \item For any $\gamma \in (0,\, 1)$:
+      \[ \mathrm{Pr}[|X - \mu|\geq \gamma\mu] \leq 2e^{-\mu\gamma^2/3} \]
+    \end{enumerate}
+  \end{centerframebox}
+  We know from Claim 3 that the probability we have is less then $\frac{1}{8}$,
+  i.e. for every $i \in [s_1]$:
+  \[ \mathrm{Pr}[|Y_i-F_k| > \epsilon F_k] \leq \frac{1}{8} \]
+  We can define a boolean random variable $U_i$ to have that same $\frac{1}{8}$ probability:
+  \[ U_i = \begin{cases}
+    1 & \textrm{if } |Y_i-F_k| > \epsilon F_k \\
+    0 & \textrm{if } |Y_i-F_k| \leq \epsilon F_k
+  \end{cases} \]
+  and apply The Theorem to it.
+  Its expected value $\tilde{\mu} \leq \frac{1}{8}$ by claim 3,
+  and its sum $\tilde{U} = |\{i\in[s_1]:|Y_i-F_k| >\epsilon F_k\}|$ be construction.
+  By using (i), we also get:
+
+  \[ \mathrm{Pr}\left[\tilde{U} \geq (1+\gamma)\tilde{\mu}\right] < \left(\frac{e^\gamma}{(1+\gamma)^{(1+\gamma)}}\right)^{\tilde{\mu}} \]
+  for all $\gamma > 0$.
+  Now we have to pick a correct $\gamma$ such that $(1+\gamma)\tilde{\mu} = \frac{s_1}{2}$.
+  But first we'll need to use the $\tilde{\mu} \leq \frac{1}{8}$ claim to simplify this big inequality:
+
+  \[ \mathrm{Pr}\left[\tilde{U} \geq (1+\gamma)\frac{1}{8}\right]
+  \leq \mathrm{Pr}\left[\tilde{U} \geq (1+\gamma)\tilde{\mu}\right]
+  < \left(\frac{e^\gamma}{(1+\gamma)^{(1+\gamma)}}\right)^{\tilde{\mu}}
+  \leq \left(\frac{e^\gamma}{(1+\gamma)^{(1+\gamma)}}\right)^{\frac{1}{8}} \]
+  \[ \mathrm{Pr}\left[\tilde{U} \geq \frac{1+\gamma}{8}\right] < \left(\frac{e^\gamma}{(1+\gamma)^{(1+\gamma)}}\right)^{\frac{1}{8}} \]
+  Now $\frac{1+\gamma}{8} = \frac{s_1}{2}$ is a lot easier to think about,
+  and we can safely set $\gamma = 4s_1-1$ and compute the right hand side fraction:
+
+  \begin{align*}
+    \mathrm{Pr}\left[\tilde{U} \geq (1+\gamma)\frac{1}{8}\right]
+    &= \mathrm{Pr}\left[|\{i\in[s_1]:|Y_i-F_k| >\epsilon F_k\}| > \frac{s_1}{2}\right] \\
+    &< \left(\frac{e^{4s_1-1}}{(4s_1)^{4s_1}}\right)^{\frac{1}{8}}\\
+    &= \frac{e^{\frac{4s_1-1}{8}}}{(4s_1)^{\frac{4s_1}{8}}}\\
+    &= \frac{e^{\frac{4s_1-1}{8}}}{(4s_1)^{\frac{4s_1}{8}}}\\
+    &= e^{(4s_1 - 1 - \log (4s_1) 4s_1)/8}\\
+    &= e^{(4s_1 (1 - \log (4s_1)) - 1 )/8}\\
+    &< e^{-2s_1/8} \qquad\textrm{because }s_1\textrm{ is a positive integer} \\
+    % i just plotted e^{4x(1-\ln(4x))-1} < e^{-2x} in desmos
+    &= e^{-2c\log\frac{1}{\delta}/8}\\
+    &= \delta \cdot e^{c/4}\\
+  \end{align*}
+  And if we pick $c=4$, how it says in The Hint, we well get our claim of:
+  \[ \mathrm{Pr}\left[|\{i\in[s_1]:|Y_i-F_k| >\epsilon F_k\}| > \frac{s_1}{2}\right] < \delta \]
+  which is the desired result, plus this time the bound is also not inclusive.
+  % TODO (Sasha she/her; Vadim; Kostya)
+
+  \subsection{The AMS Sketch}
+  \begin{centerframebox}
+    Generalize the AMS Sketch given on Slide 6 of 2023-12-20 to the \textit{cash register model},
+    i.e., in which each token in the data stream over $[n]$ is of the
+    form $(i, \Delta)$, where $i \in [n]$ and $\Delta > 0$ is some integer.
+    For a data stream $\sigma = \langle(a_1, \Delta_1), \dots ,(a_m, \Delta_m)\rangle$ over $[n]$ in the cash register model, we define the
+    frequency $f_i$ of $i$ by
+    \[ f_i = \sum_{l\in[m],a_l=i} \Delta_l \]
+    for all $i \in [n]$. Give the pseudocode of the generalized AMS Sketch for estimating
+    $F_k (k \geq 1)$. Sketch the proof of the correctness of your algorithm. In your proof,
+    you may rely on the proof of the vanilla case presented in 2023-12-20 (Claims 1--4),
+    i.e., explain only what is new with respect to that proof.
+  \end{centerframebox}
+
+  \noindent
+  \textbf{initialization}:
+  \begin{enumerate}[topsep=0pt,itemsep=-1ex,partopsep=1ex,parsep=1ex]
+    \item let $s_1 := 4 \log \frac{1}{\delta}$ and $s_2 := \frac{8kn^{1-1/k}}{\epsilon}$
+    \item for $i = 1,\dots, s_1$ and for $j = 1,\dots, s_2$ do
+    \begin{itemize}[topsep=0pt,itemsep=-1ex,partopsep=1ex,parsep=1ex]
+      \item choose $p_{ij}$ independently at random from $[m]$, biased on the value of $\Delta_l$
+      \item let $r_{ij} := 0$
+    \end{itemize}
+  \end{enumerate}
+  \textbf{processing of $a_l$}:
+  \begin{enumerate}[topsep=0pt,itemsep=-1ex,partopsep=1ex,parsep=1ex]
+    \item forall $i \in [s_1]$ and forall $j \in [s_2]$: if $l \geq p_{ij}$ and $a_l = a_{p_{ij}}$ then increment $r_{ij}$ by $\Delta_l$
+  \end{enumerate}
+  \textbf{output:} return the median $F_k$ of $Y_1,\dots, Y_s$, where
+  \[ Y_{i}=\frac{\sum_{j=1}^{s_{2}}X_{i j}}{s_{2}} \qquad\text{ and }\qquad
+   X_{i j} = \left(r_{i j}^{k}-\left(r_{i j} - 1\right)^{k}\right) \sum_{l=1}^m \Delta_l \]
+
+  TODO (Sasha he/him; Vlad)
+
+\end{document}

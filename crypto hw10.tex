@@ -1,0 +1,104 @@
+\documentclass{article}
+
+\usepackage{enumitem}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage{textcomp}
+\usepackage{gensymb}
+\usepackage[dvipsnames]{xcolor}
+\usepackage[margin=0.5in]{geometry}
+\usepackage[hidelinks,bookmarks=false]{hyperref}
+
+\usepackage{environ}
+\NewEnviron{centerframebox}{\begin{center}\fbox{\parbox{0.92\textwidth}{\BODY}}\end{center}}
+
+\let\oldphi\phi
+\let\phi\varphi
+\newcommand{\Z}{\mathbb{Z}}
+
+\hypersetup{
+  colorlinks=true,
+  urlcolor=MidnightBlue,
+  linkcolor=WildStrawberry,
+  % pdfborderstyle={/S/U/W 2}
+}
+
+\usepackage[listings,many]{tcolorbox}
+\makeatletter
+\newtcblisting{mylisting}{
+  listing only,
+  breakable, enhanced jigsaw,
+  listing engine=listings,
+  colback=gray!20,
+  listing options={
+    language=python,
+    keywordstyle=\color{blue},
+    basicstyle=\ttfamily,
+    stringstyle=\color{ForestGreen},
+    commentstyle=\color{gray},
+    ndkeywordstyle={\color{orange}},
+    identifierstyle=\color{black},
+    numbers=none,
+    showstringspaces=false,
+    aboveskip={0\p@ \@plus 6\p@}, belowskip={0\p@ \@plus 6\p@},
+    columns=fullflexible, keepspaces=true,
+    breaklines=true, breakatwhitespace=true,
+    extendedchars=false,
+    inputencoding=utf8,
+    upquote=true,
+    xleftmargin=-25pt,
+    mathescape=true,
+  }
+}
+\makeatother
+
+\title{Cryptography \\ Exercise Sheet 10}
+\author{
+  AAAAAAAAAA AAAAAAA \\
+  \href{mailto:AAAAAAAAAAAAAAAAAAAA}{AAAAAAAAAAAAAAAAAAAA}
+}
+
+\begin{document}
+  \maketitle
+
+  \setcounter{section}{10}
+  \subsection{ElGamal encryption}
+  \begin{centerframebox}
+    Consider the ElGamal encryption scheme (slide 278+54). Basically, it looks
+    like a variant of the Diffie-Hellman key exchange. The sender uses $A^t$
+    for encrypting the message $m$ and the recipient uses $T^a$ for decrypting.
+
+    \begin{enumerate}[label=(\roman*)]
+      \item Perform a toy example of ElGamal encryption with $(G,\, g,\, q)$ as follows:
+      Take $G = \Z^\times_p$  with the last 32-bit prime $p = \operatorname{prevprime}(2^{32}) = 2^{32} - 5 = 4 294 967 291$.
+      Then $g = 38$ has prime order $q = 22 605 091 \in [2^{25-1}, 2^{25}-1]$.
+    \end{enumerate}
+  \end{centerframebox}
+  \[ g = 38 \qquad q = 22 605 091 \qquad p = 4 294 967 291 \]
+  Before we can encrypt or decrypt anything, we also have to pick a random $a \in \Z_q$ and compute $A = g^a$.
+  \[ a = 13 130 822 \qquad A = 1 536 924 081 \]
+  Now to encrypt some message $m$, we also need to pick a random number $t \in \Z_q$
+  and then compute the ciphertext $(g^t,\, m \cdot A^t)$.
+  \[ m = 420 122 069 \qquad t = 21 446 789 \qquad  g^t = 2 527 812 898 \qquad m \cdot A^t = 3 605 983 895
+  \qquad c = (2 527 812 898,\, 3 605 983 895 ) \]
+  Then we can try to decrypt this message as $m' = c_0^{-1} \cdot c_1$.
+  \[ c_0^{-1} = 3 921 537 347 \qquad m' = 420 122 069 \]
+  Everything lines up!!
+
+  \begin{mylisting}
+    p = 2*32 - 5
+    g = 38
+    q = 22_605_091
+    a = random.randint(0, q-1)
+    A = pow(g, a, p)
+
+    m = 420_122_069
+    t = random.randint(0, q-1)
+    c0 = pow(g,t,p)
+    c1 = m * pow(A,t,p) % p
+
+    m_prime = pow(c0, -a, p)*c1 % p
+  \end{mylisting}
+
+\end{document}

@@ -1,0 +1,130 @@
+\documentclass{article}
+
+\usepackage{enumitem}
+\usepackage{amsmath}
+\usepackage{bbm}
+\usepackage{amsfonts}
+\usepackage[dvipsnames]{xcolor}
+\usepackage{amssymb}
+\usepackage[margin=0.5in]{geometry}
+\usepackage[hidelinks, bookmarks=false]{hyperref}
+
+\let\oldemptyset\emptyset
+\let\emptyset\varnothing
+\let\oldepsilon\epsilon
+\let\epsilon\varepsilon
+\newcommand{\N}{\mathbb{N}}
+\newcommand{\Z}{\mathbb{Z}}
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\Q}{\mathbb{Q}}
+
+\usepackage{environ}
+\NewEnviron{centerframebox}{\begin{center}\fbox{\parbox{0.92\textwidth}{\BODY}}\end{center}}
+
+\title{Combinatorial Optimization \\ Exercise Set 12 \\ Tuesday class}
+\author{
+  AAAAAAAAAA AAAAAAA \\
+  \href{mailto:AAAAAAAAAAAAAAAAAAAA}{AAAAAAAAAAAAAAAAAAAA}
+  \and
+  Carola Ley \\
+  \href{mailto:s6caleyy@uni-bonn.de}{s6caleyy@uni-bonn.de}
+  \and
+  Bailee Zacovic \\
+  \href{mailto:s38bzaco@uni-bonn.de}{s38bzaco@uni-bonn.de}
+}
+
+\begin{document}
+  \maketitle
+
+  \setcounter{section}{12}
+  \subsection{Making a Forest $2$-edge-connected}
+  \begin{centerframebox}
+    Let $G = (V, E)$ be a forest with $|V| \geq 2$.
+    Let $p := |\{v \in V : |\delta_G(v)| = 1\}|$ and $q := |\{v \in V : |\delta_G(v)| = 0\}|$.
+    Show that the minimum cardinality of a set $F \subseteq \{\{v,\, w\} : v,\, w \in V\}$
+    of new edges that makes the graph $(V,\, E \cup F)$ 2-edge-connected is $\left\lceil\frac{1}{2} p\right\rceil + p$.
+  \end{centerframebox}
+  % Divide the graph $G$ into $n$ connected components.
+  Let $n$ be the number of connected components of $G$.
+  Because $G$ is a forest, each connected component $T$ will be a tree.
+  All trees with $|V(T)| = 1$ have degree zero and are included in $q$,
+  and all other trees with $|V(T)| > 1$ will have at least two vertices with degree $1$:
+  if there is only one leaf, then the second degree $1$ vertex must be the root.
+  To make the graph 2-edge-connected, we have to make sure every vertex is included in some cycle.
+
+  Consider the following algorithm:
+  \begin{enumerate}
+    \item Connect all $q$ zero degree vertices $\{v \in V : |\delta_G(v)| = 0\}$ into one big cycle.
+    This uses up exactly $q$ edges.
+    We will use that cycle later.
+
+    \item For each connected component $T_i$ of $G$, find two 1 degree vertices $a_i$ and $b_i$,
+    such that the path $P(a_i,\, b_i)$ goes through the root of $T_i$.
+    Connect them in a cycle with edges $\{a_i,\,b_{i+1 \mod n}\}$.
+    This operation uses up $n$ edges and decreases the value of $p$ by $2n$.
+    Every vertex in the union of the paths from $a_i$ to $b_i$ will be 2-edge-connected to every other vertex in that union.
+
+    \item Now we can merge those two big cycles, by picking two edges $\{a,\, b\}$ and $\{c,\, d\}$,
+    and replacing them by $\{a,\, c\}$ and $\{c,\, b\}$.
+    This preserves the number of added edges.
+
+    \item For each remaining 1 degree vertex, connect it to another 1 degree vertex in a different connected component.
+    This will form another cycle, intersecting the Big Cycle we created in step 2,
+    and the paths from those vertices to their corresponding tree roots will also be 2-edge-connected to each other.
+    This process, along with step 2, uses up $\left\lfloor\frac{1}{2} p\right\rfloor$ edges.
+
+    \item If $p$ was odd, we need to take care of an extra leftover vertex.
+    We can connect it to the $a_i$ vertex of its connected component,
+    and then it will also be 2-edge-connected to every other vertex in $G$.
+  \end{enumerate}
+  This algorithm produces a 2-edge-connected graph by adding exactly $\left\lceil\frac{1}{2} p\right\rceil + p$ edges.
+  This is the minimum possible value, because each of the vertices counted in $p$ had to be included in one edge,
+  and each vertex counted in $q$ has to be included in two edges.
+
+  PS: consider the edge case of $|V| = 2$.
+  In that case the only way to make $G$ 2-edge-connected will be to include a doubled up edge,
+  which is technically not allowed.
+  I think the condition in the exercise statement should've been written as $|V| \geq 2$.
+  % TODO (Kotya)
+
+  \subsection{$k$-edge-connected graph}
+  \begin{centerframebox}
+    Show that every edge-minimal $k$-edge-connected graph has two vertices of degree $k$.
+  \end{centerframebox}
+  TODO (Carola)
+
+  \subsection{Survivable Network Design Problem}
+  \begin{centerframebox}
+    Consider the LP relaxation of the \textsc{Survivable Network Design Problem} described in the lecture.
+    Assume that $f$ is obtained from an instance of the SNDP rather than being an arbitrary proper function.
+    Show that the SNDLP can be formulated as an LP of polynomial size in this case.
+    Specifically, show that there is an LP of polynomial size with variables $(x_e)_e \in E(G) \cup X$
+    such that $x^* \in \R^{E(G)}$  is feasible for the SNDLP if and only if there is $y^* \in \R^X$
+    such that $(x^*,\, y^*)$ is feasible for your LP.
+  \end{centerframebox}
+  TODO (Bailee)
+
+  \subsection{Point-to-Point Connection Problem}
+  \begin{centerframebox}
+    Find a $2$-factor approximation algorithm for the \textsc{Point-to-Point Connection Problem}:
+    Given an undirected graph $G$ with edge weights $c : E(G) \to \R_+$ and sets $S,\, T \subseteq V (G)$
+    with $S \cap T = \emptyset$ and $|S| = |T| \geq 1$, find a set
+    $F \subseteq E(G)$ of minimum cost such that there is a bijection $\pi: S \to T$ and paths
+    from $s$ to $\pi(s)$ for all $s \in S$ in $(V(G),\, F)$.
+
+    Hint: You may use that Jain's algorithm computes a $2$-approximation to the
+    SNDIP for arbitrary proper functions $f$.
+  \end{centerframebox}
+  Let $f:\mathbbm{2}^{V(G)}\rightarrow \mathbb{Z}_{\geq 0}$ be given as follows:
+  $$f(U):=\begin{cases}
+      1 & |U\cap S|\neq |U\cap T|\\
+      0 & \text{else.}
+  \end{cases}$$
+  We claim $f$ is proper. First, observe that (1) $f(\emptyset)=0$ since $|\emptyset\cap S|=0=|\emptyset\cap T|.$ Secondly, $$|V\setminus U\cap S|+|U\cap S|=|S|=|T|=|V\setminus U\cap T|+|U\cap T|,$$i.e. $|U\cap S|=|U\cap T|$ if and only if $|V\setminus U\cap S|=|V\setminus U\cap T|.$ Consequently, $f(U)=f(V\setminus U).$ Finally, for $A,B\subseteq V,$ we have $$|(A\cup B)\cap S|=|A\cap S|+|B\cap S|-|A\cap B\cap S|$$and
+  $$|(A\cup B)\cap T|=|A\cap T|+|B\cap T|-|A\cap B\cap T|.$$In the case that $f(A)=f(B)=0,$ we have $|A\cap S|=|A\cap T|$ and $|B\cap S|=|B\cap T|,$ hence $$|A\cap S|+|B\cap S|=|A\cap T|+|B\cap T|\implies |(A\cup B)\cap S|=|(A\cup B)\cap T|,$$and thus $f(A\cup B)=0=\text{max}\; \{f(A),f(B)\}.$ In all other cases, $f(A\cup B)\leq 1=\text{max}\; \{f(A),f(B)\}.$ This yields condition (3) for properness, and hence $f$ is a proper function. Via Jain's algorithm, we compute a $2$-approximation to the SNDIP for $f$ a proper function. In particular, we obtain $F:=E_{\text{sol}},$ and notice that the resulting bijection $\pi:S\rightarrow T$ may be given in the following way:
+
+  Label the elements of $S$ as $s_0,\dots, s_m.$ Let $U_{0,0}:=\{s_0\}.$ Since $|U_{0,0}\cap S|=1\neq 0=|U_{0,0}\cap T|$ (by $S\cap T=\emptyset$), there exists $v_{0,0}\in \Gamma(U_{0,0})$ such that $\{s_0,v_{0,0}\}\in F.$ If $v_{0,0}\in T,$ set $\pi(s_0):=v_{0,0}.$ Else, set $U_{0,1}:=\{s_0,v_{0,0}\}.$ Again, since $|U_{0,1}\cap S|\geq 1\neq 0=|U_{0,1}\cap T|,$ there exists $v_{0,1}\in \Gamma(U_{0,1})$ such that $\{v_{0,1},v_{0,0}\}\in F$ or $\{v_{0,1},s_0\}\in F.$ If $v_{0,1}\in T,$ set $\pi(s_0):=v_{0,1}.$ Else, set $U_{0,2}:=\{s_0,v_{0,0},v_{0,1}\},$ and since $|S|,|T|$ are finite, this process will eventually terminate at some $v_{0,n_0}\in T,$ $n_0\in \mathbb{N},$ at which point we may set $\pi(s_0):=v_{0,n_0}.$
+
+  We repeat this process for each $s_i\in S,$ recursively setting $U_{i,0}=\{s_i\}\cup U_{i-1,n_i}.$ This will generate unique images $\pi(s)\in T$ for each $s\in S.$ $\blacksquare$
+
+\end{document}

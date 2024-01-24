@@ -1,0 +1,148 @@
+\documentclass{article}
+
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage[dvipsnames]{xcolor}
+\usepackage[margin=0.5in]{geometry}
+\usepackage[hidelinks, bookmarks=false]{hyperref}
+\usepackage{enumitem}
+
+\let\oldemptyset\emptyset
+\let\emptyset\varnothing
+\let\oldphi\phi
+\let\phi\varphi
+\let\oldepsilon\epsilon
+\let\epsilon\varepsilon
+
+\newcommand{\R}{\mathbb{R}}
+
+\usepackage{environ}
+\NewEnviron{centerframebox}{\begin{center}\fbox{\parbox{0.92\textwidth}{\BODY}}\end{center}}
+
+\title{Algorithms for Data Science \\ Exercise Sheet 9}
+\author{
+  Vladislav Imashev \\ \href{mailto:s05vimas@uni-bonn.de}{s05vimas@uni-bonn.de} \and
+  AAAAAAAAAA AAAAAAA \\ \href{mailto:AAAAAAAAAAAAAAAAAAAA}{AAAAAAAAAAAAAAAAAAAA} \and
+  German Mikhelson \\ \href{mailto:s17gmikh@uni-bonn.de}{s17gmikh@uni-bonn.de} \and
+  Aleksandra Volynets \\ \href{mailto:s02avoly@uni-bonn.de}{s02avoly@uni-bonn.de} \and
+  Nikita Morev \\ \href{mailto:s99nmore@uni-bonn.de}{s99nmore@uni-bonn.de}
+}
+
+
+\begin{document}
+  \maketitle
+
+  \setcounter{section}{9}
+  \subsection{Distances}
+  \begin{centerframebox}
+    \begin{enumerate}[label=(\roman*)]
+      \item Show that the \textbf{Minkowski} distance $D_p$ violates the triangle inequality for $p < 1$.
+      \[ D\left(X,Y\right) = \left(\sum_{i=1}^n |x_i-y_i|^p\right)^{\frac{1}{p}} \]
+      \item Show that the \textbf{Jaccard} distance is a metric.
+      \[ d_J(A,B) = 1 - J(A,B) = \frac{|A \cup B| - |A \cap B|}{|A \cup B|} \]
+      \item Show that the \textbf{edit} distance is a metric.
+
+      \item \textbf{Def.}: For $\vec{x},\vec{y}\in \R^d$ define the cosine distance
+      $D_{\cos}(\vec{x}, \vec{y})$ by
+      \[ D_{\cos}(\vec{x},\vec{y}) =
+      \arccos\left(\frac{\langle\vec{x},\vec{y}\rangle}{\Vert{\vec{x}}\Vert\Vert{\vec{y}}\Vert}\right) =
+      \arccos\left(\frac{\sum_{i=1}^{d}x_{i}y_{i}}{\sqrt{\sum_{i=1}^{d}x_{i}^{2}}\sqrt{\sum_{i=1}^{d}y_{i}^{2}}}\right) \]
+
+      \begin{enumerate}
+        \item  Is the following claim true? Argue why or why not.
+
+        \textbf{Claim:} For all $r > 0$, $D_{\cos}$ is a metric over the sphere in $\R^d$ of radius $r$ around the origin,
+        that is, over the set $\{\vec{x} \in \R^d : \Vert\vec{x}\Vert = r \}$,
+        for all $d > 0$ integer.
+        \item Is it a metric also over $\R^d$? Argue why or why not.
+      \end{enumerate}
+    \end{enumerate}
+  \end{centerframebox}
+  TODO %(Vadim; Sasha she/her; Vlad)
+
+  \subsection{High-Dimensional Spaces}
+  \begin{centerframebox}
+    Give your answer with a proof (sketch) to the question on Slide 31 of Lecture 2024-01-10.
+
+    \begin{itemize}
+      \item divide the $d$-cube $[-1,1]^d$ into $2d$ unit $d$-cubes and draw the largest centered $d$-ball (of radius $1/2$) in each sector
+      \item draw the $d$-ball centered at the origin that touches the surface of all other balls
+      \item let $r_d$ be the radius of this $d$-ball
+    \end{itemize}
+
+    \textbf{Question}: $\displaystyle \lim_{d \to \infty} r_d =\ ?$
+  \end{centerframebox}
+  The central ball we want is defined by touching the smaller radius $1/2$ balls,
+  so we can draw a diagonal line from the origin to the center of one of those balls,
+  and its length will be the sum of the radii of the two balls.
+  \[ r_d + \frac{1}{2} = \operatorname{dist}[(0,\dots,0); (1/2,\dots,1/2)] \]
+  \[ r_d = \sqrt{\sum_{i=1}^d (0 - 1/2)^2} - \frac{1}{2} \]
+  \[ r_d = \sqrt{d \cdot (1/2)^2} - \frac{1}{2} \]
+  \[ r_d = \sqrt{\frac{d}{4}} - \frac{1}{2} \]
+  \[ r_d = \frac{\sqrt{d}}{2} - \frac{1}{2} \]
+  \[ r_d = \frac{\sqrt{d} - 1}{2} \]
+  And we know that $\sqrt{n}$ is an unbounded function that tends to infinity.
+  So $r_d$ must also tend to infinity. And even escape the $d$-cube.
+  % TODO (Vlad)
+
+  \subsection{Volume of the Shell of $d$-Balls}
+  \begin{centerframebox}
+    Give the formal claim and its proof asked on Slide 37 of Lecture 2024-01-10.
+
+    \textbf{shell of $d$-balls}: region between two concentric $d$-balls of radiuses $r$ and $r-\epsilon$
+
+    \textbf{Question}: fraction of the volume of the shell of width $\epsilon$ w.r.t. the total volume of the $d$-ball of radius containing it?
+
+    \textbf{Informal claim}: for any $\epsilon > 0$, if $d$ is sufficiently large then almost all the volume is contained in a \textbf{thin} shell of width $\epsilon$
+  \end{centerframebox}
+  The volume of a $n$-ball equals:
+  \[ V_n(R) = \frac{\pi^{n/2}}{\Gamma\left(\tfrac n2 + 1\right)}R^n. \]
+  The formal claim can be expressed as a limit for the ratio of volumes of the full ball, and the smaller ball without the shell:
+  \[ \forall \epsilon > 0 : \lim_{d \to \infty} \frac{V_d(r - \epsilon)}{V_d(r)} = 0 \]
+  Because both balls have the same dimension $d$, the $\pi^{n/2}$ and $\Gamma$ terms cancel out:
+  \[ \forall \epsilon > 0 : \lim_{d \to \infty} \frac{(r - \epsilon)^d}{r^d} = 0 \]
+  We can rebracket $\frac{(r - \epsilon)^d}{r^d}$ as $\left(\frac{r - \epsilon}{r}\right)^d$,
+  and that will be a constant smaller than $1$ to an ever increasing power, which obviously tends to $0$.
+  % TODO (Sasha he/him)
+
+  \subsection{Volume of the Unit $d$-Cube at the Surface}
+  \begin{centerframebox}
+    Give the formal claim and its proof asked on Slide 38 of Lecture 2024-01-10.
+
+    \textbf{Informal claim}: for any $\epsilon > 0$, if $d$ is sufficiently large then the probability that a point chosen uniformly at random belongs to a thin strip of width $\epsilon$ at the surface is (nearly) $1$.
+  \end{centerframebox}
+  First lets write this as a formal claim, replacing the probability with a volume ratio:
+  \[ \forall \epsilon > 0 : \lim_{d \to \infty} \frac{(a - 2\epsilon)^d}{a^d} = 0 \]
+  Because the question only asked about unit cubes, we can replace $a$ with 1.
+  \[ \forall \epsilon > 0 : \lim_{d \to \infty} \frac{(1 - 2\epsilon)^d}{1} = 0 \]
+  \[ \forall \epsilon > 0 : \lim_{d \to \infty} (1 - 2\epsilon)^d = 0 \]
+  We know that $1 - 2\epsilon$ is some number smaller than $1$, and the limit for any such number $b$ is $\lim_{n \to \infty} b^n = 0$.
+  % TODO (Kostya)
+
+  \subsection{Generation of Random Unit Vectors in $\R^d$}
+  \begin{centerframebox}
+    Consider the following method generating a random vector $\vec{y}$:
+    \begin{enumerate}
+      \item for $i = 1,\dots, d$, generate a Gaussian $\mathcal{N}(0, 1)$ random variable $x_i$
+      independently,
+      \item return \[ \vec{y} = \frac{\vec{x}}{\Vert\vec{x}\Vert}, \] where $\vec{x} = (x_1,\dots,x_d)$
+    \end{enumerate}
+
+    \textbf{Task A (15 points)}: Show that the vector $\vec{y}$ obtained is a point chosen uniformly at random from the surface of the $d$-dimensional unit ball (see also, Claim 1 on Slide 24 of Lecture 2024-01-17).
+
+    \textbf{Task B (10 points)}: For a random vector $\vec{y} = (y_1,\dots,y_d)$ generated in Task A,
+    let $\vec{z} = (y_1, \dots, y_k)$ for some $1 \leq k \leq d$ (i.e., $\vec{z}$ is the projection of $\vec{y}$ onto
+    its first $k$ coordinates). Prove that
+    \[\mathbb{E}\left[\Vert\vec{z}\Vert^2\right] = k/d\]
+    (see, also, Claim 2 on Slide 24 of Lecture 2024-01-17).
+  \end{centerframebox}
+  \subsubsection{Task A}
+  TODO %(Veronika)
+  \subsubsection{Task B}
+    From Task A $\vec{y}$ is uniformly distributed on the surface of the d-dimensional unit ball, \[ \vec{y} = \frac{\vec{x}}{\Vert\vec{x}\Vert} => {\Vert\vec{y}\Vert}^2 = 1 = y^2_1 + ... + y^2_d \]
+
+    Since $\vec{y}$ is uniformly distributed, this means that each of $y^2_i$ contributes equally to ${\Vert\vec{y}\Vert}^2$ is equal to $\frac{1}{d}$. So, $\vec{z} = (y_1, \dots, y_k)$ and ${\Vert\vec{z}\Vert}^2 = y^2_1 + ... + y^2_k = \frac{1}{d} + ... + \frac{1}{d} = k \cdot \frac{1}{d} = \frac{k}{d}$, hence
+
+    \[\mathbb{E}\left[\Vert\vec{z}\Vert^2\right] = \mathbb{E}\left[y^2_1 + ... + y^2_k\right] = \mathbb{E}\left[\frac{k}{d}\right] = \{\frac{k}{d} \text{ is constant}\} = \frac{k}{d}\]
+\end{document}
