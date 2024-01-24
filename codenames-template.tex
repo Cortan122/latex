@@ -5,9 +5,11 @@
 \usepackage{tikz}
 \usepackage{graphicx}
 \usepackage{alphalph}
+\usetikzlibrary{decorations.text}
 
 \usepackage{fontspec}
 \setmainfont{Libre Baskerville}
+\newfontfamily\comicsans[SizeFeatures={Size=50,Size=40,Size=30}]{Comic Sans MS}
 
 \def\numrows{4}
 \def\numcolumns{4}
@@ -16,6 +18,39 @@
 \usepackage{xcolor}
 \definecolor{bgyellow}{HTML}{FCE8BA}
 \definecolor{bgwhite}{HTML}{FFFDF1}
+\definecolor{bgred}{HTML}{F7A8B8}
+\definecolor{bgblue}{HTML}{55CDFC}
+\definecolor{bggreen}{HTML}{B8F483}
+\definecolor{bgblack}{HTML}{181818}
+\definecolor{fgred}{HTML}{CC002C}
+\definecolor{fgblue}{HTML}{005D7F}
+\definecolor{fggreen}{HTML}{244C00}
+\definecolor{fgblack}{HTML}{AAAAAA}
+\newcommand{\redcard}{\vspace{-2mm}\colorcard{bgred}{fgred}{Girl}{50}}
+\newcommand{\bluecard}{\vspace{-2mm}\colorcard{bgblue}{fgblue}{Boy}{50}}
+\newcommand{\greencard}{\vspace{-2mm}\colorcard{bggreen}{fggreen}{Clueless}{40}}
+\newcommand{\blackcard}{\vspace{-2mm}\colorcard{bgblack}{fgblack}{Non-Binary}{30}}
+\newcommand{\fluidcard}[2]{\vspace{-2mm}\colorcard{#1}{#2}{Genderfluid}{30}}
+
+\newcommand{\genericcard}[2]{%
+  \begin{tcolorbox}[left=2mm, right=0mm, colback=#2, width=6.7cm, height=4.3cm, valign lower=bottom, split=0.5]
+    #1
+  \end{tcolorbox}%
+}
+
+\newcommand{\wordcard}[1]{%
+  \genericcard{%
+    \begin{tcolorbox}[left=0mm, colback=bgwhite, width=6cm, halign=center]
+      \scalebox{2}{#1}
+    \end{tcolorbox}
+    \tcblower
+    \rotatebox[origin=c]{180}{%
+      \begin{tcolorbox}[left=0mm, colback=bgwhite, width=6cm, halign=center]
+        \scalebox{2}{#1}
+      \end{tcolorbox}%
+    }%
+  }{bgyellow}%
+}
 
 \newcommand{\gridpage}[1]{
   \begin{center}
@@ -28,37 +63,87 @@
       }
       \foreach \i in {1,...,\numrows}{
         \foreach \j in {1,...,\numcolumns}{
-          \node at (\j-.5,\numrows-\i+.5) {
-            \begin{tcolorbox}[left=2mm, right=0mm, colback=bgyellow, width=6.7cm, height=4.3cm, valign lower=bottom, split=0.5]
-              \begin{tcolorbox}[left=0mm, colback=bgwhite, width=6cm, halign=center]
-                \scalebox{2}{#1}
-              \end{tcolorbox}
-              \tcblower
-              \rotatebox[origin=c]{180}{%
-                \begin{tcolorbox}[left=0mm, colback=bgwhite, width=6cm, halign=center]
-                  \scalebox{2}{#1}
-                \end{tcolorbox}%
-              }
-            \end{tcolorbox}
-          };
+          \node at (\j-.5,\numrows-\i+.5) {#1};
         }
       }
     \end{tikzpicture}
   \end{center}
 }
 
+\newcommand{\cardpage}[1]{
+  \gridpage{\wordcard{#1}}
+}
+
+\newcommand{\colorcard}[4]{%
+  \genericcard{%
+    \begin{tikzpicture}
+      \node (spacer) at (0,0) {};
+      \node (One) at (-2.9,-2.9) {};
+      \node (Two) at ( 2.9,-2.9) {};
+      \draw [draw=none, postaction={decorate,decoration={text along path,text align=center,text={%
+        |\fontsize{#4}{#4}\color{#2}\comicsans|#3%
+      }}}] (One) to [bend left=45] (Two);
+    \end{tikzpicture}%
+  }{#1}%
+}
+
 \makeatletter
 \def\@CodenameWords#1{\ifcase#1\or
-  CLONE\or BEER\or BROKE\or WINE\or CORP\or CIRCLE\or FRAMES\or PROVEN\or WORST\or BUMPER\or BOWL\or LIST\or BEAN\or HANDS\or COLLEGE\or FIFTEEN\or ISLAND\or CATGIRL\or PASS\or CAMPUS\or SUNRISE\or EXHIBIT\or WHEEL\or SHAPE\or FORT\or PUPPY\or CAR\or NAILS\or MOUTH\or SENATOR\or AHEAD\or WINNER\or POINTS\or STUDY\or ACCENT\or BEAR\or CREAM\or APOLLO\or MOON\or PETITE\or EXCLUDE\or TRICK\or LINUX\or THIEF\or FARM\or ROUTE\or TOAD\or ONCE\or EXPERT\or RELAX\or
+  CLONE\or BEER\or BROKEN\or WINE\or CROP\or CIRCLE\or FRAMES\or PROVEN\or WORST\or BUMPER\or BOWL\or LIST\or BEAN\or HANDS\or COLLEGE\or FIFTEEN\or ISLAND\or CATGIRL\or PASS\or CAMPUS\or SUNRISE\or EXHIBIT\or WHEEL\or SHAPE\or FORT\or PUPPY\or CAR\or NAILS\or MOUTH\or SENATOR\or AHEAD\or WINNER\or POINTS\or STUDY\or ACCENT\or BEAR\or CREAM\or APOLLO\or MOON\or PETITE\or EXCLUDE\or TRICK\or LINUX\or THIEF\or FARM\or ROUTE\or TOAD\or ONCE\or EXPERT\or RELAX\or
   ANALYZE\or FONT\or SOCKS\or PRICE\or STEAM\or GENE\or SKIRT\or PURE\or KITTEN\or FIRED\or DAILY\or LUNG\or YOUTH\or MASTER\or
-  CASH\or INCOME\or PLANTS\or CORE\or REMARK\or FAVOUR\or EARLY\or LOGIN\or CURRENT\or SURGE\or BOWLING\or SELL\or PRIDE\or MONSTER\or WEAR\or RING\or TIGER\or BRUCE\or BOAT\or CAPTAIN\or DRINK\or GENDER\or RATS\or REVEAL
+  CASH\or INCOME\or PLANTS\or CORE\or REMARK\or FAVOUR\or EARLY\or LOGIN\or CURRENT\or SURGE\or BOWLING\or SELL\or PRIDE\or MONSTER\or WEAR\or RING\or TIGER\or APPLE\or BOAT\or CAPTAIN\or DRINK\or GENDER\or RATS\or REVEAL\or
+  PLUM\or FROST\or PARENT\or STICKER\or SQUARE\or BLAZE\or DIAMOND\or GOLD
   \else\AlPh@ctrerr\fi}
 \newalphalph{\CodenameWords}[wrap]{\@CodenameWords}{}
 \makeatother
 
+\usepackage{expl3}
+\ExplSyntaxOn
+\cs_new_eq:NN \Repeat \prg_replicate:nn
+\ExplSyntaxOff
+
+\usepackage{array}
+\usepackage{arydshln}
+\newcolumntype{P}[1]{>{\centering\arraybackslash}p{#1}}
+
+\newcommand{\tableline}[1]{
+  \Repeat{\numcolumns-1}{#1 &} #1 \\\hdashline
+}
+
+\newcommand{\tablepage}[1]{
+  \begin{center}
+    \begin{tabular}{:*{\numcolumns}{@{}P{7cm}@{}:}}
+      \hdashline
+      #1
+    \end{tabular}
+  \end{center}
+}
+
+\newcommand{\tablepagetwocolor}[2]{
+  \tablepage{
+    \Repeat{\numrows/2}{\tableline{#1}}
+    \Repeat{\numrows/2}{\tableline{#2}}
+  }
+}
+
+\newcommand{\tablepagethreecolor}[3]{
+  \tablepage{
+    \Repeat{\numrows/2}{\tableline{#1}}
+    \Repeat{\numrows/4}{\tableline{#2}}
+    \Repeat{\numrows/4}{\tableline{#3}}
+  }
+}
+
 \begin{document}
-  \gridpage{\CodenameWords{\j+\numcolumns*(\i-1)}}
-  \gridpage{\CodenameWords{\j+\numcolumns*(\i-1)+16}}
-  \gridpage{\CodenameWords{\j+\numcolumns*(\i-1)+32}}
-  \gridpage{\CodenameWords{\j+\numcolumns*(\i-1)+48}}
+  \cardpage{\CodenameWords{\j+\numcolumns*(\i-1)}}
+  \cardpage{\CodenameWords{\j+\numcolumns*(\i-1)+16}}
+  \cardpage{\CodenameWords{\j+\numcolumns*(\i-1)+32}}
+  \cardpage{\CodenameWords{\j+\numcolumns*(\i-1)+48}}
+  \cardpage{\CodenameWords{\j+\numcolumns*(\i-1)+64}}
+  \cardpage{\CodenameWords{\j+\numcolumns*(\i-1)+80}}
+
+  \tablepagetwocolor{\bluecard}{\redcard}
+  \tablepagetwocolor{\bluecard}{\redcard}
+  \tablepagethreecolor{\greencard}{\fluidcard{bgblue}{fgblue}}{\blackcard}
+  \tablepagethreecolor{\greencard}{\fluidcard{bgred}{fgred}}{\blackcard}
 \end{document}
