@@ -1,6 +1,13 @@
 #!/bin/bash
 
-mapfile -t filenames < <(grep -rFl -f names.txt)
+mapfile -t filenames1 < <(grep -rFl -f names.txt | grep -v names.txt | grep -v '.*.ipynb$')
+mapfile -t filenames < <(grep -LF '\AA' "${filenames1[@]}")
+
+if [ "${#filenames[@]}" == 0 ]; then
+  echo "no files to change..."
+  exit
+fi
+echo "changing ${#filenames[@]} files..."
 
 res=""
 i=1
