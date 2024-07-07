@@ -40,7 +40,7 @@ for i in *.tex; do
     # use english date format
     date_string="$(LC_ALL=C git log --format="%ad" --date=format:'%B %_d, %Y' -- "$i" | tail -n -1)"
   fi
-  latex_arg="\date{$date_string} \input{$i}"
+  latex_arg="\date{$date_string} \input{replaced_names.sty}\input{$i}"
 
   "$cmd" "$latex_arg" || exit 1
   grep -Fq 'Rerun to get cross-references right.' "$f.log" && "$cmd" "$latex_arg"
