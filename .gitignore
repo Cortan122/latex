@@ -6,5 +6,8 @@
 *.ipynb.tex
 *.out
 *.pytxcode
+*.listing
+*.bbl
+*.blg
 pandoc_media/
 *.ipynb.tex
