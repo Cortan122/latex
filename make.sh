@@ -7,7 +7,7 @@
 # rm **/!(*.png|*.fasta)
 
 clean() {
-  rm -rf *.log *.aux *.pdf *.toc *.atfi *.ipynb.tex *.out *.pytxcode pandoc_media/
+  rm -rf -- *.log *.aux *.pdf *.toc *.atfi *.ipynb.tex *.out *.pytxcode pandoc_media/
 }
 
 [ -n "$1" ] && "$1" && exit
