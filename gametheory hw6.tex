@@ -1,0 +1,93 @@
+\documentclass{article}
+
+\usepackage{enumitem}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage[dvipsnames]{xcolor}
+\usepackage{amssymb}
+\usepackage[margin=0.5in]{geometry}
+\usepackage[thinc]{esdiff}
+\usepackage[hidelinks, bookmarks=false]{hyperref}
+
+\mathchardef\simsym"0218
+\let\oldphi\phi
+\let\phi\varphi
+\newcommand{\E}{\mathbf{\mathbb{N}}}
+
+\usepackage{environ}
+\NewEnviron{centerframebox}{\begin{center}\fbox{\parbox{0.92\textwidth}{\BODY}}\end{center}}
+
+\title{Algorithmic Game Theory\\ Exercise Set 6}
+\author{
+  \AA{AAAAAAAAAA AAAAAAA}{6} \\
+  \href{mailto:\AA{AAAAAAAAAAAAAAAAAAAA}{7}}{\AA{AAAAAAAAAAAAAAAAAAAA}{7}}
+}
+
+\begin{document}
+  \maketitle
+
+  \setcounter{section}{6}
+  \subsection{All-pay auction}
+  \begin{centerframebox}
+    An \textit{all-pay auction} is a single-item auction defined in almost the same manner as a first-price
+    auction: Each bidder reports a bid $b_i \geq 0$. The bidder with the highest bid wins the item.
+    However, every bidder must pay their own bid regardless of whether they win the item or not.
+
+    Be inspired by the steps of Section 2 in the notes of Lecture 15 to derive the symmetric
+    Bayes-Nash equilibrium of an all-pay auction with $n$ bidders and identical distributions.
+  \end{centerframebox}
+
+  The lecture notes for finding the Bayes-Nash equilibrium in a First-price auction (given all the same assumption we have here) started with this massive formula:
+  \[
+    \mathbb{E}_{v_{-i} \sim \mathcal{D}_{-i}} \left[ u_i\left( \left( y, \beta_{-i} (v) \right), v_i \right) \right] = (v_i - y) \Pr \left[ \bigwedge_{j \neq i} \beta_j (v_j) < y \right]
+  \]
+  where we are considering the expected utility player $i$ gets by deviating from their betting function $\beta_i(v_i)$ and instead using $y$ as their bet.
+
+  In our case, the players will always have to pay their bets, so the big $\Pr$ term can be separated out and the expected utility can we rewritten like this:
+  \[
+    \mathbb{E}_{v_{-i} \sim \mathcal{D}_{-i}} \left[ u_i\left( \left(y, \beta_{-i} (v) \right), v_i \right) \right] =
+    v_i \Pr \left[ \bigwedge_{j \neq i} \beta_j (v_j) < y \right] - y
+  \]
+  Following further transformations from the lecture we can rewrite the $\Pr$ term like this:
+  \[
+    \Pr \left[ \bigwedge_{j \neq i} \beta_j (v_j) < y \right] =
+    \prod_{j\neq i} \Pr \left[ \beta_j (v_j) < y \right] =
+    \prod_{j\neq i} \Pr \left[ v_j < \phi(y) \right] =
+    \prod_{j\neq i} F(\phi(y)) =
+    F(\phi(y))^{n-1} =
+    G(\phi(y))
+  \]
+  where $\phi$ is the inverse of $\beta_i$, $F$ is the cumulative distribution function and $G$ is just $F(y)^{n-1}$.
+  The final expected utility function looks like this:
+  \[
+    \mathbb{E}_{v_{-i} \sim \mathcal{D}_{-i}} \left[ u_i\left( \left(y, \beta_{-i} (v) \right), v_i \right) \right] =
+    v_i G(\phi(y)) - y
+  \]
+
+  Now if we want $y$ to be part of our Bayes-Nash equilibrium (i.e. $\beta_i(v_i) = y$), it has to be a maximum of the function above, so we set the derivative to 0.
+  \begin{align*}
+    \diff{}{y} (v_i G(\phi(y)) - y) &= 0 \\
+    v_i \diff{}{y} G(\phi(y)) - 1 &= 0 \\
+    v_i G'(\phi(y)) \phi'(y) &= 1
+  \end{align*}
+  By the inverse function theorem, we have $\phi'(y) = \frac{1}{\beta_i'(\phi(y))}$, and we can also substitute $\beta_i(v_i) = y$:
+  \begin{align*}
+    v_i G'(\phi(y)) \phi'(y) &= 1 \\
+    v_i G'(\phi(y)) \frac{1}{\beta_i'(\phi(y))} &= 1 \\
+    v_i G'(v_i) \frac{1}{\beta_i'(v_i)} &= 1 \\
+    v_i G'(v_i) &= \beta_i'(v_i)
+  \end{align*}
+  The right-hand side is just the derivative of $\beta_i$, so we can use an integral and the fact that $\beta_i(0) = 0$ to define it.
+  \[
+    \beta_i(v_i) = \int v_i G'(v_i) \mathrm{d}v_i = \int_0^{v_i} t G'(t) \mathrm{d}t
+  \]
+
+  \noindent\rule{\textwidth}{0.4pt}
+
+  It looks like for a basic uniform $0\simsym 1$ distribution, it will be
+  \[ \beta_i(v_i) = \frac{n-1}{n} \cdot v_i^n \]
+  for $n=2$
+  \[ \beta_i(v_i) = \frac{v_i^2}{2} \]
+  because $v_i$ in this case is always $\leq 1$, the square will always make our bet smaller.
+
+\end{document}
