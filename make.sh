@@ -41,6 +41,7 @@ for i in *.tex; do
     date_string="$(LC_ALL=C git log --format="%ad" --date=format:'%B %_d, %Y' -- "$i" | tail -n -1)"
   fi
   latex_arg="\date{$date_string} $(cat censored_names.sty)\input{$i}"
+  # ⬑ or `cat replaced_names.sty`
 
   "$cmd" "$latex_arg" || exit 1
   grep -Fq 'Rerun to get cross-references right.' "$f.log" && "$cmd" "$latex_arg"

@@ -1,0 +1,62 @@
+\documentclass{article}
+
+\usepackage{enumitem}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage[margin=0.5in]{geometry}
+\usepackage[hidelinks, bookmarks=false]{hyperref}
+
+\usepackage[dvipsnames]{xcolor}
+\usepackage{algorithm}
+\usepackage{algpseudocode}
+\usepackage{algorithmicx}
+
+\let\oldemptyset\emptyset
+\let\emptyset\varnothing
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\Rd}{\R^d}
+
+\usepackage{environ}
+\NewEnviron{centerframebox}{\begin{center}\fbox{\parbox{0.92\textwidth}{\BODY}}\end{center}}
+
+\title{Discrete and Computational Geometry \\ Assignment 4}
+\author{
+  \AA{AAAAAAAAAA AAAAAAA}{6} \\
+  \href{mailto:\AA{AAAAAAAAAAAAAAAAAAAA}{7}}{\AA{AAAAAAAAAAAAAAAAAAAA}{7}}
+  \and
+  Emilia Groß-Hardt \\
+  \href{mailto:emilia.ghdt@uni-bonn.de}{emilia.ghdt@uni-bonn.de}
+}
+
+\usepackage{titlesec}
+\titleformat{\section}
+  {\normalfont\Large\bfseries}{Problem \thesection : }
+  {0em}{\mdseries}
+
+\newcommand{\algorithmRuledHeader}[2]{\hrule height.8pt \vspace{2pt}\textbf{Algorithm #1:} #2\vspace{2pt}\hrule}
+
+\begin{document}
+  \maketitle
+  \begin{center}
+    { \bfseries Deadline: 23 Nov 2024, 23:55 }
+  \end{center}
+
+  \section{}
+  Let $P = \{a=(0, 0), b=(\cos{0^\circ, \sin{0^\circ}}), c=(\cos{120^\circ, \sin{120^\circ}}), d=(\cos{240^\circ, \sin{240^\circ}})\}$. It follows, that $\Delta_{bcd}$ is part of the convex hull of $P'$ since every possible triangle in $P'$ is part of the convex hull as $|P'| = 4$. However $\Delta_{bcd}$ isn't a delaunay triangle as $a$ is obviously contained in the circle with $b$, $c$, and $d$, since this circle is just the circle with radius $1$ around $a$.
+  
+  \section{}
+  Each edge of a Voronoi diagram region must be perpendicular to the line drawn thru the \textit{point sites} of the two regions it divides. The point sites must also be equidistant from this edge.
+
+  Additionally, this problem doesn't necessarily have a unique solution. Imagine the simplest case of the plane divided into two infinite half-planes. We can place one point site anywhere in the left halfplane, and then determine the position of the second, symmetrical on the dividing line. 
+
+  In the same way, we can extend to a full solution, as long as we have one known point.
+  However, in the general case, not all choices of the starting point will lead to a solution. We might end up with a region having two or more points in it. 
+
+  Is is also possible to use the fact that the Delaunay triangulation is the dual of the Voronoi diagram to recover one of the point sites.
+  
+  \section{}
+  Let $a = (0, 0), b = (\cos{0^\circ, \sin{0^\circ}}), c = (\cos{1^\circ, \sin{1^\circ}}), d = (\cos{-1^\circ, \sin{-1^\circ}})$.
+  Since $a$ is contained in the circle defined by $b$, $c$, and $d$, $\Delta_{bcd}$ is not a delaunay triangle, thus the delaunay triangulation contains exactly the edges $ac$, $cb$, $bd$, $da$, and $ab$. However the minimum weight triangulation would contain $cd$ instead of $ab$ since $\sin{(1^\circ)} - \sin{(-1^\circ)} < 1$.
+
+\end{document}

@@ -1,0 +1,512 @@
+\documentclass[aspectratio=169]{beamer}
+\beamertemplatenavigationsymbolsempty
+\usetheme{Boadilla}
+\usepackage{textpos} % package for the positioning
+\usepackage{enumitem}
+\usepackage{amsmath,amsfonts,amssymb}
+
+\usepackage{listings}
+\usepackage{xcolor}
+\usepackage{tasks}
+\usepackage{braket}
+
+% Define color values for the theme
+\definecolor{backcolour}{rgb}{0.97, 0.97, 1.0}    % Light purple background
+\definecolor{codegreen}{rgb}{0.0, 0.6, 0.0}       % Green for comments
+\definecolor{codegray}{rgb}{0.5, 0.5, 0.5}        % Gray for line numbers
+\definecolor{codepurple}{rgb}{0.58, 0.0, 0.83}    % Purple for strings
+\definecolor{keywordcolor}{rgb}{0.5, 0.0, 0.5}    % Dark purple for keywords
+
+% Define the style for the listings
+\lstdefinestyle{mystyle}{
+    backgroundcolor=\color{backcolour},
+    commentstyle=\color{codegreen},
+    keywordstyle=\color{keywordcolor},
+    numberstyle=\tiny\color{codegray},
+    stringstyle=\color{codepurple},
+    basicstyle=\ttfamily\footnotesize,
+    breakatwhitespace=false,
+    breaklines=true,
+    captionpos=b,
+    keepspaces=true,
+    numbers=left,
+    numbersep=5pt,
+    showspaces=false,
+    showstringspaces=false,
+    showtabs=false,
+    tabsize=2
+}
+
+\lstset{style=mystyle}
+
+\definecolor{uwopurple}{RGB}{79,38,131} % official purple color for uwo
+
+
+\title{Foundations of Quantum Computing}
+\author[]{Zyad Altahan (50238152) \and \AA{AAAAAAAAAA AAAAAAA}{6} (\AA{AAAAAAAA}{10}) \and Tobias Mette (3105540) \and Aksa Aksa (50146305) \and Mohamed Sonbol (50262724)}
+\institute[]{Department of Computer Science \\ University of Bonn}
+\date{\today}
+
+\usepackage[listings,many]{tcolorbox}
+\makeatletter
+\newtcblisting{mylisting}{
+  listing only,
+  breakable, enhanced jigsaw,
+  listing engine=listings,
+  colback=gray!20,
+  listing options={
+    language=python,
+    keywordstyle=\color{blue},
+    basicstyle=\ttfamily,
+    stringstyle=\color{ForestGreen},
+    commentstyle=\color{gray},
+    ndkeywordstyle={\color{orange}},
+    identifierstyle=\color{black},
+    numbers=none,
+    showstringspaces=false,
+    aboveskip={0\p@ \@plus 6\p@}, belowskip={0\p@ \@plus 6\p@},
+    columns=fullflexible, keepspaces=true,
+    breaklines=true, breakatwhitespace=true,
+    extendedchars=false,
+    inputencoding=utf8,
+    upquote=true,
+    xleftmargin=-25pt,
+  }
+}
+\makeatother
+
+% set color
+\setbeamercolor{title in head/foot}{bg=white}
+\setbeamercolor{author in head/foot}{bg=white}
+\setbeamercolor{date in head/foot}{fg=uwopurple}
+\setbeamercolor{date in head/foot}{bg=white}
+\setbeamercolor{title}{fg=uwopurple}
+\setbeamerfont{title}{series=\bfseries}
+\setbeamercolor{frametitle}{fg=uwopurple}
+\setbeamerfont{frametitle}{series=\bfseries}
+\setbeamercolor{block title}{bg=uwopurple!30,fg=black}
+\setbeamercolor{item}{fg=uwopurple}
+\setbeamercolor{caption name}{fg=uwopurple!70!}
+\usefonttheme[onlymath]{serif}
+
+
+\begin{document}
+
+
+\begin{frame}
+    \titlepage
+    \begin{textblock*}{8cm}(5.0cm,-7.0cm)
+        {\large \color{uwopurple}\hspace{0.66cm} \textbf{Exercise Sheet 04}} % Change the lecture # right here!
+    \end{textblock*}
+\end{frame}
+
+
+\begin{frame}[fragile]{Task 4.2}
+
+{\footnotesize
+Given:
+\[
+i^x = (e^{\ln i})^x = e^{x \ln i}, \quad x \in \mathbb{R}.
+\]
+We need to compute \( \ln(i) \). The natural logarithm of a complex number \( z \) can be calculated using the formula:
+\[
+\ln(z) = \ln|z| + i\arg(z).
+\]
+
+Here, \( z = i \).
+\[
+\ln(i) = \ln|i| + i\arg(i).
+\]
+
+\[
+|i| = \sqrt{\text{Re}(i)^2 + \text{Im}(i)^2} = \sqrt{0^2 + 1^2} = 1.
+\]
+
+\[
+\arg(i) = \tan^{-1}\left(\frac{\text{Im}(i)}{\text{Re}(i)}\right) = \tan^{-1}\left(\frac{1}{0}\right) = \frac{\pi}{2}.
+\hfill \text{(because \( i \) points straight up on the complex plane.)}
+\]
+
+Putting these in the above equation, we have:
+\[
+\ln(i) = \ln(1) + i\frac{\pi}{2}.
+\]
+Since \( \ln(1) = 0 \), this simplifies to:
+\[
+\ln(i) = i\frac{\pi}{2}.
+\]
+
+Finally, substituting this back into the expression for \( i^x \):
+\[
+i^x = e^{x \ln i} = e^{x \cdot i\frac{\pi}{2}}.
+\]
+Finally, substituting this back into the expression for \( i^x \), we find:
+\[
+i^x = e^{x \ln i} = e^{x \cdot i\frac{\pi}{2}}.
+\]
+}
+\end{frame}
+
+\begin{frame}[fragile]{Task 4.3: Even More Cyclic Groups}
+
+{\footnotesize
+\textbf{Part (a): Is \( S \) Unitary?}
+
+To check if \( S \) is unitary, we calculate \( S^\dagger S \), where \( S^\dagger \) is the Hermitian conjugate of \( S \). Given:
+\[
+S = \begin{bmatrix}
+1 & 0 \\
+0 & i
+\end{bmatrix}, \quad
+S^\dagger = \begin{bmatrix}
+1 & 0 \\
+0 & -i
+\end{bmatrix}.
+\]
+
+Now, compute \( S^\dagger S \):
+\[
+S^\dagger S = \begin{bmatrix}
+1 & 0 \\
+0 & -i
+\end{bmatrix}
+\begin{bmatrix}
+1 & 0 \\
+0 & i
+\end{bmatrix} = \begin{bmatrix}
+1 & 0 \\
+0 & (-i)(i)
+\end{bmatrix} = \begin{bmatrix}
+1 & 0 \\
+0 & 1
+\end{bmatrix}.
+\]
+
+Since \( S^\dagger S = I \), \( S \) is unitary.
+
+\vspace{0.5em}
+
+\textbf{Part (b): Compute \( S^k \lvert 1 \rangle \) for \( k \in \{0, 1, 2, 3, 4\} \)}
+
+Given \( \lvert 1 \rangle = \begin{bmatrix} 0 \\ 1 \end{bmatrix} \), we compute \( S^k \lvert 1 \rangle \). Since \( S \) is diagonal:
+\[
+S^k = \begin{bmatrix}
+1 & 0 \\
+0 & i^k
+\end{bmatrix}.
+\]
+
+At this point, we can observe that \( \lvert 1 \rangle \) will select the second column of \( S^k \), specifically the term \( i^k \) (a fourth root of unity).
+
+}
+\end{frame}
+
+\begin{frame}[fragile]{Task 4.3: Continue}
+
+{\footnotesize
+
+For each \( k \), we calculate:
+\[
+S^k \lvert 1 \rangle = \begin{bmatrix}
+1 & 0 \\
+0 & i^k
+\end{bmatrix} \begin{bmatrix} 0 \\ 1 \end{bmatrix} = \begin{bmatrix}
+0 \\
+i^k
+\end{bmatrix}.
+\]
+
+The results are:
+\[
+\begin{aligned}
+S^0 \lvert 1 \rangle &= \begin{bmatrix} 0 \\ 1 \end{bmatrix}, \quad
+S^1 \lvert 1 \rangle = \begin{bmatrix} 0 \\ i \end{bmatrix}, \quad
+S^2 \lvert 1 \rangle = \begin{bmatrix} 0 \\ -1 \end{bmatrix}, \\
+S^3 \lvert 1 \rangle &= \begin{bmatrix} 0 \\ -i \end{bmatrix}, \quad
+S^4 \lvert 1 \rangle = \begin{bmatrix} 0 \\ 1 \end{bmatrix}.
+\end{aligned}
+\]
+
+\textbf{Observation:}
+The action of \( S^k \) on \( \lvert 1 \rangle \) reveals a cyclic pattern tied to \( i^k \), which cycles through the fourth roots of unity: \( i^0 = 1 \), \( i^1 = i \), \( i^2 = -1 \), and \( i^3 = -i \). Each power of \( S \) applies a successive \( 90^\circ \) rotation in the complex plane, repeating every 4 steps. This cyclic behavior reflects the periodicity of the fourth roots of unity.
+}
+
+\end{frame}
+
+
+\begin{frame}[fragile]{Task 4.4: Complex numbers as matrices}
+a) We were asked to compute the values of the following expressions.
+a) We were asked to compute the values of the following expressions.
+
+\[
+\begin{array}{llll}
+c_1 + c_2 = 5+2i & c_1 . c_2 = 14+2i &
+c_1^* = 3-4i & |c_1| = 5
+\end{array}
+\]
+
+b) We were asked to consider them as matrices and compute the values of the following expressions.
+\[
+\begin{array}{ll}
+c_1 = \begin{bmatrix}3 & -4 \\ 4 & 3\end{bmatrix} & c_2 = \begin{bmatrix}2 & 2 \\ -2 & 2\end{bmatrix}
+\end{array}
+\]
+\[
+\begin{array}{llll}
+c_1 + c_2 = \begin{bmatrix}5 & -2 \\ 2 & 5\end{bmatrix} & c_1 . c_2 = \begin{bmatrix}14 & -2 \\ 2 & 14\end{bmatrix} &
+c_1^\top = \begin{bmatrix}3 & 4 \\ -4 & 3\end{bmatrix} & \sqrt{\det c_1} = 5
+\end{array}
+\]
+\end{frame}
+
+% \begin{frame}[fragile]{Task 4.5}
+% task 4.3
+% \end{frame}
+
+
+\begin{frame}[fragile]{Task 4.6: Quaternions as matrices}
+ a) We were asked to construct a set of 4x4 real valued matrices $\textbf{1}$, $\textbf{i}$, $\textbf{j}$, and $\textbf{k}$ which represent the unit quaternions $1$, $i$, $j$, and $k$.
+
+ \[
+\begin{array}{llll}
+1 =
+\begin{bmatrix}
+1 & 0 & 0 & 0 \\
+0 & 1 & 0 & 0 \\
+0 & 0 & 1 & 0 \\
+0 & 0 & 0 & 1
+\end{bmatrix} &
+i =
+\begin{bmatrix}
+0 & -1 & 0 & 0 \\
+1 & 0 & 0 & 0 \\
+0 & 0 & 0 & -1 \\
+0 & 0 & 1 & 0
+\end{bmatrix} &
+j =
+\begin{bmatrix}
+0 & 0 & -1 & 0 \\
+0 & 0 & 0 & 1 \\
+1 & 0 & 0 & 0 \\
+0 & -1 & 0 & 0
+\end{bmatrix} &
+k = \begin{bmatrix}
+0 & 0 & 0 & -1 \\
+0 & 0 & -1 & 0 \\
+0 & 1 & 0 & 0 \\
+1 & 0 & 0 & 0
+\end{bmatrix}
+\end{array}
+\]
+
+b) We were asked to construct a set of 2x2 real valued matrices $\textbf{1}$, $\textbf{i}$, $\textbf{j}$, and $\textbf{k}$ which represent the unit quaternions $1$, $i$, $j$, and $k$.
+
+ \[
+\begin{array}{llll}
+1 =
+\begin{bmatrix}
+1 & 0 \\
+0 & 1
+\end{bmatrix} &
+i =
+\begin{bmatrix}
+i & 0 \\
+0 & -i
+\end{bmatrix} &
+j =
+\begin{bmatrix}
+0 & 1 \\
+-1 & 0
+\end{bmatrix} &
+k = \begin{bmatrix}
+0 & i \\
+i & 0
+\end{bmatrix}
+\end{array}
+\]
+\end{frame}
+
+\begin{frame}[fragile]{Task 4.6: cont.}
+c) We were asked to fill the table from task 4.5.
+\[
+\begin{array}{|c|c c c c c c c c|}
+\hline
+\cdot & 1 & -1 & i & -i & j & -j & k & -k \\
+\hline
+1 & 1 & -1 & i & -i & j & -j & k & -k \\
+
+-1 & -1 & 1 & -i & i & -j & j & -k & k \\
+
+i & i & -i & -1 & 1 & k & -k & -j & j \\
+
+-i & -i & i & 1 & -1 & -k & k & j & -j \\
+
+j & j & -j & -k & k & -1 & 1 & i & -i \\
+
+-j & -j & j & k & -k & 1 & -1 & -i & i \\
+
+k & k & -k & j & -j & -i & i & -1 & 1 \\
+
+-k & -k & k & -j & j & i & -i & 1 & -1 \\
+\hline
+\end{array}
+\]
+\end{frame}
+
+\begin{frame}[fragile]{Task 4.7 Vector Logic}
+\textbf{a)} By substituting the values of $n =  \begin{bmatrix} 1 \\ 0 \end{bmatrix}$   and $s = \begin{bmatrix} 0 \\ 1 \end{bmatrix}$  in the C and D we get:\\
+$C = \begin{bmatrix} 1 & 1 & 1& 0\\ 0& 0& 0& 1 \end{bmatrix}$,
+$D = \begin{bmatrix} 1 & 0 & 0& 0\\ 0& 1& 1& 1 \end{bmatrix}$
+
+% \newline
+
+\textbf{b)}\\ By calculating the truth tables for $x_1, x_2$, and then feeding the result of $x_1 \otimes x_2$ into C and D we get:\\
+
+\begin{tabular}{ |c|c|c|c| }
+\hline
+$x_1$ & $x_2$ & $C[x_1 \otimes x_2]$ & $D[x_1 \otimes x_2]$ \\
+\hline
+
+n & n & n & n \\
+n & s & n & s \\
+s & n & n & s \\
+s & s & s & s \\
+\hline
+\end{tabular}
+\newline
+\\By Observing the result, we can clearly see that the $f_C(x1, x2)$ is the Boolean AND function, and $f_D(x1, x2)$ is the Boolean OR function.\\
+\end{frame}
+
+\begin{frame}{Task 4.7 contd. }
+\textbf{c)} By recalculating for new n = $\begin{bmatrix} 1 \\ 0 \\ 0 \end{bmatrix}$   and $s = \begin{bmatrix} 0 \\0 \\ 1 \end{bmatrix}$
+We get different C and D.\\
+$C = \begin{bmatrix} 1 & 0 & 1& 0 & 0& 0& 1& 0& 0\\ 0& 0& 0& 0& 0& 0& 0& 0& 0\\ 0& 0& 0& 0& 0& 0& 0& 0& 1 \end{bmatrix}$,
+$D = \begin{bmatrix} 1 & 0 & 0& 0 & 0& 0& 0& 0& 0\\ 0& 0& 0& 0& 0& 0& 0& 0& 0\\ 0& 0& 1& 0& 0& 0& 1& 0& 1 \end{bmatrix}$
+\newline
+\\ By redoing the calculation step b with the new results, we find the same truth table that we found in b), and the functions are still Boolean AND and OR.\\
+
+Additionally, we can see from recalculating the different values of n and s, that as long as the values of n and s are orthonormal. Then, this method of calculating the AND and OR Boolean functions holds, otherwise, it is not guaranteed.
+\end{frame}
+
+
+% \begin{frame}[fragile]{Task 4.8}
+% task 4.8
+% \end{frame}
+
+\begin{frame}[fragile]{Task 4.9: More vector logic}
+% \[
+% \begin{array}{ll}
+% I = nn^T + ss^T = \begin{bmatrix} 1 & 0 \\ 0 & 1 \end{bmatrix} &
+% N = ns^T + sn^T = \begin{bmatrix} 0 & 1 \\ 1 & 0 \end{bmatrix} \\
+% \\
+% F = nn^T + ns^T = \begin{bmatrix} 1 & 1 \\ 0 & 0 \end{bmatrix} &
+% T = sn^T + ss^T = \begin{bmatrix} 0 & 0 \\ 1 & 1 \end{bmatrix}
+% \end{array}
+% \]
+a) Given matrices $I$, $N$, $F$, and $T$ we were asked to consider a vector $x \in [n,s]$
+and feed it into the following functions state which Boolean functions they actually compute.
+\[
+\begin{array}{ll}
+f_0(x) = Fx & f_1(x) = Ix \\
+f_2(x) = Nx & f_3(x) = Tx
+\end{array}
+\]
+
+\[
+\begin{array}{llll}
+f_0(n) = \begin{bmatrix} 1 \\ 0 \end{bmatrix} & f_0(s) = \begin{bmatrix} 1 \\ 0 \end{bmatrix} &
+f_1(n) = \begin{bmatrix} 1 \\ 0 \end{bmatrix} & f_1(s) = \begin{bmatrix} 0 \\ 1 \end{bmatrix} \\
+f_2(n) = \begin{bmatrix} 0 \\ 1 \end{bmatrix} & f_2(s) = \begin{bmatrix} 1 \\ 0 \end{bmatrix} &
+f_3(n) = \begin{bmatrix} 0 \\ 1 \end{bmatrix} & f_3(s) = \begin{bmatrix} 0 \\ 1 \end{bmatrix} \\
+\end{array}
+\]
+From our results we can deduce that $f_0(x)$ is the FALSE function, $f_1(x)$ is the Identity function, $f_2(x)$ is the NOT function, and $f_3(x)$ is the TRUE function.
+\end{frame}
+
+\begin{frame}[fragile]{Task 4.9: cont.}
+b) Given the rules in task 4.8, we were asked to show that matrices C and D from task 4.7 can also be computed as:
+
+\[
+\begin{array}{ll}
+C = F \otimes n^\top + I \otimes s^\top & D = I \otimes n^\top + T \otimes s^\top
+\end{array}
+\]
+
+For \(C\):
+\begin{align*}
+   C = n[n \otimes n]^\top + n[n \otimes s]^\top + s[s \otimes n]^\top + s[s \otimes s]^\top \\
+   C = nn^\top \otimes n^\top + ns^\top \otimes s^\top + sn^\top \otimes n^\top + ss^\top \otimes s^\top \\
+   C = [nn^\top + ns^\top] \otimes n^\top + [nn^\top + ss^\top] \otimes s^\top = F \otimes n^\top + I \otimes s^\top
+\end{align*}
+
+For \(D\):
+\begin{align*}
+   D = n[n \otimes n]^\top + s[n \otimes s]^\top + s[s \otimes n]^\top + s[s \otimes s]^\top \\
+   D = nn^\top \otimes n^\top + sn^\top \otimes s^\top + ss^\top \otimes n^\top + ss^\top \otimes s^\top \\
+   D = [nn^\top + ss^\top] \otimes n^\top + [sn^\top + ss^\top] \otimes s^\top = I \otimes n^\top + T \otimes s^\top
+\end{align*}
+\end{frame}
+
+\begin{frame}[fragile]{Task 4.9: cont.}
+c) We need to prove the following relationships symbolically or computationally. Since symbolically would take too much sapce i did them computationally.
+
+\[
+C = ND [N \otimes N], \quad D = NC [N \otimes N]
+\]
+
+\[
+\begin{array}{ll}
+C = \begin{bmatrix}
+1 & 1 & 1 & 0 \\
+0 & 0 & 0 & 1
+\end{bmatrix} &
+D = \begin{bmatrix}
+1 & 0 & 0 & 0 \\
+0 & 1 & 1 & 1
+\end{bmatrix}
+\end{array}
+\]
+
+\[
+\begin{array}{ll}
+ND [N \otimes N] = \begin{bmatrix}
+1 & 1 & 1 & 0 \\
+0 & 0 & 0 & 1
+\end{bmatrix} &
+NC [N \otimes N] = \begin{bmatrix}
+1 & 0 & 0 & 0 \\
+0 & 1 & 1 & 1
+\end{bmatrix}
+\end{array}
+\]
+\end{frame}
+
+
+\begin{frame}[fragile]{Task 4.10: First steps towards quantum computing}
+Given Matrices M, $\Pi_2$, and $\Pi_2$ we were asked to determine what the following functions do.
+
+\[
+\begin{array}{ll}
+f_{\Pi_2 M}(x_1, x_2) = \Pi_2 M [x_1 \otimes x_2] &
+f_{\Pi_1 M}(x_1, x_2) = \Pi_1 M [x_1 \otimes x_2]
+\end{array}
+\]
+
+\begin{center}
+\begin{tabular}{ c c c c c c }
+ \hline
+ $x_1$ & $x_2$ & $x_1 \otimes x_2$ & $M[x_1 \otimes x_2]$ & $\Pi_2 M[x_1 \otimes x_2]$ & $\Pi_1 M[x_1 \otimes x_2]$ \\
+ \hline
+    n & n & \(\begin{bmatrix} 1 & 0 & 0 & 0\end{bmatrix}\) & \(\begin{bmatrix} 1 & 0 & 0 & 0\end{bmatrix}\) & n & n \\
+    n & s & \(\begin{bmatrix} 0 & 1 & 0 & 0\end{bmatrix}\) & \(\begin{bmatrix} 0 & 1 & 0 & 0\end{bmatrix}\) & s & n \\
+    s & n & \(\begin{bmatrix} 0 & 0 & 1 & 0\end{bmatrix}\) & \(\begin{bmatrix} 0 & 0 & 0 & 1\end{bmatrix}\) & s & s \\
+    s & s & \(\begin{bmatrix} 0 & 0 & 0 & 1\end{bmatrix}\) & \(\begin{bmatrix} 0 & 0 & 1 & 0\end{bmatrix}\) & n & s \\
+ \hline
+\end{tabular}
+\end{center}
+
+From the table above we can see that $f_{\Pi_2 M}(x_1, x_2)$ is the XOR function and $f_{\Pi_1 M}(x_1, x_2)$ is just $x_1$.
+
+\end{frame}
+
+\end{document}

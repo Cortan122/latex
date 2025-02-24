@@ -1,5 +1,9 @@
 #!/bin/bash
 
+# this script automatically looks at which files actually need to be changed
+# it is smart like that
+# i can just run it before committing new files
+
 mapfile -t filenames1 < <(grep -rFl -f names.txt | grep -v names.txt | grep -v '.*.ipynb$')
 mapfile -t filenames < <(grep -LF '\AA' "${filenames1[@]}")
 

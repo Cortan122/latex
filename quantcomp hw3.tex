@@ -1,0 +1,261 @@
+\documentclass[aspectratio=169]{beamer}
+\beamertemplatenavigationsymbolsempty
+\usetheme{Boadilla}
+\usepackage{textpos} % package for the positioning
+\usepackage{enumitem}
+\usepackage{amsmath,amsfonts,amssymb}
+
+\usepackage{listings}
+\usepackage{xcolor}
+\usepackage{tasks}
+\usepackage{braket}
+
+% Define color values for the theme
+\definecolor{backcolour}{rgb}{0.97, 0.97, 1.0}    % Light purple background
+\definecolor{codegreen}{rgb}{0.0, 0.6, 0.0}       % Green for comments
+\definecolor{codegray}{rgb}{0.5, 0.5, 0.5}        % Gray for line numbers
+\definecolor{codepurple}{rgb}{0.58, 0.0, 0.83}    % Purple for strings
+\definecolor{keywordcolor}{rgb}{0.5, 0.0, 0.5}    % Dark purple for keywords
+
+% Define the style for the listings
+\lstdefinestyle{mystyle}{
+    backgroundcolor=\color{backcolour},   
+    commentstyle=\color{codegreen},
+    keywordstyle=\color{keywordcolor},
+    numberstyle=\tiny\color{codegray},
+    stringstyle=\color{codepurple},
+    basicstyle=\ttfamily\footnotesize,
+    breakatwhitespace=false,         
+    breaklines=true,                 
+    captionpos=b,                    
+    keepspaces=true,                 
+    numbers=left,                    
+    numbersep=5pt,                  
+    showspaces=false,                
+    showstringspaces=false,
+    showtabs=false,                  
+    tabsize=2
+}
+
+\lstset{style=mystyle}
+
+\definecolor{uwopurple}{RGB}{79,38,131} % official purple color for uwo
+
+
+\title{Foundations of Quantum Computing}
+\author[]{Zyad Altahan (50238152) \and \AA{AAAAAAAAAA AAAAAAA}{6} (\AA{AAAAAAAA}{10}) \and Tobias Mette (3105540) \and Aksa Aksa (50146305) \and Mohamed Sonbol (50262724)}
+\institute[]{Department of Computer Science \\ University of Bonn}
+\date{\today}
+
+\usepackage[listings,many]{tcolorbox}
+\makeatletter
+\newtcblisting{mylisting}{
+  listing only,
+  breakable, enhanced jigsaw,
+  listing engine=listings,
+  colback=gray!20,
+  listing options={
+    language=python,
+    keywordstyle=\color{blue},
+    basicstyle=\ttfamily,
+    stringstyle=\color{ForestGreen},
+    commentstyle=\color{gray},
+    ndkeywordstyle={\color{orange}},
+    identifierstyle=\color{black},
+    numbers=none,
+    showstringspaces=false,
+    aboveskip={0\p@ \@plus 6\p@}, belowskip={0\p@ \@plus 6\p@},
+    columns=fullflexible, keepspaces=true,
+    breaklines=true, breakatwhitespace=true,
+    extendedchars=false,
+    inputencoding=utf8,
+    upquote=true,
+    xleftmargin=-25pt,
+  }
+}
+\makeatother
+
+% set color
+\setbeamercolor{title in head/foot}{bg=white}
+\setbeamercolor{author in head/foot}{bg=white}
+\setbeamercolor{date in head/foot}{fg=uwopurple}
+\setbeamercolor{date in head/foot}{bg=white}
+\setbeamercolor{title}{fg=uwopurple}
+\setbeamerfont{title}{series=\bfseries}
+\setbeamercolor{frametitle}{fg=uwopurple}
+\setbeamerfont{frametitle}{series=\bfseries}
+\setbeamercolor{block title}{bg=uwopurple!30,fg=black}
+\setbeamercolor{item}{fg=uwopurple}
+\setbeamercolor{caption name}{fg=uwopurple!70!}
+\usefonttheme[onlymath]{serif}
+
+
+\begin{document}
+
+
+\begin{frame}
+    \titlepage
+    \begin{textblock*}{8cm}(5.0cm,-7.0cm)
+        {\large \color{uwopurple}\hspace{0.66cm} \textbf{Exercise Sheet 03}} % Change the lecture # right here! 
+    \end{textblock*}
+\end{frame}
+
+
+\begin{frame}[fragile]{Task 3.1: subtasks (a) and (b)}
+Because the Pauli matrices are hermitian, $I^\dagger I = I^2$ (and also for $X$, $Y$ and $Z$). So subtasks (a) and (b) can be computed at the same time.
+
+$I^2 = \begin{bmatrix}+1 & 0 \\ 0 & +1 \end{bmatrix}^2 = \begin{bmatrix}1 & 0 \\ 0 & 1 \end{bmatrix} = I$
+\hfill
+$X^2 = \begin{bmatrix}0 & +1 \\ +1 & 0 \end{bmatrix}^2 = \begin{bmatrix}1 & 0 \\ 0 & 1 \end{bmatrix} = I$
+
+$Z^2 = \begin{bmatrix}+1 & 0 \\ 0 & -1 \end{bmatrix}^2 = \begin{bmatrix}1 & 0 \\ 0 & 1 \end{bmatrix} = I$
+\hfill
+$Y^2 = \begin{bmatrix}0 & -i \\ +i & 0 \end{bmatrix}^2 = \begin{bmatrix}1 & 0 \\ 0 & 1 \end{bmatrix} = I$
+
+As we can see, the all square to the identity matrix.
+\end{frame}
+
+
+\begin{frame}[fragile]{Task 3.1: subtasks (c), (d) and (e)}
+Outer products of $\ket{0}$ and $\ket{1}$ have just one non-zero value each, so we can simply combine then with the coefficients taken from the matrix representations.
+
+$I = \ket{0}\bra{0} + \ket{1}\bra{1}$ \hfill
+$X = \ket{1}\bra{0} + \ket{0}\bra{1}$ \hfill
+$Y = i\ket{1}\bra{0} - i\ket{0}\bra{1}$ \hfill
+$Z = \ket{0}\bra{0} - \ket{1}\bra{1}$
+
+TODO
+
+
+\end{frame}
+
+\begin{frame}[fragile]{Task 3.2}
+Because for all our matrices, squaring them gives us the identity, $X^{2n} = I$ and $X^{2n+1} = X$ for all even and odd numbers.
+Adding a factor of $-i$ in front makes it more interesting.
+We can consider the series for each value in the final matrix separately. The final result for $R_X(\theta)$ can be expressed in terms of $I$ and $X$.
+
+The series for $I$ is: $1 - \left(\frac{\theta}{2}\right)^2\frac{1}{2!} + \left(\frac{\theta}{2}\right)^4\frac{1}{4!} + \cdots$
+which converges to 1 \\
+The series for $X$ is: $1 - i\left(\frac{\theta}{2}\right)\frac{1}{1!} - \left(\frac{\theta}{2}\right)^2\frac{1}{2!} + i\left(\frac{\theta}{2}\right)^3\frac{1}{3!} + \left(\frac{\theta}{2}\right)^4\frac{1}{4!} + \cdots$ \\
+which is the sum of the taylor series for $\cos(\theta/2)$ and $-i\sin(\theta/2)$.
+This can be written as $\cos(\theta/2)-i\sin(\theta/2) = e^{-i \theta/2}$
+\[ R_X(\theta) = \begin{bmatrix}
+    1 & e^{-i \theta/2} \\
+    e^{-i \theta/2} & 1 \\
+\end{bmatrix} \]
+
+
+TODO
+\end{frame}
+
+
+\begin{frame}[fragile]{Task 3.3}
+\section*{Solution for Exercise 3.3}
+
+{\tiny
+\textbf{Using Taylor Series Expansion for \(e^z\):}
+
+\[
+e^z = \sum_{n=0}^\infty \frac{z^n}{n!}
+\]
+
+Expanding it:
+
+\[
+e^{i\theta} = 1 + i\theta + \frac{(i\theta)^2}{2!} + \frac{(i\theta)^3}{3!} + \frac{(i\theta)^4}{4!} + \dots
+\]
+
+For our case: \(\theta = vA\), so:
+
+\[
+e^{i v A} = 1 + i v A + \frac{(vA)^2}{2!} + \frac{(vA)^3}{3!} + \dots
+\]
+
+Simplifying, since \(i^2 = -1\), we get:
+
+\[
+e^{i v A} = 1 + i v A - \frac{(vA)^2}{2!} - i \frac{(vA)^3}{3!} + \frac{(vA)^4}{4!} + \dots
+\]
+
+\textbf{Now, using Taylor Series Expansion for \(\cos(\theta)\):}
+
+\[
+\cos(\theta) = 1 - \frac{\theta^2}{2!} + \frac{\theta^4}{4!} - \frac{\theta^6}{6!} + \dots
+\]
+
+Substituting \(\theta = vA\):
+
+\[
+\cos(vA) = 1 - \frac{v^2 A^2}{2!} + \frac{v^4 A^4}{4!} - \dots
+\]
+}
+\end{frame}
+\begin{frame}
+
+{\tiny
+Since \(A\) is involutory (\(A^2 = I\)):
+
+\[
+A^{2n} = I \quad \text{and} \quad A^{2n+1} = A
+\]
+
+Thus:
+
+\[
+\cos(vA) = I \left(1 - \frac{v^2}{2!} + \frac{v^4}{4!} - \dots\right) = I \cos(v)
+\]
+
+\textbf{Similarly, for \(\sin(\theta)\):}
+
+\[
+\sin(\theta) = \theta - \frac{\theta^3}{3!} + \frac{\theta^5}{5!} - \dots
+\]
+
+Substituting \(\theta = vA\):
+
+\[
+i\sin(vA) = i\left(vA - \frac{(vA)^3}{3!} + \frac{(vA)^5}{5!} - \dots\right)
+\]
+
+Using \(A^2 = I\), this simplifies to:
+
+\[
+i \sin(vA) = i A \left(v - \frac{v^3}{3!} + \frac{v^5}{5!} - \dots\right)
+\]
+
+\[
+i \sin(vA) = i A \sin(v)
+\]
+
+\textbf{Adding these up in the equation for \(e^{i v A}\):}
+
+\[
+e^{i v A} = I \cos(v) + i A \sin(v)
+\]
+}
+\end{frame}
+
+\begin{frame}[fragile]{Task 3.4}
+Task 3.4
+\end{frame}
+
+\begin{frame}[fragile]{Task 3.5}
+Task 3.5
+\end{frame}
+
+
+\begin{frame}[fragile]{Task 3.6}
+Task 3.6
+\end{frame}
+
+\begin{frame}[fragile]{Task 3.7}
+Task 3.7
+\end{frame}
+
+
+\begin{frame}[fragile]{Task 3.8}
+Task 3.8
+\end{frame}
+
+
+\end{document}

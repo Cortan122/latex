@@ -1,0 +1,164 @@
+\documentclass{article}
+
+\usepackage{enumitem}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage[margin=0.5in]{geometry}
+\usepackage[hidelinks, bookmarks=false]{hyperref}
+
+\let\oldemptyset\emptyset
+\let\emptyset\varnothing
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\Rd}{\R^d}
+
+\usepackage{environ}
+\NewEnviron{centerframebox}{\begin{center}\fbox{\parbox{0.92\textwidth}{\BODY}}\end{center}}
+
+\title{Discrete and Computational Geometry \\ Assignment 1}
+\author{
+  \AA{AAAAAAAAAA AAAAAAA}{6} \\
+  \href{mailto:\AA{AAAAAAAAAAAAAAAAAAAA}{7}}{\AA{AAAAAAAAAAAAAAAAAAAA}{7}}
+  \and
+  Emilia Groß-Hardt \\
+  \href{mailto:emilia.ghdt@uni-bonn.de}{emilia.ghdt@uni-bonn.de}
+}
+
+\usepackage{titlesec}
+\titleformat{\section}
+  {\normalfont\Large\bfseries}{Problem \thesection : }
+  {0em}{\mdseries}
+
+\begin{document}
+  \maketitle
+
+  \section{Linear dependence}
+  \begin{centerframebox}
+    Show that any set of $d + 1$ points in $\Rd$ is linearly dependent.
+  \end{centerframebox}
+  We can write those $d + 1$ points as columns of a $d \times (d+1)$ dimensional matrix.
+  The rank of a matrix is defined as the number of linearly independent rows or columns.
+  By the ``column rank = row rank'' theorem, that matrix cannot have a rank larger than $d$,
+  and so our $d + 1$ points must be linearly dependent.
+  % todo: maybe actually prove that theorem maybe ._.
+  % (c) Clover
+
+  \section{Hyperplanes}
+  \begin{centerframebox}
+    In the lecture, it was stated that each hyperplane can be represented either as the image
+    of an affine mapping or as a solution of a linear equation. We are now interested in how to
+    transform one representation into the other. Let $f: \R^{d-1} \to \Rd$ be an affine mapping with
+    $f: y \mapsto By + c$ where $B$ is a $d \times (d-1)$ matrix and $c \in \Rd$. Let further $a \in \Rd \setminus \{0\}$ and
+    $b \in \R$ such that:
+    \[ \operatorname{Image}(f) = \{x \in \Rd \mid \langle a,x \rangle = b\} \]
+    \begin{enumerate}[label=(\roman*)]
+      \item Given $B$ and $c$, we want to find suitable $a$ and $b$. Construct a system of $(d - 1)$ linear
+      equations that can be solved to determine $a$. How can we determine $b$ given $B$, $c$ and $a$?
+      \item Given $a$ and $b$, find suitable $B$ and $c$.
+    \end{enumerate}
+  \end{centerframebox}
+
+  \subsection{Mapping $\to$ Equation}
+  Note that in both cases the hyperplane is defined by an ``orientation'' and an ``offset'' parameter.
+  Changing both the $c$ and $b$ parameters doesn't rotate the plane, and only moves it around,
+  and setting it to zero makes the transformation linear, instead of affine, and includes the point $0$ in the plane.
+
+  We can think of this geometrically,
+  with $a$ being the normal vector of the hyperplane and the $(d-1)$ columns of $B$ defining the basis vectors inside out hyperplane.
+  So from that we can gather that $a$ must be perpendicular to every one of those vectors, i.e. have a zero dot product with them.
+  The resulting system of equations can be written as:
+  \[
+    \left\{
+    \begin{matrix}
+      a_1 B_{11} &+& a_2 B_{21} &+& \cdots &+& a_d B_{d1} &=& 0 \\
+      a_1 B_{12} &+& a_2 B_{22} &+& \cdots &+& a_d B_{d2} &=& 0 \\
+      \vdots     && \vdots      && \ddots  && \vdots  \\
+      a_1 B_{1n} &+& a_2 B_{2n} &+& \cdots &+& a_d B_{dn} &=& 0 \\
+    \end{matrix}
+    \right.
+  \]
+  with $B_{ij}$ being elements of the $B$ matrix, and $n = d-1$.
+
+  To determine $b$ with everything else known, we can pick any vector $\gamma \in \R^{d-1}$, and compute $b = \langle a,f(\gamma) \rangle$.
+  % todo: check if all that actually works
+  % (c) Clover
+
+  \subsection{Equation $\to$ Mapping}
+  Here we can also use that trick of setting $c$ and $b$ to zero temporarily.
+  That way we can find $d-1$ linearly independent solutions to $\langle a,x \rangle = 0$, and use them as columns for our $B$ matrix.
+  They will all be perpendicular to the normal vector $a$.
+
+  Using the linearity of the dot product:
+  \[
+    \langle a, By + c \rangle = \langle a, By \rangle + \langle a, c \rangle
+  \]
+  So we can say that $\langle a, c \rangle = b$ and $\langle a, By \rangle = 0$.
+  Here we can just pick $c$ as one of the solutions to that equation.
+
+  % the revelation came a bit too late...
+  % (c) Clover
+
+  \section{Open and closed sets}
+  \begin{centerframebox}
+    \begin{enumerate}[label=(\roman*)]
+      \item For the following sets determine if they are open or closed or both or neither:
+      (a) the empty set, (b) the interval $(0, 1]$, (c) the interval $[0, \infty)$
+      \item Find an example of two disjoint closed convex sets that are not strictly separable.
+    \end{enumerate}
+
+    $A$ is closed if $\partial(A) \subseteq A$. \\
+    $A$ is open if $\partial(A) \cap A = \emptyset$.
+  \end{centerframebox}
+
+  \subsection{The empty set}
+  The boundary of the empty set is also empty. Which means that it is both closed and open.
+  % (c) Clover
+
+  \subsection{The interval $(0, 1]$}
+  The boundary of this set is $\{0, 1\}$. It intersects the set, and is also not its subset.
+  Thus, this interval is neither open nor closed.
+  % (c) Clover
+
+  \subsection{The interval $[0, \infty)$}
+  The boundary of this set is $\{0\}$.
+  It is fully included in the interval, so the set is closed.
+  % (c) Clover
+
+  \subsection{Not strictly separable sets}
+  To find this kind of counterexample, both sets need to be unbounded, and thus infinite.
+  % what...?
+
+  \section{Disks in 2d}
+  \begin{centerframebox}
+    Each set $X \subset \R^2$ of diameter at most $1$ (i.e. any $2$ points have distance at most $1$) is
+    contained in some disc of radius $\frac{1}{\sqrt{3}}$.
+
+    \begin{enumerate}[label=(\roman*)]
+      \item Prove the statement for $3$-element sets $X$.
+      \item Prove the statement for all finite sets $X$.
+    \end{enumerate}
+  \end{centerframebox}
+
+  \subsection{$3$-element sets}
+  A $3$-element set is just a triangle, and the disk we're trying to inscribe it in is just the triangle's \textit{circumcircle}.
+  We can use the \textit{Law of sines} to compute the radius of that circle:
+  \[ \frac{a}{\sin{\alpha}} = \frac{b}{\sin{\beta}} = \frac{c}{\sin{\gamma}} = 2R \]
+
+  Assume without loss of generality, that $a$ is the largest side of our triangle.
+  That makes it the diameter of the set $X$, i.e. $a = 1$.
+  The angle opposite the biggest side of the triangle $\alpha$ must always be larger than $\frac{\pi}{3} = 60^\circ$,
+  by analogy from the equilateral triangle, where all angles are $60^\circ$,
+  and making any side longer will also increase its corresponding angle.
+  Transforming the equation above we get:
+  \[ R = \frac{a}{2\sin{\alpha}} = \frac{1}{2\sin{\frac{\pi}{3}}} = \frac{1}{2 \cdot \frac{\sqrt{3}}{2}} = \frac{1}{\sqrt{3}} \]
+  Which is exactly what we wanted to show!
+  % (c) Clover
+
+  \subsection{All finite sets}
+  We can extend this to all finite sets, by picking 2 points that define the diameter,
+  and then using the triangle result proven above on every other point in the set.
+
+  % this is actually bullshit
+  % (c) Clover
+
+\end{document}

@@ -1,0 +1,84 @@
+\documentclass{article}
+
+\usepackage{enumitem}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage{amsthm}
+\usepackage{algorithm}
+\usepackage{algorithmic}
+\usepackage[margin=0.5in]{geometry}
+\usepackage[hidelinks, bookmarks=false]{hyperref}
+
+\usepackage[dvipsnames]{xcolor}
+
+\let\oldemptyset\emptyset
+\let\emptyset\varnothing
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\Rd}{\R^d}
+
+\usepackage{environ}
+\NewEnviron{centerframebox}{\begin{center}\fbox{\parbox{0.92\textwidth}{\BODY}}\end{center}}
+
+\title{Discrete and Computational Geometry \\ Assignment 11}
+\author{
+  \AA{AAAAAAAAAA AAAAAAA}{6} \\
+  \href{mailto:\AA{AAAAAAAAAAAAAAAAAAAA}{7}}{\AA{AAAAAAAAAAAAAAAAAAAA}{7}}
+  \and
+  Ayush Mishra \\
+  \href{mailto:s28amish@uni-bonn.de}{s28amish@uni-bonn.de}
+}
+
+\usepackage{graphicx}
+
+\usepackage{titlesec}
+\titleformat{\section}
+  {\normalfont\Large\bfseries}{Problem \thesection : }
+  {0em}{\mdseries}
+
+\begin{document}
+  \maketitle
+  \begin{center}
+    { \bfseries Deadline: 24 Jan 2025, 23:55 }
+  \end{center}
+
+  \section{}
+  \begin{centerframebox}
+    Consider the ground set $\R^2$. Show that
+    \begin{enumerate}[label=(\alph*)]
+      \item the set system of all axis-parallel squares has VC-dimension at most 3.
+      \item the set system of all squares has VC-dimension at least 4.
+    \end{enumerate}
+  \end{centerframebox}
+
+  \subsection{(a)}
+  We need to show that it's impossible to cover all subsets of an arbitrary set of 4 points with axis-aligned squares.
+  Sort the points by their $x$ and $y$ coordinates. Mark points $p_{\max x}$, $p_{\min x}$, $p_{\max y}$, $p_{\min y}$.
+  The only way for all triplets of points to be covered,
+  is for the minimums and maximums of both those lists to be achieved at 4 distinct points.
+  Otherwise there would be a point $p_0$, for which no maximum or minimum is achieved.
+  A square around the other 3 points would therefore be the bounding box of the whole set, and also include the point $p_0$.
+
+  Now consider how we might cover the pair $\{p_{\max x},\, p_{\min x}\}$.
+  The side length of the square covering it must be $\delta_x = \max x - \min x$.
+  The square covering $\{p_{\max y},\, p_{\min y}\}$ must have size $\delta_y$ as well.
+  One of those deltas must be larger than the other.
+  Assume without loss of generality, that $\delta_y \geq \delta_x$.
+
+  Remember that the pair $\{p_{\max y},\, p_{\min y}\}$ must have $p_{\max x}$ to the right of it, and $p_{\min x}$ to the left.
+  Because $\delta_x \leq \delta_y$, the horizontal distance between $\{p_{\max y},\, p_{\min y}\}$ and $p_{\max x}$ or $p_{\min x}$ can't be greater than the size of the square covering $\{p_{\max y},\, p_{\min y}\}$.
+  So that square must intersect either $p_{\max x}$ or $p_{\min x}$, and it's impossible to squeeze it between them.
+
+  And the VC-dimension must be at most 3.
+
+  \subsection{(b)}
+  % Consider the set of 4 points positioned at the corners of a square.
+  % Now we try to show that all 16 subsets of those points can be covered by a non-axis-aligned square.
+  % The cases with 0 points, 1 point and 4 points are all trivial.
+
+  % For pairs of 2 points, when the form one of the edges of the square, they can also be trivially covered by an axis-aligned square.
+  % The other option for
+  % TODO: this is wrong
+
+
+\end{document}

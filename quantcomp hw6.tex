@@ -1,0 +1,201 @@
+\documentclass[aspectratio=169]{beamer}
+\beamertemplatenavigationsymbolsempty
+\usetheme{Boadilla}
+\usepackage{textpos} % package for the positioning
+\usepackage{enumitem}
+\usepackage{amsmath,amsfonts,amssymb}
+
+\usepackage{listings}
+\usepackage{xcolor}
+\usepackage{tasks}
+\usepackage{braket}
+
+% Define color values for the theme
+\definecolor{backcolour}{rgb}{0.97, 0.97, 1.0}    % Light purple background
+\definecolor{codegreen}{rgb}{0.0, 0.6, 0.0}       % Green for comments
+\definecolor{codegray}{rgb}{0.5, 0.5, 0.5}        % Gray for line numbers
+\definecolor{codepurple}{rgb}{0.58, 0.0, 0.83}    % Purple for strings
+\definecolor{keywordcolor}{rgb}{0.5, 0.0, 0.5}    % Dark purple for keywords
+
+% Define the style for the listings
+\lstdefinestyle{mystyle}{
+    backgroundcolor=\color{backcolour},
+    commentstyle=\color{codegreen},
+    keywordstyle=\color{keywordcolor},
+    numberstyle=\tiny\color{codegray},
+    stringstyle=\color{codepurple},
+    basicstyle=\ttfamily\footnotesize,
+    breakatwhitespace=false,
+    breaklines=true,
+    captionpos=b,
+    keepspaces=true,
+    numbers=left,
+    numbersep=5pt,
+    showspaces=false,
+    showstringspaces=false,
+    showtabs=false,
+    tabsize=2
+}
+
+\lstset{style=mystyle}
+
+\definecolor{uwopurple}{RGB}{79,38,131} % official purple color for uwo
+
+
+\title{Foundations of Quantum Computing}
+\author[]{Zyad Altahan (50238152) \and \AA{AAAAAAAAAA AAAAAAA}{6} (\AA{AAAAAAAA}{10}) \and Tobias Mette (3105540) \and Aksa Aksa (50146305) \and Mohamed Sonbol (50262724)}
+\institute[]{Department of Computer Science \\ University of Bonn}
+\date{\today}
+
+\usepackage[listings,many]{tcolorbox}
+\makeatletter
+\newtcblisting{mylisting}{
+  listing only,
+  breakable, enhanced jigsaw,
+  listing engine=listings,
+  colback=gray!20,
+  listing options={
+    language=python,
+    keywordstyle=\color{blue},
+    basicstyle=\ttfamily,
+    stringstyle=\color{ForestGreen},
+    commentstyle=\color{gray},
+    ndkeywordstyle={\color{orange}},
+    identifierstyle=\color{black},
+    numbers=none,
+    showstringspaces=false,
+    aboveskip={0\p@ \@plus 6\p@}, belowskip={0\p@ \@plus 6\p@},
+    columns=fullflexible, keepspaces=true,
+    breaklines=true, breakatwhitespace=true,
+    extendedchars=false,
+    inputencoding=utf8,
+    upquote=true,
+    xleftmargin=-25pt,
+  }
+}
+\makeatother
+
+% set color
+\setbeamercolor{title in head/foot}{bg=white}
+\setbeamercolor{author in head/foot}{bg=white}
+\setbeamercolor{date in head/foot}{fg=uwopurple}
+\setbeamercolor{date in head/foot}{bg=white}
+\setbeamercolor{title}{fg=uwopurple}
+\setbeamerfont{title}{series=\bfseries}
+\setbeamercolor{frametitle}{fg=uwopurple}
+\setbeamerfont{frametitle}{series=\bfseries}
+\setbeamercolor{block title}{bg=uwopurple!30,fg=black}
+\setbeamercolor{item}{fg=uwopurple}
+\setbeamercolor{caption name}{fg=uwopurple!70!}
+\usefonttheme[onlymath]{serif}
+
+
+\begin{document}
+
+
+\begin{frame}
+    \titlepage
+    \begin{textblock*}{8cm}(5.0cm,-7.0cm)
+        {\large \color{uwopurple}\hspace{0.66cm} \textbf{Exercise Sheet 06}} % Change the lecture # right here!
+    \end{textblock*}
+\end{frame}
+
+
+\begin{frame}{Task 6.1: implementing CNOT gates (part 1)}
+By running the function \textbf{test\_cnot\_gate(CNOT)}, we can see the expected results:\\
+\begin{minipage}{0.45\textwidth}
+    \begin{align*}
+        & CNOT_{1\xrightarrow{}2} \\
+        & |\textbf{x}\rangle, |\textbf{y}\rangle\\
+        & |00\rangle, |00\rangle \\
+        & |01\rangle, |01\rangle \\
+        & |10\rangle, |11\rangle \\
+        & |11\rangle, |10\rangle
+    \end{align*}
+\end{minipage}
+\hfill
+\begin{minipage}{0.45\textwidth}
+    \begin{align*}
+        & CNOT_{2\xrightarrow{}1} \\
+        & |\textbf{x}\rangle, |\textbf{y}\rangle\\
+        & |00\rangle, |00\rangle \\
+        & |01\rangle, |11\rangle \\
+        & |10\rangle, |10\rangle \\
+        & |11\rangle, |01\rangle
+    \end{align*}
+\end{minipage}\\
+We use the algebraic form of the CNOT gate, which consists of the projectors, the X, and the identity matrices. Using the corresponding formula when switching the control and the target output, we get the expected results for each gate configuration.
+\end{frame}
+
+\begin{frame}{Task 6.2: create Bell states (part 1)}
+After running the the Bell states by using the gate $CNOT_{1\xrightarrow{}2} [H \otimes I]$ on the different input: $|x_1\rangle, |x_2\rangle \in \{|0\rangle, |1\rangle$
+We get a similar output to the proposed state:
+\[
+|x_1\rangle = |0\rangle, |x_2\rangle = |0\rangle \xrightarrow \quad |\Phi^+\rangle = 0.707107 (|00\rangle + |11\rangle)
+\]
+\[
+|x_1\rangle = |1\rangle, |x_2\rangle = |0\rangle \xrightarrow \quad |\Phi^-\rangle = 0.707107 (|00\rangle - |11\rangle)
+\]
+\[
+|x_1\rangle = |0\rangle, |x_2\rangle = |1\rangle \xrightarrow \quad |\Psi^+\rangle = 0.707107 (|01\rangle + |10\rangle)
+\]
+\[
+|x_1\rangle = |1\rangle, |x_2\rangle = |1\rangle \xrightarrow \quad |\Psi^-\rangle = 0.707107 (|01\rangle - |10\rangle)
+\]
+By observing the input/output combination,  we can see that changing the control input $|x_1\rangle$ will change the sign between the state elements (eigenvalue of -1 or +1), while the target input $|x_2\rangle$ will change the values ( [$|00\rangle + |11\rangle$] or [$|01\rangle + |10\rangle$]). Formally, we can write this as:
+\[
+|\beta(x, y)\rangle = \left( \frac{|0, y\rangle + (-1)^x |1, \bar{y}\rangle}{\sqrt{2}} \right)
+\]
+\end{frame}
+
+\begin{frame}{Task 6.3: implementing CNOT gates (part 2)}
+Similar to task 6.1, by inserting different input $|\textbf{x}\rangle$ to the CNOT gate with different configurations \{$CNOT_{1\xrightarrow{}2}, CNOT_{2\xrightarrow{}1}$\}, we get the expected results:\\
+\begin{minipage}{0.45\textwidth}
+    \begin{align*}
+        & CNOT_{1\xrightarrow{}2} \\
+        & |\textbf{x}\rangle, |\textbf{y}\rangle\\
+        & |00\rangle, |00\rangle \\
+        & |01\rangle, |01\rangle \\
+        & |10\rangle, |11\rangle \\
+        & |11\rangle, |10\rangle
+    \end{align*}
+\end{minipage}
+\hfill
+\begin{minipage}{0.45\textwidth}
+    \begin{align*}
+        & CNOT_{2\xrightarrow{}1} \\
+        & |\textbf{x}\rangle, |\textbf{y}\rangle\\
+        & |00\rangle, |00\rangle \\
+        & |01\rangle, |11\rangle \\
+        & |10\rangle, |10\rangle \\
+        & |11\rangle, |01\rangle
+    \end{align*}
+\end{minipage}\\
+Using the quantum libraries, it is easier to use different gate configurations and feed the input to them.
+
+\end{frame}
+
+\begin{frame}{Task 6.4: create Bell states (part 2)}
+
+1. \textbf{Bell States Creation}:
+   \begin{itemize}
+      \item The code successfully generates the four Bell states using a Hadamard gate and a CNOT gate. The generated Bell states are:
+      \[
+      |\Phi^+\rangle = \frac{\sqrt{2}}{2} (|00\rangle + |11\rangle)
+      \]
+      \[
+      |\Phi^-\rangle = \frac{\sqrt{2}}{2} (|00\rangle - |11\rangle)
+      \]
+      \[
+      |\Psi^+\rangle = \frac{\sqrt{2}}{2} (|01\rangle + |10\rangle)
+      \]
+      \[
+      |\Psi^-\rangle = \frac{\sqrt{2}}{2} (-|10\rangle + |01\rangle)
+      \]
+   \end{itemize}
+We can observe that SymPy represents \(\frac{1}{\sqrt{2}}\) as \(\frac{\sqrt{2}}{2}\), which is the same value. Also, The state \(|\Psi^-\rangle\) has a negative sign, which appears to be a phase shift.
+
+
+\end{frame}
+
+\end{document}

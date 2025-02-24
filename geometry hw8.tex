@@ -1,0 +1,271 @@
+\documentclass{article}
+
+\usepackage{enumitem}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage{amsthm}
+\usepackage[margin=0.5in]{geometry}
+\usepackage[hidelinks, bookmarks=false]{hyperref}
+
+\usepackage[dvipsnames]{xcolor}
+
+\let\oldemptyset\emptyset
+\let\emptyset\varnothing
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\Rd}{\R^d}
+
+\usepackage{environ}
+\NewEnviron{centerframebox}{\begin{center}\fbox{\parbox{0.92\textwidth}{\BODY}}\end{center}}
+
+\title{Discrete and Computational Geometry \\ Assignment 8}
+\author{
+  \AA{AAAAAAAAAA AAAAAAA}{6} \\
+  \href{mailto:\AA{AAAAAAAAAAAAAAAAAAAA}{7}}{\AA{AAAAAAAAAAAAAAAAAAAA}{7}}
+  \and
+  Ayush Mishra \\
+  \href{mailto:s28amish@uni-bonn.de}{s28amish@uni-bonn.de}
+}
+
+\usepackage{graphicx}
+
+\usepackage{titlesec}
+\titleformat{\section}
+  {\normalfont\Large\bfseries}{Problem \thesection : }
+  {0em}{\mdseries}
+
+\begin{document}
+  \maketitle
+  \begin{center}
+    { \bfseries Deadline: 13 Dec 2024, 23:55 }
+  \end{center}
+
+  \section{}
+  \begin{centerframebox}
+    Consider \(n\) lines in the plane in general position (their arrangement is simple). Call a vertex \(v\) of their arrangement an \textit{extreme} if one of its defining lines has a positive slope and the other one has a negative slope.
+    
+    \begin{enumerate}[label=\alph*)]
+    \item Prove that there are at most \(O((k + 1)^2)\) extremes of level at most \(k\), for \(k = 0, \ldots, n\). Imitate the proof of Clarkson's theorem on levels.
+    \item Show that the bound in a) cannot be improved in general.
+    \end{enumerate}
+  \end{centerframebox}
+  \begin{enumerate}[label=(\alph*)]
+  \item Following Theorem 14.6's approach:
+  
+  Let $H$ be $n$ lines in general position. For $p \in (0,1)$, let $R \subseteq H$ be obtained by sampling each line with probability $p$. A vertex is extreme if its defining lines have slopes of opposite signs.
+  
+  Let $V$ be the vertices of $H$'s arrangement and define:
+  \begin{itemize}
+  \item $\ell(v)$: level of vertex $v$ (Definition 14.1)
+  \item $I(v) = 1$ if $v$ is extreme, 0 otherwise
+  \item $X$: number of extreme vertices at level 0 in $R$'s arrangement
+  \item $A_v$: event that $v$ appears as level-0 vertex in $R$
+  \end{itemize}
+  
+  Following Examples 14.2 and 14.5, $A_v$ requires:
+  \begin{enumerate}[label=(\roman*)]
+  \item Both defining lines in $R$ (probability $p^2$ by independence)
+  \item No line above $v$ in $R$ (probability $(1-p)^{\ell(v)}$ by independence)
+  \item $v$ is extreme (determined by $I(v)$, independent of sampling)
+  \end{enumerate}
+  
+  By independence:
+  \[\Pr[A_v] = I(v) \cdot p^2 \cdot (1-p)^{\ell(v)}\]
+  
+  Let $V_{\leq k}^E$ be extreme vertices of level $\leq k$. By linearity of expectation:
+  \begin{align*}
+  E[X] &= \sum_{v \in V} \Pr[A_v] & \text{(linearity)} \\
+  &= \sum_{v \in V} I(v) \cdot p^2 \cdot (1-p)^{\ell(v)} & \text{(substitution)} \\
+  &\geq \sum_{v \in V_{\leq k}^E} p^2 \cdot (1-p)^{\ell(v)} & \text{($I(v)=1$ for $v \in V_{\leq k}^E$)} \\
+  &\geq |V_{\leq k}^E| \cdot p^2 \cdot (1-p)^k & \text{($\ell(v) \leq k$)} \tag{1}
+  \end{align*}
+  
+  For the upper bound, following lecture 14's section 2, any line contributes at most one edge to level-0 face, thus:
+  \begin{align*}
+    E[X] \leq E[\binom{|R|}{2}] = \frac{p^2 n(n-1)}{2} \leq \frac{(pn)^2}{2}.
+  \end{align*}
+  
+  From (1) and (2):
+  \[|V_{\leq k}^E| \cdot p^2 \cdot (1-p)^k \leq \frac{(pn)^2}{2}\]
+  \[|V_{\leq k}^E| \leq \frac{n^2}{2(1-p)^k}\]
+  
+  Set $p = \frac{1}{k+1}$ for $k \geq 1$. Since $p \leq \frac{1}{2}$, by Lemma 14.4:
+  \[1-p = 1-\frac{1}{k+1} \geq e^{-\frac{2}{k+1}}\]
+  
+  Therefore:
+  \begin{align*}
+  |V_{\leq k}^E| &\leq \frac{n^2}{2} \cdot e^{\frac{2k}{k+1}} \\
+  &\leq \frac{n^2}{2} \cdot e^2 & \text{(since $\frac{k}{k+1} \leq 1$)} \\
+  &= O((k+1)^2)
+  \end{align*}
+  
+  For $k = 0$, bound follows from maximum $\binom{n}{2}$ total vertices.
+
+  \item For tightness, construct:
+  \begin{itemize}
+  \item $\lfloor \frac{n}{2} \rfloor$ lines: $y = x + 2i$, $i = 1,\ldots,\lfloor \frac{n}{2} \rfloor$
+  \item $\lceil \frac{n}{2} \rceil$ lines: $y = -x + (n+2j)$, $j = 1,\ldots,\lceil \frac{n}{2} \rceil$
+  \end{itemize}
+  
+  For intersection of $i$-th positive-slope and $j$-th negative-slope lines:
+  \begin{align*}
+  x + 2i &= -x + (n+2j) & \text{(intersection)} \\
+  2x &= n + 2j - 2i \\
+  x &= \frac{n+2j-2i}{2}
+  \end{align*}
+  
+  Level computation for intersection point $(i,j)$:
+  \begin{itemize}
+  \item $(i-1)$ positive-slope lines pass above (lines $1,\ldots,i-1$)
+  \item $(j-1)$ negative-slope lines pass above (lines $1,\ldots,j-1$)
+  \item Total level $= (i-1) + (j-1)$
+  \end{itemize}
+  
+  Thus vertices of level $\leq k$ satisfy:
+  \[(i-1) + (j-1) \leq k \iff i + j \leq k + 2\]
+  
+  Number of integer points $(i,j)$ satisfying $1 \leq i,j \leq k+1$:
+  \[\sum_{i=1}^{k+1} i = \frac{(k+1)(k+2)}{2} = \Omega((k+1)^2)\]
+  
+  Spacing ensures distinct coordinates, thus arrangement is simple.
+  
+\end{enumerate}
+
+  \section{}
+  \begin{centerframebox}
+    Show that the total number of edges of level at most \(k\) in an arrangement of \(n\) hyperplanes in \(\mathbb{R}^2\) is at most \(O(n(k + 1))\).
+
+    \textbf{HINT:} Again, modify the proof by Clarkson from Lecture 14.
+  \end{centerframebox}
+
+  \begin{proof}
+Define the level of an edge $e$ in a line arrangement as the number of lines strictly above it. This is well-defined in a line arrangement in general position (Definition 13.2) since no three lines intersect in a point, ensuring all points on the same edge have the same lines above them.
+
+Let $H$ be a set of $n$ lines in $\mathbb{R}^2$ in general position. Following Clarkson's approach, let $r \leq n$ be a natural number and sample $R \subseteq H$ as a subset of size exactly $r$, with all $\binom{n}{r}$ subsets being equally probable.
+
+Let $X$ denote the number of edges of level 0 in the arrangement of $R$. Each line in $R$ can contribute at most three edges of level 0: at most one bounded edge and at most two unbounded edges. Therefore:
+\[X \leq 3r \tag{1}\]
+
+Let $E$ be the set of all edges in the arrangement of $H$, and for each edge $e \in E$, let $A_e$ be the event that $e$ becomes an edge of level 0 in $R$. Let $\ell(e)$ denote the level of edge $e$ in $H$.
+
+For an edge $e$ to have level 0 in $R$:
+\begin{enumerate}
+\item The line containing $e$ must be in $R$
+\item All $\ell(e)$ lines above $e$ must not be in $R$
+\end{enumerate}
+
+The number of such $r$-element subsets is $\binom{n-1-\ell(e)}{r-1}$. Therefore:
+\[Pr[A_e] = \frac{\binom{n-1-\ell(e)}{r-1}}{\binom{n}{r}}\]
+
+Let $E_{\leq k}$ be the set of edges of level at most $k$ in $H$. Then:
+\begin{align*}
+E[X] &= \sum_{e \in E} Pr[A_e] \geq \sum_{e \in E_{\leq k}} Pr[A_e] \\
+&\geq |E_{\leq k}| \frac{\binom{n-1-k}{r-1}}{\binom{n}{r}}
+\end{align*}
+
+From (1) and taking expectations:
+\[E[X] \leq 3r\]
+
+Combining these inequalities:
+\[|E_{\leq k}| \leq 3r\frac{\binom{n}{r}}{\binom{n-1-k}{r-1}}\]
+
+For $k = 0$, the bound follows directly from the fact that an arrangement of $n$ lines has $O(n)$ edges of level 0. For $k \geq 1$, we proceed as follows:
+
+Choose $r = \left\lfloor\frac{n}{k+1}\right\rfloor$. We verify that this choice satisfies the required conditions from Lecture 14:
+\begin{itemize}
+\item Since $k \leq \frac{n}{2d} - 1$, we have $r \geq \frac{n}{(n/2d)} = 2d$
+\item Since $k \geq 1$, we have $r \leq \frac{n}{2}$
+\end{itemize}
+
+Now, expanding the binomial coefficient ratio:
+\begin{align*}
+\frac{\binom{n}{r}}{\binom{n-1-k}{r-1}} &= \frac{n!}{r!(n-r)!} \cdot \frac{(r-1)!(n-k-r)!}{(n-1-k)!} \\
+&= \frac{n}{r} \cdot \frac{(n-k-r)!}{(n-r)!} \cdot \frac{n!}{(n-1-k)!} \\
+&= \frac{n}{r} \cdot \frac{1}{(n-k-1)(n-k-2)\cdots(n-r+1)}
+\end{align*}
+
+Following the analysis from Claim 14.7 in Lecture 14, with our choice of $r$:
+\begin{itemize}
+\item $\frac{n}{r} \leq (k+1)\left(1 + \frac{1}{n-k-1}\right)$
+\item The product term is at least $\left(1 - \frac{k}{n-r+1}\right)^{r/2}$
+\item Using Lemma 14.4 as in the lecture, this gives us $O(k+1)$
+\end{itemize}
+
+Therefore:
+\[|E_{\leq k}| \leq 3r \cdot O(k+1) = O(n(k+1))\]
+
+For $k > \left(\frac{n}{2d} - 1\right)$, note that $O(n(k+1))$ becomes $\Omega(n^2)$, which trivially bounds the total number of edges in any arrangement.
+
+Thus, the total number of edges of level at most $k$ in an arrangement of $n$ lines in $\mathbb{R}^2$ is $O(n(k+1))$.
+\end{proof}
+
+
+    % TODO
+
+  \section{}
+  \begin{centerframebox}
+    Let \(D_1, \ldots, D_n\) be circular disks in the plane.
+
+    \textit{Assume that the number of intersections of the boundary circles that are not contained in the interior of any of the disks is in \(O(n)\).}
+    
+    Show that the number of intersections of their boundary circles that are contained in the interior of at most \(k\) disks, for \(k = 1, \ldots, n\), is bounded by \(O(n(k + 1))\).
+  \end{centerframebox}
+
+  \begin{proof}
+Define the level of an intersection point $p$ of two circle boundaries as the number of disk interiors containing $p$. By the problem statement, we want to count intersection points of level at most $k$.
+
+Let $P$ be the set of intersection points of level at most $k$. For $k = 0$, we are given that $|P| \in O(n)$.
+
+Following Clarkson's approach from Lecture 14, let $r \leq n$ be a natural number and sample $R \subseteq \{D_1, \ldots, D_n\}$ as a subset of size exactly $r$, with all $\binom{n}{r}$ subsets being equally probable.
+
+Let $X$ denote the number of intersection points of level 0 with respect to $R$ (i.e., intersection points of circles in $R$ not contained in any disk in $R$). By our assumption, for any subset of size $r$:
+\[X \leq cr \tag{1}\]
+for some constant $c > 0$.
+
+For each point $p \in P$, let $A_p$ be the event that $p$ becomes an intersection point of level 0 with respect to $R$. For this to happen:
+\begin{enumerate}
+\item The two disks whose boundaries intersect at $p$ must be in $R$
+\item None of the $\ell(p)$ disks containing $p$ in their interior can be in $R$
+\end{enumerate}
+
+Let $\ell(p)$ denote the level of point $p$ with respect to the full set of disks. The number of favorable $r$-element subsets is $\binom{n-2-\ell(p)}{r-2}$ (we must choose two specific disks and must not choose any of the $\ell(p)$ disks containing $p$). Therefore:
+\[Pr[A_p] = \frac{\binom{n-2-\ell(p)}{r-2}}{\binom{n}{r}}\]
+
+Since $\ell(p) \leq k$ for all $p \in P$:
+\begin{align*}
+E[X] &= \sum_{p \in P} Pr[A_p] \geq \sum_{p \in P} \frac{\binom{n-2-k}{r-2}}{\binom{n}{r}} \\
+&= |P| \cdot \frac{\binom{n-2-k}{r-2}}{\binom{n}{r}}
+\end{align*}
+
+From (1) and taking expectations:
+\[E[X] \leq cr\]
+
+Combining these inequalities:
+\[|P| \leq cr\frac{\binom{n}{r}}{\binom{n-2-k}{r-2}}\]
+
+For $k = 0$, the bound follows directly from our assumption. For $k \geq 1$, choose $r = \lfloor\frac{n}{k+1}\rfloor$. We verify this choice satisfies the required conditions for $n$ sufficiently large:
+\begin{itemize}
+\item Since $k \geq 1$, we have $r \leq \frac{n}{2}$
+\item We have $r \geq 4$ for $n$ sufficiently large
+\end{itemize}
+
+Now we expand the binomial coefficient ratio:
+\begin{align*}
+\frac{\binom{n}{r}}{\binom{n-2-k}{r-2}} &= \frac{n(n-1)}{r(r-1)} \cdot \frac{(n-k-r)!}{(n-r)!} \cdot \frac{n!}{(n-k-2)!} \\
+&= \frac{n(n-1)}{r(r-1)} \cdot \frac{1}{(n-k-1)(n-k-2)\cdots(n-r+1)}
+\end{align*}
+
+Following the analysis of Claim 14.7 in the lecture, with our choice of $r$:
+\begin{itemize}
+\item $\frac{n(n-1)}{r(r-1)} = O((k+1)^2)$, since $\frac{n}{r} \leq (k+1)(1 + \frac{1}{n-k-1})$
+\item The product term is at least $(1 - \frac{k}{n-r+1})^{r/2}$
+\item Using Lemma 14.4 as in the lecture, this gives us $O(1)$
+\end{itemize}
+
+Therefore:
+\[|P| \leq cr \cdot O((k+1)^2) = O\left(\frac{n}{k+1} \cdot (k+1)^2\right) = O(n(k+1))\]
+
+Thus, the number of intersections of level at most $k$ is $O(n(k+1))$.
+\end{proof}
+
+\end{document}

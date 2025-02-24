@@ -1,0 +1,395 @@
+\documentclass[aspectratio=169]{beamer}
+\beamertemplatenavigationsymbolsempty
+\usetheme{Boadilla}
+\usepackage{textpos} % package for the positioning
+\usepackage{enumitem}
+\usepackage{amsmath,amsfonts,amssymb}
+
+\usepackage{listings}
+\usepackage{xcolor}
+\usepackage{tasks}
+\usepackage{braket}
+
+% Define color values for the theme
+\definecolor{backcolour}{rgb}{0.97, 0.97, 1.0}    % Light purple background
+\definecolor{codegreen}{rgb}{0.0, 0.6, 0.0}       % Green for comments
+\definecolor{codegray}{rgb}{0.5, 0.5, 0.5}        % Gray for line numbers
+\definecolor{codepurple}{rgb}{0.58, 0.0, 0.83}    % Purple for strings
+\definecolor{keywordcolor}{rgb}{0.5, 0.0, 0.5}    % Dark purple for keywords
+
+% Define the style for the listings
+\lstdefinestyle{mystyle}{
+    backgroundcolor=\color{backcolour},
+    commentstyle=\color{codegreen},
+    keywordstyle=\color{keywordcolor},
+    numberstyle=\tiny\color{codegray},
+    stringstyle=\color{codepurple},
+    basicstyle=\ttfamily\footnotesize,
+    breakatwhitespace=false,
+    breaklines=true,
+    captionpos=b,
+    keepspaces=true,
+    numbers=left,
+    numbersep=5pt,
+    showspaces=false,
+    showstringspaces=false,
+    showtabs=false,
+    tabsize=2
+}
+
+\lstset{style=mystyle}
+
+\definecolor{uwopurple}{RGB}{79,38,131} % official purple color for uwo
+
+
+\title{Foundations of Quantum Computing}
+\author[]{Zyad Altahan (50238152) \and \AA{AAAAAAAAAA AAAAAAA}{6} (\AA{AAAAAAAA}{10}) \and Tobias Mette (3105540) \and Aksa Aksa (50146305) \and Mohamed Sonbol (50262724)}
+\institute[]{Department of Computer Science \\ University of Bonn}
+\date{\today}
+
+\usepackage[listings,many]{tcolorbox}
+\makeatletter
+\newtcblisting{mylisting}{
+  listing only,
+  breakable, enhanced jigsaw,
+  listing engine=listings,
+  colback=gray!20,
+  listing options={
+    language=python,
+    keywordstyle=\color{blue},
+    basicstyle=\ttfamily,
+    stringstyle=\color{ForestGreen},
+    commentstyle=\color{gray},
+    ndkeywordstyle={\color{orange}},
+    identifierstyle=\color{black},
+    numbers=none,
+    showstringspaces=false,
+    aboveskip={0\p@ \@plus 6\p@}, belowskip={0\p@ \@plus 6\p@},
+    columns=fullflexible, keepspaces=true,
+    breaklines=true, breakatwhitespace=true,
+    extendedchars=false,
+    inputencoding=utf8,
+    upquote=true,
+    xleftmargin=-25pt,
+  }
+}
+\makeatother
+
+% set color
+\setbeamercolor{title in head/foot}{bg=white}
+\setbeamercolor{author in head/foot}{bg=white}
+\setbeamercolor{date in head/foot}{fg=uwopurple}
+\setbeamercolor{date in head/foot}{bg=white}
+\setbeamercolor{title}{fg=uwopurple}
+\setbeamerfont{title}{series=\bfseries}
+\setbeamercolor{frametitle}{fg=uwopurple}
+\setbeamerfont{frametitle}{series=\bfseries}
+\setbeamercolor{block title}{bg=uwopurple!30,fg=black}
+\setbeamercolor{item}{fg=uwopurple}
+\setbeamercolor{caption name}{fg=uwopurple!70!}
+\usefonttheme[onlymath]{serif}
+
+
+\begin{document}
+
+
+\begin{frame}
+    \titlepage
+    \begin{textblock*}{8cm}(5.0cm,-7.0cm)
+        {\large \color{uwopurple}\hspace{0.66cm} \textbf{Exercise Sheet 05}} % Change the lecture # right here!
+    \end{textblock*}
+\end{frame}
+
+
+\begin{frame}{Task 5.5: Tensor products of complex unit vectors}
+  We know that $\sum_{j=0}^{1} |\alpha_j|^2 = 1$ and $\sum_{k=0}^{1} |\beta_k|^2 = 1$ $\Leftrightarrow$   \textbf{Born Rule}\\
+  To prove $\sum_{j=0}^{1} \sum_{k=0}^{1} |\gamma_{jk}|^2 = 1$, we substitute the value of $\gamma_{jk} = \alpha_j \beta_k$:
+  \[
+    \sum_{j=0}^{1} \sum_{k=0}^{1} |\alpha_j \beta_k|^2  = \sum_{j=0}^{1} |\alpha_j|^2 \sum_{k=0}^{1} |\beta_k|^2 = 1 * 1 = 1
+  \]
+\end{frame}
+
+\begin{frame}{Task 5.6: Effects of the Born rule}
+  a) If $\alpha_0 = 1/\sqrt{2}, |\alpha_0| = \sqrt{(1/\sqrt{2})^2 + 0^2} = 1/\sqrt{2}$, then $|\alpha_{1}|^2 = 1 - |\alpha_{0}|^2$ $\Rightarrow$ \textbf{Born rule} \\
+  $|\alpha_{1}|^2 = 1 - |1/\sqrt{2}|^2  = 1 - 1/2 = 1/2$ $\Rightarrow$  $\alpha_{1} = \pm 1/\sqrt{2}$\\
+
+  b) if $\alpha_0 = 1/2, |\alpha_0| = 1/2$, then $\alpha_{1} = \pm \sqrt{3}/2$\\
+  c) if $\alpha_1 = 1/4, |\alpha_0| = 1/4$, then $\alpha_{0} = \pm \sqrt{15}/4$\\
+  d) if $\alpha_1 = i, |\alpha_1| = \sqrt{0^2 + 1^2} = \sqrt{1} = 1$, then $\alpha_{0} = \sqrt{1 - 1} = 0$\\
+  e) if $\alpha_1 = i/\sqrt{2}, |\alpha_1| = \sqrt{0^2 + (1/\sqrt{2})^2} = \sqrt{1/2}, |\alpha_1|^2 = 1/2$, then $\alpha_{0} = \sqrt{1 - 1/2} = \sqrt{1/2} = \pm 1/\sqrt{2}$\\
+
+\end{frame}
+
+\begin{frame}{Task 5.7}
+
+{\tiny
+
+\textbf{(a) Prove that \(X^2 = Y^2 = Z^2 = I\):}
+
+\[
+X = |1\rangle\langle0| + |0\rangle\langle1|, \quad
+X^2 = (|1\rangle\langle0| + |0\rangle\langle1|)(|1\rangle\langle0| + |0\rangle\langle1|),
+\]
+\[
+X^2 = |1\rangle\langle0|1\rangle\langle0| + |1\rangle\langle0|0\rangle\langle1| + |0\rangle\langle1|1\rangle\langle0| + |0\rangle\langle1|0\rangle\langle1|,
+\]
+\[
+X^2 = |1\rangle\langle1| + |0\rangle\langle0| = I.
+\]
+
+\[
+Y = i|1\rangle\langle0| - i|0\rangle\langle1|, \quad
+Y^2 = (i|1\rangle\langle0| - i|0\rangle\langle1|)(i|1\rangle\langle0| - i|0\rangle\langle1|),
+\]
+\[
+Y^2 = i^2|1\rangle\langle0|1\rangle\langle0| - i^2|1\rangle\langle0|0\rangle\langle1| - i^2|0\rangle\langle1|1\rangle\langle0| + i^2|0\rangle\langle1|0\rangle\langle1|,
+\]
+\[
+Y^2 = +1(|1\rangle\langle1| + 1|0\rangle\langle0|) = I.
+\]
+
+\[
+Z = |0\rangle\langle0| - |1\rangle\langle1|, \quad
+Z^2 = (|0\rangle\langle0| - |1\rangle\langle1|)(|0\rangle\langle0| - |1\rangle\langle1|),
+\]
+\[
+Z^2 = |0\rangle\langle0|0\rangle\langle0| - |0\rangle\langle0|1\rangle\langle1| - |1\rangle\langle1|0\rangle\langle0| + |1\rangle\langle1|1\rangle\langle1|,
+\]
+\[
+Z^2 = |0\rangle\langle0| + |1\rangle\langle1| = I.
+\]
+
+\textbf{Result:} \(X^2 = Y^2 = Z^2 = I.\)
+
+\vspace{0.3cm}
+
+\textbf{(b) Prove that \(-iXYZ = I\):}
+To show that \(-iXYZ = I\), first compute \(XY\) using the definitions:
+\[
+XY = (|1\rangle\langle0| + |0\rangle\langle1|)(i|1\rangle\langle0| - i|0\rangle\langle1|).
+\]
+\[
+XY = -i|1\rangle\langle0|1\rangle\langle0| + i|1\rangle\langle0|0\rangle\langle1| + i|0\rangle\langle1|1\rangle\langle0| - i|0\rangle\langle1|0\rangle\langle1|.
+\]
+
+\[
+XY = -i|1\rangle\langle1| + i|0\rangle\langle0|.
+\]
+\[
+XY = i(1.|0\rangle\langle0| - 1.|1\rangle\langle1|) = iZ
+\]
+
+}
+
+\end{frame}
+
+\begin{frame}{Task 5.7 (Continue)}
+
+{\tiny
+
+\[
+-iXYZ = I \]
+\[-i(iZ)Z = I \]
+\[
+-i^2Z^2 = I
+\]
+\( i^2 = -1 \) and \(Z^2 = I\). So,
+\[
+-1(-1).I = I
+\]
+
+
+
+\vspace{0.3cm}
+
+\textbf{(c) Prove that \(XY = -YX = iZ, \quad YZ = -ZY = iX, \quad ZX = -XZ = iY\):}
+
+\textbf{Step 1: Prove \(XY = -YX = iZ\):}
+from:
+\[
+-iXYZ = I
+\]
+\[
+-i \cdot XY Z \cdot Z = Z  \quad \text{(multiplying \(Z\) on both sides)}.
+\]
+Multiply by \(i\):
+\[
+-i^2 \cdot XY = i Z \implies XY = iZ.
+\]
+Moreover:
+\[
+XY = -YX \quad \text{(from anticommutation relation)}.
+\]
+\[
+XY = -YX = iZ.
+\]
+
+\vspace{0.3cm}
+
+\textbf{Step 2: Prove \(YZ = -ZY = iX\):}
+from:
+\[
+-iXYZ = I
+\]
+\[
+-iX.XYZ = XI \quad \text{(multiplying \(X\) on both sides)}.
+\]
+Multiply by \(i\):
+\[
+-i^2YZ = iX \quad \implies YZ = iX.
+\]
+Using the anticommutation relation:
+\[
+YZ = -ZY = iX.
+\]
+
+}
+
+\end{frame}
+
+\begin{frame}{Task 5.7 (Continue)}
+
+{\tiny
+
+\textbf{Step 3: Prove \(ZX = -XZ = iY\):}
+
+\[
+ZX = -XZ = iY.
+\]
+from:
+\[
+-iXYZ = I.
+\]
+
+\[
+-iZXY = I. \quad \text {Using cyclic property}
+\]
+\[
+-iZXY \cdot Y = IY \quad \text{(multiplying \(Y\) on both sides)}.
+\]
+\[
+ZX = iY \quad \text{(multiplying by i on both sides using \(i^2 =-1\))}
+\]
+%Using the anticommutation relation:
+%\[
+%ZX = -XZ = iY.
+%\]
+\textbf{Final Result:}
+\[
+XY = -YX = iZ, \quad YZ = -ZY = iX, \quad ZX = -XZ = iY.
+\]
+
+\textbf{(d) Prove that \(HXH = Z\)}
+
+\[
+HXH = \frac{1}{\sqrt{2}}[X + Z] X \frac{1}{\sqrt{2}}[X + Z]
+\]
+\[
+\frac{1}{2}[X^2 + ZX][X+Z]
+\]
+\[
+\frac{1}{2}[I + ZX][X+Z] \quad \text{Using \(X^2 = I\)}
+\]
+\[
+\frac{1}{2}[I \cdot X + I \cdot Z + ZX \cdot X + ZX \cdot Z]
+\]
+
+\[
+\frac{1}{2}[X + Z + Z\cdot I - ZZ \cdot X] = \frac{1}{2}[X + 2Z - Z^2 \cdot X] \quad \text{Using \(X^2 = I\) and \(XZ = -ZX\)}
+\]
+\[
+\frac{1}{2}[X + 2Z - X] = \frac{1}{2}(2Z) = Z
+\]
+}
+
+\end{frame}
+
+
+
+\begin{frame}{Task 5.8}
+  a) We can prove that the two expressions are equal using basic algebra with the tensor product:
+\begin{align*}
+  &I \otimes I + \ket{1}\bra{1} \otimes (X - I) =
+  I \otimes I + \ket{1}\bra{1} \otimes X - \ket{1}\bra{1} \otimes I = \\
+  &(I - \ket{1}\bra{1}) \otimes I + \ket{1}\bra{1} \otimes X =
+  \ket{0}\bra{0} \otimes I + \ket{1}\bra{1} \otimes X
+\end{align*}
+  And computing the two Kronecker products gives us the correct $CX$ matrix.
+  \vspace{0.5cm}
+
+  b) As expected, \(CX \ket{\psi}\) produces the correct output for all \(\ket{00},\, \ket{01},\, \ket{10},\, \ket{11}\) inputs. Actually, the matrix multiplication always outputs the $n$-th column of the $CX$ matrix. It's just a bit hard to convert in back to a ket.
+\end{frame}
+
+\begin{frame}{Task 5.9}
+  The goal of this task was to compute the matrix $CNOT_{2 \to 1}$ that results if we switch the target and control qubits of the $CNOT_{1 \to 2}$ gate, this results in the following truth table.
+
+\[
+\begin{array}{|c|c|}
+\hline
+\text{Input } |x_1 x_2\rangle & \text{Output } |y_1 y_2\rangle \\
+\hline
+|00\rangle & |00\rangle \\
+|01\rangle & |11\rangle \\
+|10\rangle & |10\rangle \\
+|11\rangle & |01\rangle \\
+\hline
+\end{array}
+\]
+
+We can use the results of this truth table to compute the $CNOT_{2 \to 1}$ gate matrix, which results in the following matrix.
+\[
+\text{CNOT}_{2 \to 1} =
+\begin{bmatrix}
+1 & 0 & 0 & 0 \\
+0 & 0 & 0 & 1 \\
+0 & 0 & 1 & 0 \\
+0 & 1 & 0 & 0
+\end{bmatrix}.
+\]
+Which is just the output vectors arranged as columns or rows.
+\end{frame}
+
+\begin{frame}{Task 5.10}
+\begin{align*}
+SWAP &= CNOT_{1\rightarrow2}\cdot CNOT_{2\rightarrow1}\cdot CNOT_{1\rightarrow2} \\
+&= \begin{pmatrix}
+1 & 0 & 0 & 0\\
+0 & 1 & 0 & 0\\
+0 & 0 & 0 & 1\\
+0 & 0 & 1 & 0\\
+\end{pmatrix}\cdot \begin{pmatrix}
+1 & 0 & 0 & 0\\
+0 & 0 & 0 & 1\\
+0 & 0 & 1 & 0\\
+0 & 1 & 0 & 0\\
+\end{pmatrix}\cdot \begin{pmatrix}
+1 & 0 & 0 & 0\\
+0 & 1 & 0 & 0\\
+0 & 0 & 0 & 1\\
+0 & 0 & 1 & 0\\
+\end{pmatrix} = \begin{pmatrix}
+1 & 0 & 0 & 0\\
+0 & 0 & 1 & 0\\
+0 & 1 & 0 & 0\\
+0 & 0 & 0 & 1\\
+\end{pmatrix}\\
+\end{align*}
+
+\begin{columns}
+\begin{column}{0.5\textwidth}
+\begin{align*}
+SWAP \cdot \ket{00} = \ket{00}\\
+SWAP \cdot \ket{01} = \ket{10}\\
+SWAP \cdot \ket{10} = \ket{01}\\
+SWAP \cdot \ket{11} = \ket{11}\\
+\end{align*}
+\end{column}
+\begin{column}{0.5\textwidth}
+The \textit{SWAP}-operator swaps the input, it projects $x_1 \rightarrow y_2$ and $x_2 \rightarrow y_1$. We could also say it flips $x_1$ and $x_2$ if they are different.
+
+\end{column}
+\end{columns}
+
+\end{frame}
+
+\end{document}

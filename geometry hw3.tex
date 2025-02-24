@@ -1,0 +1,175 @@
+\documentclass{article}
+
+\usepackage{enumitem}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage[margin=0.5in]{geometry}
+\usepackage[hidelinks, bookmarks=false]{hyperref}
+
+\usepackage[dvipsnames]{xcolor}
+\usepackage{algorithm}
+\usepackage{algpseudocode}
+\usepackage{algorithmicx}
+
+\let\oldemptyset\emptyset
+\let\emptyset\varnothing
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\Rd}{\R^d}
+
+\usepackage{environ}
+\NewEnviron{centerframebox}{\begin{center}\fbox{\parbox{0.92\textwidth}{\BODY}}\end{center}}
+
+\title{Discrete and Computational Geometry \\ Assignment 3}
+\author{
+  \AA{AAAAAAAAAA AAAAAAA}{6} \\
+  \href{mailto:\AA{AAAAAAAAAAAAAAAAAAAA}{7}}{\AA{AAAAAAAAAAAAAAAAAAAA}{7}}
+  \and
+  Emilia Groß-Hardt \\
+  \href{mailto:emilia.ghdt@uni-bonn.de}{emilia.ghdt@uni-bonn.de}
+}
+
+\usepackage{titlesec}
+\titleformat{\section}
+  {\normalfont\Large\bfseries}{Problem \thesection : }
+  {0em}{\mdseries}
+
+\newcommand{\algorithmRuledHeader}[2]{\hrule height.8pt \vspace{2pt}\textbf{Algorithm #1:} #2\vspace{2pt}\hrule}
+
+\begin{document}
+  \maketitle
+  \begin{center}
+    { \bfseries Deadline: 3 Nov 2024, 23:55 }
+  \end{center}
+
+  \section{Modified Graham-Scan}
+  \begin{centerframebox}
+    Modify the Graham-Scan (Lecture 5, Algorithm 1) such that it also computes the convex
+    hull of points that are not in \textit{general position}, i.e.:
+    \begin{itemize}
+      \item For a given set of points in the plane we may assume that no three points lie on a
+      common line.
+      \item For points in the plane we may assume that no two points have the same x-coordinate
+      or y-coordinate.
+    \end{itemize}
+    The modified algorithm should still run in $O(n \log(n))$ time and $O(n)$ space.
+
+    \begin{center}
+      \begin{minipage}{.75\linewidth}
+        \renewcommand{\thealgorithm}{5.1}
+        \begin{algorithm}[H]
+          \caption{Graham-Scan}
+          \begin{algorithmic}[1]
+          \Procedure{Convex-Hull}{Set of points $P$ in $\R^2$}
+            \State Let $p_1$ be the point in $P$ with minimal $y$-coordinate
+            \State Express the remaining points in $P$ by their polar coordinates with origin $p_1$
+            \State Let $p_2, \ldots, p_n$ denote the points sorted by increasing polar angle (w.r.t. $p_1$)
+            \State Let $L$ be a list containing $p_1, p_2$ in this order
+            \For{$i \gets 3$ \textbf{to} $n$}
+              \State Append $p_i$ to $L$
+              \While{the last three points in $L$ do not make a left turn}
+                \State Remove the middle point of the last three points from $L$
+              \EndWhile
+            \EndFor
+            \State \Return $L$
+          \EndProcedure
+          \end{algorithmic}
+        \end{algorithm}
+        \renewcommand{\thealgorithm}{\arabic{algorithm}}
+      \end{minipage}
+    \end{center}
+  \end{centerframebox}
+  We have to address two places where we relied on that assumption.
+  \begin{enumerate}
+    \item
+    Firstly, we needed to pick the point with the lowest $y$, which now may not be unique.
+    This can be addressed by always picking the point with the lowest $x$ among them.
+    \textcolor{ForestGreen}{Can we still assume there are no duplicate points?}
+
+    \item Secondly, we used the fact that each point will have a unique polar coordinate angle.
+    In this case, it is advantageous to simply pick the point with the farthest polar distance,
+    because all others are guaranteed not to be part of the convex hull.
+  \end{enumerate}
+
+  \algorithmRuledHeader{1}{Modified Graham-Scan}
+  \begin{algorithmic}[1]
+    \Procedure{Convex-Hull}{Set of points $P$ in $\R^2$}
+      \State Let $P_1'$ be the set of points in $P$ with minimal $y$-coordinate
+      \State Let $p_1$ be the point in $P_1'$ with minimal $x$-coordinate
+      \State Express the remaining points in $P$ by their polar coordinates with origin $p_1$
+      \State Sort the points by increasing polar angle, and separate them into groups when their angles are equal
+      \State In each group, keep only the point with the maximal polar radius and discard the rest
+      \State Let $p_2, \ldots, p_n$ denote the points in this sorted order
+      \Comment{\textcolor{ForestGreen}{After this line the algorithm remains unaltered}}
+      \State Let $L$ be a list containing $p_1, p_2$ in this order
+      \For{$i \gets 3$ \textbf{to} $n$}
+        \State Append $p_i$ to $L$
+        \While{the last three points in $L$ do not make a left turn}
+          \State Remove the middle point of the last three points from $L$
+        \EndWhile
+      \EndFor
+      \State \Return $L$
+    \EndProcedure
+  \end{algorithmic}
+  \hrule
+  % (c) Clover
+
+  \section{Worst case}
+  \begin{centerframebox}
+    For $n \geq 8$, describe a construction of an input instance of $n$ points in $\R^3$ and a permutation
+    of this input instance, where Algorithm 7.1 takes $\Omega(n^2)$ steps. Describe for which operations
+    the algorithm needs to take this many steps.
+  \end{centerframebox}
+  We can take basically the same worst case, as for the previous 2d version of this algorithm, and adapt it to 3d.
+  Create a triangle with the first 3 points, and then pick the other points on planes parallel to that triangle an equal distance apart,
+  such that they are all sorted in order of increasing distance and the projection of then to the original plane lies within the triangle.
+
+  This way each face (expect for the first triangle) of our convex hull, as we create it,
+  will be in conflict with all other points we haven't considered yet.
+  But the algorithm has to populate those conflict lists,
+  whenever it creates new faces, and that process is linear in the number of conflicts.
+  This gives us $O(n^2)$ because $O(n)$ conflicts have to be updated for each of the $n-4$ points.
+  % (c) Clover
+
+  \section{Analyzing the Algorithm}
+  \begin{centerframebox}
+    Consider Algorithm 7.1 from Lecture 7. The algorithm needs to find the cycle of horizon
+    edges $L$ that lie on the boundary of $\operatorname{Conflicts}(i)$.
+    \begin{enumerate}[label=(\alph*)]
+      \item Design an algorithm for this step that takes $O(|\operatorname{Conflicts}(i)|)$ time in the worst-case.
+      Use the pointers of the DCEL. Show correctness and running time of your algorithm.
+      \item Show that the expected total time spent on computations for finding horizon edges during
+      the course of the algorithm is in $O(n)$
+    \end{enumerate}
+  \end{centerframebox}
+
+  \subsection{Traversing the conflict faces}
+  \begin{enumerate}
+    \item Start with a point on one of the conflict faces.
+    \item Consider all the outgoing edges in clockwise order.
+    \item If the face associated with that edge is also a conflict face, traverse the edge,
+          and store that traversal in a linked list. (go to 2)
+    \item Otherwise look at the next edge. (go to 3)
+    \item If we arrived at an already visited point, return the cycle formed by the edges in our stored linked list.
+          That might necessitate the removal of some initial part of said linked list.
+  \end{enumerate}
+  % (very sloppy)
+  % (c) Clover
+
+  \subsection{Expected runtime}
+  Here the expected running time is determined by which random permutation of the datapoints was selected.
+  Since every possible permutation is still equally likely,
+  or each point has an equal probability to end up in each possible position,
+  we can use the same tricks used in the last lecture to prove the same for the 2d case of the algorithm.
+
+  The expected total time spent on computations for finding horizon edges can be expressed
+  as the sum of the number of conflict faces for each point:
+  \[ \sum_{i=5}^{n} |\operatorname{Conflicts}(i)| \]
+
+  Using a random permutation, where a lot of the points are gonna be already inside the convex hull,
+  causes this sum to be reduced to $O(n)$ in expectation.
+
+  % (just plain bullshit)
+  % (c) Clover
+
+\end{document}

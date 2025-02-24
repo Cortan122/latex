@@ -1,0 +1,60 @@
+\documentclass{article}
+
+\usepackage{enumitem}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage[margin=0.5in]{geometry}
+\usepackage[hidelinks, bookmarks=false]{hyperref}
+
+\usepackage[dvipsnames]{xcolor}
+\usepackage{algorithm}
+\usepackage{algpseudocode}
+\usepackage{algorithmicx}
+
+\let\oldemptyset\emptyset
+\let\emptyset\varnothing
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\Rd}{\R^d}
+
+\usepackage{environ}
+\NewEnviron{centerframebox}{\begin{center}\fbox{\parbox{0.92\textwidth}{\BODY}}\end{center}}
+
+\title{Discrete and Computational Geometry \\ Assignment 4}
+\author{
+  \AA{AAAAAAAAAA AAAAAAA}{6} \\
+  \href{mailto:\AA{AAAAAAAAAAAAAAAAAAAA}{7}}{\AA{AAAAAAAAAAAAAAAAAAAA}{7}}
+  \and
+  Emilia Groß-Hardt \\
+  \href{mailto:emilia.ghdt@uni-bonn.de}{emilia.ghdt@uni-bonn.de}
+}
+
+\usepackage{titlesec}
+\titleformat{\section}
+  {\normalfont\Large\bfseries}{Problem \thesection : }
+  {0em}{\mdseries}
+
+\newcommand{\algorithmRuledHeader}[2]{\hrule height.8pt \vspace{2pt}\textbf{Algorithm #1:} #2\vspace{2pt}\hrule}
+
+\begin{document}
+  \maketitle
+  \begin{center}
+    { \bfseries Deadline: 15 Nov 2024, 23:55 }
+  \end{center}
+
+  \section{Gabriel Graph}
+  Let (p, q) be an edge of the Gabriel Graph. It follows, that the disc with diameter pq doesn't contain any points in P. Thus the edge also fulfills the Delaunay criterion and is in the Delaunay triangulation.
+
+
+  If the Delaunay edge between p and q intersects its Voronoi dual, then p and q must be exactly the closest points to the intersection point out of all points in P. It follows, that the disc with the center at the intersection and the radius equal to the distance between the intersection point and p (which of course is the same as the distance to q) doesn't contain any other points from P and since this disc is also the disc with diameter pq, it follows that (p, q) is in the Gabriel Graph.
+  Given an edge (p, q), that is in the Gabriel Graph, we now, that the circle with diameter pq doesn't contain any other points in P. From this we can conclude, that there are no points in P, that are closer to the center of said disc in P than p and q, which have the same distance. From this it follows, that both the edge from p to q and the Voronoi diagram edge with equal distance to p and q, which is the Voronoi dual of the edge, meet at the center of the circle.
+
+
+  1. Compute the Delaunay triangulation.
+  2. For every edge of the Delaunay triangulation check if the points on either of the triangles, that p and q are a part of lie within the circle with diameter pq, and remove them.
+  3. Output all remaining edges.
+  \section{}
+  
+  \section{}
+
+\end{document}

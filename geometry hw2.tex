@@ -1,0 +1,116 @@
+\documentclass{article}
+
+\usepackage{enumitem}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage[margin=0.5in]{geometry}
+\usepackage[hidelinks, bookmarks=false]{hyperref}
+
+\let\oldemptyset\emptyset
+\let\emptyset\varnothing
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\Rd}{\R^d}
+
+\usepackage{environ}
+\NewEnviron{centerframebox}{\begin{center}\fbox{\parbox{0.92\textwidth}{\BODY}}\end{center}}
+
+\title{Discrete and Computational Geometry \\ Assignment 2}
+\author{
+  \AA{AAAAAAAAAA AAAAAAA}{6} \\
+  \href{mailto:\AA{AAAAAAAAAAAAAAAAAAAA}{7}}{\AA{AAAAAAAAAAAAAAAAAAAA}{7}}
+  \and
+  Emilia Groß-Hardt \\
+  \href{mailto:emilia.ghdt@uni-bonn.de}{emilia.ghdt@uni-bonn.de}
+}
+
+\usepackage{titlesec}
+\titleformat{\section}
+  {\normalfont\Large\bfseries}{Problem \thesection : }
+  {0em}{\mdseries}
+
+\begin{document}
+  \maketitle
+
+  \section{Convex hull size}
+  \begin{centerframebox}
+    We consider $n$ points $(x_1, y_1), (x_2, y_2), \dots , (x_n, y_n)$ in $\R^2$ which are chosen uniformly and
+    independently at random from $[0, 1]^2$, i.e. each coordinate is chosen uniformly and
+    independently at random from $[0, 1]$.
+    Show that the expected number of vertices of the convex hull is $O(\log n)$.
+  \end{centerframebox}
+  Let $(x_m, y_m)$ be the point with the largest y coordinate. We will now consider the expected number of points on the convex hull, that have x coordinates larger than $x_m$ and are on the top side of the convex hull, as this will be a quarter and thus a linear factor off of the expected number of vertices on the convex hull.
+
+  Sort the points with x-coordinates larger than $x_m$ by their x-coordinate. For every point $(x_a, y_a)$ in this sorted list if there is a point $(x_b, y_b)$ after it in the list with $y_b > y_a$, we can be sure, that the point is not on the top side of the convex hull as it will be below the line from $(x_m, y_m)$ to $(x_b, y_b)$, because $x_m < x_a < x_b$, $y_a < y_b$ and $y_a < y_m$. We can thus Stalin sort the list starting at the end and going to the beginning point by point eliminating points with a y-coordinate, that's smaller, than the largest we've seen so far.
+
+  The number of remaining points, which can potentially be on the convex hull is thus bounded by the expected number of elements left in a list with $n$ elements, after the list has been Stalin sorted.
+  This is just the $n$-th harmonic number, as the $i$-th element will not be eliminated iff. it is the largest element out of the first $i$ elements, which happens with probability $\frac1i$. It thus contributes $\frac1i$ to the expected number of elements. Applying linearity of expectation and the fact, that the $n$-th harmonic number is $O(\log n)$, we get the result.
+
+  \section{Line transversals}
+  \begin{centerframebox}
+    A \textit{line transversal} for a set of \textit{vertical} line segments in the plane is a line that intersects every
+    segment. Show that if $I_1, \dots , I_n$, $n \geq 3$ are vertical segments in the plane such that every
+    three of them have a line transversal, then all of them have a line transversal.
+  \end{centerframebox}
+  We'll try to change the problem in such a way that it would be possible to apply Helly's theorem.
+  Remember the concept of \textit{dual sets} form Lecture 4.
+  They defined the halfspaces dual to each point $a$ by
+  \[h^-(a) = \{x \in \R^2 \mid \langle a,x\rangle \leq 1\}\]
+  \[h^+(a) = \{x \in \R^2 \mid \langle a,x\rangle \geq 1\}\]
+
+  For a line to intersect our line segment $I$, it needs to include only one of the endpoints of $I$ in the halfspace it defines.
+  Denote the endpoints of $I$ as $I^a$ and $I^b$.
+  Then the dual set of all the lines that intersect $I$ can be constructed as
+  \[ \left(h^-(I^a) \cap h^+(I^b)\right) \cup \left(h^+(I^a) \cap h^-(I^b)\right) \]
+  This is not a convex set, so we can't apply Helly's theorem directly.
+  Instead it is a union of two convex ``sectors'', one above $y=0$ and the other bellow.
+  Because all our line segments are vertical, we can separately consider the top and bottom parts, as they will always connect at $y=0$.
+
+  Given that for all triplets of lines segments have a \textit{line transversal}, i.e. that their dual sets have an intersection,
+  those intersections must all be either on the top on the bottom, or both. Otherwise we get a contradiction.
+  So we have to consider the 3 cases:
+  in the first and second case we can just apply Helly's theorem to the top and bottom parts of each dual, because they are convex.
+  And in the third case we can just throw away the bottom parts, because the top parts still have that triple-wise intersection.
+  % the last paragraph is bullshit i give up
+  % (c) Clover
+
+  \section{Depth algorithm}
+  \begin{centerframebox}
+    Let $A$ be a set of $n$ points on the plane. Given a point $q$ on the plane, describe an algorithm
+    that computes $\operatorname{depth}_A(q)$ in $O(n \log n)$ time.
+    Show the correctness and analyze the running time of your algorithm.
+
+    \[
+      \operatorname{depth}_A(q) = \min_{a \in \Rd, b \in R, q \in H^\leq_{a,b}} |A \cap H^\leq_{a,b}|
+    \]
+  \end{centerframebox}
+  To compute the depth of a point $q$, we need to sweep a hyperplane (line) center on $q$ thru all other points in $A$,
+  and count how of the points are on the left side of that line (in the corresponding halfspace).
+  We only need to check halfspaces with $q$ on their boundary, because we are looking for a minimum,
+  and halfspaces with $q$ somewhere in the middle cannot contain less points from $A$ (they are ``larger'').
+  We also only need to check halfspaces with a point from $A$ on their boundary, because otherwise the $|A \cap H|$ can't change.
+  A naive approach would take $O(n^2)$ time, as we would need to check $n$ possible lines and count $n$ points each time.
+  But we can do better, by sorting the points.
+
+  The algorithm is as follows:
+  \begin{enumerate}
+    \item Double all the points in $A$, rotate them $180^\circ$ around $q$, and somehow mark them as ``negative''.
+          Call that set $A'$.
+    \item Sort the points in set $B := A' \cup A$ according to the angle component of their polar coordinates, measured from the point $q$.
+    \item Draw the line thru $q$ and $b_1$.
+          Count the number of points in $A$ that lie on the left side of that line, and store that as $m$.
+          Allocate $k$ to store the minimum value of $m$.
+    \item For each point $b_i$ in $B$ (in that sorted order, staring from $b_2$):
+    \begin{enumerate}
+      \item Rotate that line to go thru the point $b_i$.
+      \item If that point is ``negative'', i.e. $b_i \in A'$, decrement $m$.
+      \item Otherwise increment $m$.
+      \item Check if $m$ is at its minimum value, and update $k$ if needed.
+    \end{enumerate}
+    \item Return $k$
+  \end{enumerate}
+
+  This algorithm takes $O(n \log n)$ time, because of the sorting, and everything else we do is linear.
+  % (c) Clover
+
+\end{document}
