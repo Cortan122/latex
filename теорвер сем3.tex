@@ -2,9 +2,9 @@
 \usepackage{122}
 
 \usepackage{graphicx}
-\usepackage{epsdice}
 
 \newcommand{\hr}{\par\vspace{.5\baselineskip}\noindent\hrulefill\par}
+\newcommand{\dice}[1]{\langle#1\rangle}
 
 \title{Теория вероятности \\ ДЗ семинара №3}
 
@@ -14,8 +14,8 @@
   \hr
   \section*{Домашнее задание}
   \section*{№19}
-  $\ds P(B|A) = P(5 + \epsdice{4} = 9) = \f{1}{6} $ \\
-  $\ds P(B) = P(\epsdice{4}\,\epsdice{5}) + P(\epsdice{5}\,\epsdice{4}) + P(\epsdice{3}\,\epsdice{6}) + P(\epsdice{6}\,\epsdice{3})
+  $\ds P(B|A) = P(5 + \dice{4} = 9) = \f{1}{6} $ \\
+  $\ds P(B) = P(\dice{4}\,\dice{5}) + P(\dice{5}\,\dice{4}) + P(\dice{3}\,\dice{6}) + P(\dice{6}\,\dice{3})
   = \f{4}{36} = \f{1}{9} $ \\
   вот поэтому они ненезависимые
 
