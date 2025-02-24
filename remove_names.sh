@@ -5,18 +5,22 @@
 # i can just run it before committing new files
 
 mapfile -t filenames1 < <(grep -rFl -f names.txt | grep -v names.txt | grep -v '.*.ipynb$')
-mapfile -t filenames < <(grep -LF '\AA' "${filenames1[@]}")
+if [ "${#filenames1[@]}" != 0 ]; then
+  mapfile -t filenames < <(grep -LF '\AA' "${filenames1[@]}")
+fi
 
 if [ "${#filenames[@]}" == 0 ]; then
   echo "no files to change..."
-  exit
+else
+  echo "changing ${#filenames[@]} files..."
 fi
-echo "changing ${#filenames[@]} files..."
 
 res=""
 i=1
 while read -r name; do
-  sed -i "s/$name/\\\\AA{$name}{$i}/g" "${filenames[@]}"
+  if [ "${#filenames[@]}" != 0 ]; then
+    sed -i "s/$name/\\\\AA{$name}{$i}/g" "${filenames[@]}"
+  fi
   res="$res\\or $name"
   i=$((i + 1))
 done <names.txt
