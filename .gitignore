@@ -11,3 +11,6 @@
 *.blg
 pandoc_media/
 *.ipynb.tex
+
+replaced_names.sty
+names.txt
