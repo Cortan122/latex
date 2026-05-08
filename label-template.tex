@@ -4,7 +4,7 @@
 \usepackage{tikz}
 \usepackage{graphicx}
 \usepackage{alphalph}
- 
+
 % \usepackage{fontspec}
 % \setmainfont{Arial}
 
@@ -12,6 +12,8 @@
 \def\numcolumns{5}
 \def\blocksize{4cm}
 \def\blockscale{8}
+
+\newcommand{\SMOL}[2]{\ensuremath{\hspace{-.3mm}\scriptscriptstyle #1\hspace{-.25mm}#2}}
 
 \newcommand{\gridpage}[1]{
   \begin{center}
@@ -44,8 +46,27 @@
 
 \def\@LiterallyJustNumbers#1{\ifcase#1\or
   1\or 2\or 3\or 4\or 5\or 6\or 7\or 8\or 9\or 0\or
+  10\or 11\or 12\or 13\or 14\or 15\or 16\or 17\or 18\or 19\or
+  20\or 21\or 22\or 23\or 24\or 25\or 26\or 27\or 28\or 29\or
+  30\or 31\or 32\or 33\or 34\or 35\or 36\or 37\or 38\or 39\or
   \else\AlPh@ctrerr\fi}
 \newalphalph{\LiterallyJustNumbers}[wrap]{\@LiterallyJustNumbers}{}
+
+\def\@SmallNumbers#1{\ifcase#1\or
+  1\or 2\or 3\or 4\or 5\or 6\or 7\or 8\or 9\or 0\or
+  \SMOL10\or \SMOL11\or \SMOL12\or \SMOL13\or \SMOL14\or \SMOL15\or \SMOL16\or \SMOL17\or \SMOL18\or \SMOL19\or
+  \SMOL20\or \SMOL21\or \SMOL22\or \SMOL23\or \SMOL24\or \SMOL25\or \SMOL26\or \SMOL27\or \SMOL28\or \SMOL29\or
+  \SMOL30\or \SMOL31\or \SMOL32\or \SMOL33\or \SMOL34\or \SMOL35\or \SMOL36\or \SMOL37\or \SMOL38\or \SMOL39\or
+  \else\AlPh@ctrerr\fi}
+\newalphalph{\SmallNumbers}[wrap]{\@SmallNumbers}{}
+
+\def\@WrappedUpperLowerA#1{\ifcase#1\or
+  A\or A\or A\or A\or A\or A\or A\or A\or A\or A\or
+  a\or a\or a\or a\or a\or a\or a\or a\or a\or a\or
+  a\or a\or a\or a\or a\or a\or a\or a\or a\or a\or
+  a\or a\or a\or a\or a\or a\or a\or a\or a\or a\or
+  \else\AlPh@ctrerr\fi}
+\newalphalph{\WrappedUpperLowerA}[wrap]{\@WrappedUpperLowerA}{}
 
 \def\@LiterallyJustNumbersLong#1{\ifcase#1\or
   01\or 02\or 03\or 04\or 05\or 06\or 07\or 08\or 09\or
@@ -60,13 +81,17 @@
 \makeatother
 
 \begin{document}
+  \gridpage{$\WrappedUpperLowerA{\j+\numcolumns*(\i-1)}_{\LiterallyJustNumbers{\j+\numcolumns*(\i-1)}}$}
+  \gridpage{$A_{\SmallNumbers{\j+\numcolumns*(\i-1)}}$}
+
+
   \gridpage{$\AlphAlph{\j}_{\i}$}
   \gridpage{$\LatinPlusGreek{\j+\numcolumns*(\i-1)}$}
   \gridpage{$\AlphAlph{\i+\numcolumns}_{\j}$}
 
   \gridpage{$\AlphAlph{\i+12}_{\j}$}
-  \gridpage{$\AlphAlph{\j+5}_\LiterallyJustNumbers{\i+5}$}
-  \gridpage{$\AlphAlph{\j+5}_\LiterallyJustNumbers{\i+2}^\LiterallyJustNumbers{\i}$}
+  \gridpage{$\AlphAlph{\j+5}_{\LiterallyJustNumbers{\i+5}}$}
+  \gridpage{$\AlphAlph{\j+5}_{\LiterallyJustNumbers{\i+2}}^{\LiterallyJustNumbers{\i}}$}
   \gridpage{$\AlphAlph{\i+19}_{\j}$}
 
   \gridpage{$K_\LiterallyJustNumbers{\j}^\LiterallyJustNumbers{\i}$}
